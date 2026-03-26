@@ -1,7 +1,17 @@
+/*
+ * Current backend only 1 API endpoint:
+ * POST /users -> { username }
+ * 
+ * Response -> { id, username, status }
+ */
 export interface User {
-  id: string | null;
-  name: string | null;
-  username: string | null;
-  token: string | null;
-  status: string | null;
+  id?: number;
+  username: string;
+  status?: string;
 }
+
+/*
+ * FUTURE FIELDS
+ *
+ * token: string;
+ */
