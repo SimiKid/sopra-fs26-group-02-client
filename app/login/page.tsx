@@ -1,87 +1,93 @@
-/*.
- * Current backend of US-00-Shared-Foundations only supports:
- *   POST /users with { username }
- *
- * It can be reused later for:
- *   - #77 Registration UI
- *   - #78 Login UI
- */
-
-export default function DisabledPage() {
-  return null;
-}
-
-/*
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation"; 
 import { useApi } from "@/hooks/useApi";
+import { Alert, Button, Form, Input } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { User } from "@/types/user";
-import { Button, Form, Input } from "antd";
-
-interface FormFieldProps {
-  label: string;
-  value: string;
-}
+import { AuthCredentials, AuthToken } from "@/types/user";
+import { ApplicationError } from "@/types/error"; 
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const apiService = useApi();
+  const apiService = useApi(); 
   const [form] = Form.useForm();
 
-  const {set: setToken,
-  } = useLocalStorage<string>("token", ""); 
+  const {set: setToken} = useLocalStorage<string>("token", "");
+  const {set: setUserId} = useLocalStorage<string>("userId", "");
+  
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = async (values: FormFieldProps) => {
+  const handleLogin = async (values: AuthCredentials) => { 
+    setLoading(true);
+    setErrorMessage(null);
+
     try {
-      const response = await apiService.post<User>("/users", values);
-      if (response.token) {
-        setToken(response.token);
-      }
-      router.push("/users");
+      const response = await apiService.post<AuthToken>("/login", values);
+
+      setToken(response.token);
+      setUserId(response.id);
+
+      router.push("/lobby");
+
     } catch (error) {
-      if (error instanceof Error) {
-        alert(`Something went wrong during the login:\n${error.message}`);
+      const err = error as ApplicationError;
+
+      if (err.status === 401) {
+        setErrorMessage("Invalid username or password.");
       } else {
-        console.error("An unknown error occurred during login.");
+        setErrorMessage("Login failed");
       }
+    } finally {
+      setLoading(false); // Reset loading state after failed or successful login
     }
   };
 
   return (
-    <div className="login-container">
-      <Form
-        form={form}
-        name="login"
-        size="large"
-        variant="outlined"
-        onFinish={handleLogin}
-        layout="vertical"
-      >
-        <Form.Item
-          name="username"
-          label="Username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
-          <Input placeholder="Enter username" />
-        </Form.Item>
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[{ required: true, message: "Please input your name!" }]}
-        >
-          <Input placeholder="Enter name" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-button">
-            Login
-          </Button>
-        </Form.Item>
-      </Form>
+    <div className="page">
+      <div className="container">
+        <h1 className="title">Log in</h1>
+        <p className="subtitle">Enter your credentials</p>
+
+        {errorMessage && (  
+          <Alert
+            message={errorMessage}
+            type="error"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+        )} 
+
+        <Form form={form} onFinish={handleLogin} layout="vertical">
+          <Form.Item name="username" label="Username" rules={[{ required: true, message: "Please enter your username" }]}>
+            <Input className="input" placeholder="Username" />
+          </Form.Item>
+          <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please enter your password" }]}>
+            <Input.Password className="input" placeholder="Password" />
+          </Form.Item>
+          
+          <Form.Item>
+            <Button block className="button-primary" htmlType="submit" loading={loading}>
+              Log in
+            </Button>
+          </Form.Item>
+
+          <Form.Item>
+            <Button block className="button-secondary" htmlType = "button" onClick={() => router.push("/register")}>
+              Create account
+            </Button>
+          </Form.Item>
+
+          <Form.Item>
+            <Button block className="button-back" htmlType = "button" onClick={() => router.push("/")}>
+              Back
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
-  );
+  )
 };
 
 export default Login;
-*/
