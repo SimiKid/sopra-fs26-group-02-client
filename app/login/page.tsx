@@ -1,51 +1,45 @@
-/*.
- * Current backend of US-00-Shared-Foundations only supports:
- *   POST /users with { username }
- *
- * It can be reused later for:
- *   - #77 Registration UI
- *   - #78 Login UI
- */
-
-export default function DisabledPage() {
-  return null;
-}
-
-/*
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation"; 
 import { useApi } from "@/hooks/useApi";
+import { Alert, Button, Card, Form, Input, Typography } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { User } from "@/types/user";
-import { Button, Form, Input } from "antd";
+import { AuthCredentials, AuthToken } from "@/types/user";
+import { ApplicationError } from "@/types/error"; 
 
-interface FormFieldProps {
-  label: string;
-  value: string;
-}
+const { Title, Text } = Typography;
 
 const Login: React.FC = () => {
   const router = useRouter();
   const apiService = useApi();
   const [form] = Form.useForm();
 
-  const {set: setToken,
-  } = useLocalStorage<string>("token", ""); 
+  const {set: setToken} = useLocalStorage<string>("token", "");
+  
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = async (values: FormFieldProps) => {
+  const handleLogin = async (values: AuthCredentials) => { 
+    setLoading(true);
+    setErrorMessage(null);
+
     try {
-      const response = await apiService.post<User>("/users", values);
-      if (response.token) {
-        setToken(response.token);
-      }
-      router.push("/users");
+      const response = await apiService.post<AuthToken>("/login", values);
+      setToken(response.token);
+      
+      router.push("/lobby");
+
     } catch (error) {
-      if (error instanceof Error) {
-        alert(`Something went wrong during the login:\n${error.message}`);
+      const err = error as ApplicationError;
+
+      if (err.status === 401) {
+        setErrorMessage("Invalid username or password.");
       } else {
-        console.error("An unknown error occurred during login.");
+        setErrorMessage("Login failed");
       }
+    } finally {
+      setLoading(false); // Reset loading state after failed or successful login
     }
   };
 
@@ -84,4 +78,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-*/
