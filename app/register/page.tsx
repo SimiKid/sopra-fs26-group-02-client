@@ -8,7 +8,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { AuthCredentials, AuthToken } from "@/types/user";
 import { ApplicationError } from "@/types/error"; 
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const router = useRouter();
   const apiService = useApi(); 
   const [form] = Form.useForm();
@@ -19,12 +19,14 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = async (values: AuthCredentials) => { 
+  const handleRegister = async (values: AuthCredentials) => { 
     setLoading(true);
     setErrorMessage(null);
 
     try {
-      const response = await apiService.post<AuthToken>("/login", values);
+      await apiService.post("/register", values); 
+
+      const response = await apiService.post<AuthToken>("/login", values); 
 
       setToken(response.token);
       setUserId(response.id);
@@ -34,10 +36,10 @@ const Login: React.FC = () => {
     } catch (error) {
       const err = error as ApplicationError;
 
-      if (err.status === 401) {
-        setErrorMessage("Invalid username or password.");
+      if (err.status === 409) {
+        setErrorMessage("Username already exists.");
       } else {
-        setErrorMessage("Login failed");
+        setErrorMessage("Registration failed");
       }
     } finally {
       setLoading(false); // Reset loading state after failed or successful login
@@ -47,8 +49,8 @@ const Login: React.FC = () => {
   return (
     <div className="page">
       <div className="container">
-        <h1 className="title">Log in</h1>
-        <p className="subtitle">Enter your credentials</p>
+        <h1 className="title">Create Account</h1>
+        <p className="subtitle">Choose your credentials</p>
 
         {errorMessage && (  
           <Alert
@@ -59,24 +61,24 @@ const Login: React.FC = () => {
           />
         )} 
 
-        <Form form={form} onFinish={handleLogin} layout="vertical">
+        <Form form={form} onFinish={handleRegister} layout="vertical">
           <Form.Item name="username" label="Username" rules={[{ required: true, message: "Please enter your username" }]}>
             <Input className="input" placeholder="Username"/>
           </Form.Item>
-
+          
           <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please enter your password" }]}>
             <Input.Password className="input" placeholder="Password"/>
           </Form.Item>
           
           <Form.Item>
             <Button block className="button-primary" htmlType="submit" loading={loading}>
-              Log in
+              Create Account
             </Button>
           </Form.Item>
 
           <Form.Item>
-            <Button block className="button-secondary" htmlType = "button" onClick={() => router.push("/register")}>
-              Create account
+            <Button block className="button-secondary" htmlType = "button" onClick={() => router.push("/login")}>
+              go to Login
             </Button>
           </Form.Item>
 
@@ -91,4 +93,4 @@ const Login: React.FC = () => {
   )
 };
 
-export default Login;
+export default Register;
