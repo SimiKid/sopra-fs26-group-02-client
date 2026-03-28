@@ -36,10 +36,10 @@ reason).
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
 | **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **swimch**         | 27.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/badef42f6b0c210e62e7f0b048ae8c672e81e947) | Implementation of game creation with random game code generation | This is required for the for starting the whole game session |
+|                    | 27.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/b16a112a26dd493306eca9882929c65583a671d8) | Implementation of the expiration of game sessions if no one joins after 10 minutes | This keeps the game repository free of old, unused game sessions |
+| **noelgehrig**     | 26.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/3b6875c7e51115ac931ab71bb92873888ca56995) | Cleanup of frontend template | Provides a foundation for all future contributions so others can start working. |
+|                    | 27.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/e2860f41e1a502a1b38a21f6e4c4514a2fbabbbf) | I implemented the login page and the general design foundation | Provides a colour and font template for all future pages in the frontend. With login page, users can be redirected to the lobby.  |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |

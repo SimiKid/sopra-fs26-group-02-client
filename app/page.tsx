@@ -9,30 +9,39 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-
       <div className={styles.welcomeButtons}>
-        <Button 
+        <Button
           size="large"
-          type="primary"
+          className={styles.loginButton}
           onClick={() => router.push("/login")}
         >
-          Log In
+          Log in
         </Button>
 
         <Button
           size="large"
-          type="primary"
-          onClick={() => router.push("/register")} // /register is not created yet
+          className={styles.registerButton}
+          onClick={() => router.push("/register")}
         >
           Create Account
         </Button>
       </div>
 
       <main className={styles.main}>
-        <h1 style={{ color: "#FFB6C1" }}>Group 02</h1>
+        <h1 className={styles.title}>Weather Wizards</h1>
+        <p className={styles.subtitle}>
+          A Real-Time Weather-Driven Wizard Battle Game
+        </p>
       </main>
 
-      <footer className={styles.footer}></footer>
+      <section className={styles.overview}>
+        <h2 className={styles.overviewTitle}>Game Overview</h2>
+        <p>Wizard Classes with name illustration and a stat summary (HP, attack damage, any special mechanic)</p>
+        <p>Attack List</p>
+        <p>
+          Weather Modifier table with all six weather states and showing which attacks are boosted or reduced per weather condition.
+        </p>
+      </section>
     </div>
   );
 }
