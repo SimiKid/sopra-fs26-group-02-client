@@ -45,7 +45,8 @@ export default function CreateGame() {
     }
     setGameCode(null);
     setTimeLeft(600);
-    message.info("Game creation cancelled.");
+    message.info({
+        content: "Game creation cancelled.", style: {color: "#000000", },});
     };
 
   const handleCopyCode = async () => {
@@ -61,7 +62,7 @@ export default function CreateGame() {
 
   const handleJoinGame = async () => {
     if (joinCode.length !== 6) {
-      message.error("Please enter a valid 6-character game code.");
+      message.error({content: "Please enter a valid 6-character game code.", style: {color: "#000000",},});
       return;
     }
     setJoinLoading(true);
@@ -70,7 +71,7 @@ export default function CreateGame() {
       router.push("/lobby");
     } catch (error) {
       if (error instanceof Error) {
-        message.error(`Failed to join game: ${error.message}`);
+        message.error({content: `Failed to join game: ${error.message}`, style: {color: "#000000",},});
       }
     } finally {
       setJoinLoading(false);
@@ -109,7 +110,7 @@ export default function CreateGame() {
   useEffect(() => {
     if (!gameCode || timeLeft <= 0) {
         if (gameCode && timeLeft === 0) {
-            message.error("Game code expired!");
+            message.error({content: "Game code expired!", style: {color: "#000000",},});
             setGameCode(null);
         }
         return;
@@ -211,7 +212,7 @@ export default function CreateGame() {
             onClick={handleCancelWaiting}
             style={{ 
                 marginTop: "12px", 
-                color: "rgba(255, 77, 79, 0.8)", // Ein sanfteres Rot
+                color: "rgba(255, 77, 79, 0.8)", 
                 fontSize: "0.9rem" 
             }}
             >
