@@ -12,7 +12,7 @@ import { GameSession } from "@/types/game";
 export default function CreateGame() {
   const router = useRouter();
   const { value: token } = useLocalStorage<string>("token", "");
-  //const { value: userId } = useLocalStorage<string>("userId", "");
+  const { value: userId } = useLocalStorage<string>("userId", "");
   const apiService = useApi(token);
 
   const [gameCode, setGameCode] = useState<string | null>(null);
@@ -25,7 +25,7 @@ export default function CreateGame() {
   const handleCreateGame = async () => {
     setLoading(true);
     try {
-      const response = await apiService.post<GameSession>("/game", {});
+      const response = await apiService.post<GameSession>("/game", { player1Id: userId });
       setGameCode(response.gameCode);
     } catch (error) {
       if (error instanceof Error) {
