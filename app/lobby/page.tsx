@@ -12,12 +12,14 @@ import { GameSession } from "@/types/game";
 export default function CreateGame() {
   const router = useRouter();
   const { value: token } = useLocalStorage<string>("token", "");
+  //const { value: userId } = useLocalStorage<string>("userId", "");
   const apiService = useApi(token);
 
   const [gameCode, setGameCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(600);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleCreateGame = async () => {
@@ -33,6 +35,15 @@ export default function CreateGame() {
       setLoading(false);
     }
   };
+
+  const handleCancelWaiting = () => {
+    if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+    }
+    setGameCode(null);
+    setTimeLeft(600);
+    message.info("Game creation cancelled.");
+    };
 
   const handleCopyCode = async () => {
     if (!gameCode) return;
@@ -62,6 +73,12 @@ export default function CreateGame() {
     }
   };
 
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
   useEffect(() => {
     if (!gameCode) return;
 
@@ -77,12 +94,29 @@ export default function CreateGame() {
       }
     };
 
+    
     intervalRef.current = setInterval(poll, 2000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [gameCode, apiService, router]);
+
+  useEffect(() => {
+    if (!gameCode || timeLeft <= 0) {
+        if (gameCode && timeLeft === 0) {
+            message.error("Game code expired!");
+            setGameCode(null);
+        }
+        return;
+    }
+
+    const timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+}, [gameCode, timeLeft]);
 
   if (!gameCode) {
     return (
@@ -155,6 +189,30 @@ export default function CreateGame() {
           <p className="subtitle" style={{ marginTop: "16px" }}>
             Waiting for opponent to join...
           </p>
+        <div style={{ 
+            marginTop: "12px", 
+            fontSize: "1.2rem", 
+            fontFamily: "'Cinzel', serif", 
+            color: timeLeft < 60 ? "#ff4d4f" : "#a78bfa",
+            fontWeight: "bold",
+            textShadow: timeLeft < 60 ? "0 0 10px rgba(255, 77, 79, 0.5)" : "none"
+        }}>
+            Code expires in: {formatTime(timeLeft)}
+        </div>
+
+        <Button 
+            block
+            danger
+            type="text"
+            onClick={handleCancelWaiting}
+            style={{ 
+                marginTop: "12px", 
+                color: "rgba(255, 77, 79, 0.8)", // Ein sanfteres Rot
+                fontSize: "0.9rem" 
+            }}
+            >
+            Cancel and return to menu
+        </Button>
         </div>
       </div>
     </div>
