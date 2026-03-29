@@ -42,8 +42,8 @@ reason).
 |                    | 27.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/e2860f41e1a502a1b38a21f6e4c4514a2fbabbbf) | I implemented the login page and the general design foundation | Provides a colour and font template for all future pages in the frontend. With login page, users can be redirected to the lobby.  |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | 28.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/9ea33ef5272a0f64e96185ab6dd2c924b713ff05) | added the logic for the authenticaton token used later on in endpoints | to make sure only loged in users with a token can for example create games. |
+|                    | 29.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/6496ff1881c02dba35c774653701a8a2f3fec2f0) | Completed the waiting page with a countdown and cancel button | to match userstory 1 |
 
 ---
 
