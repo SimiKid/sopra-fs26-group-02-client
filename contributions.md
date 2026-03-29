@@ -34,16 +34,16 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 27.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/3f1e762e699497a98d631a0e7ebb60360632a287) | Store and manage auth token client-side — wires token from localStorage into ApiService via useApi hook, attaching X-Token header to all requests | Required for all authenticated API calls without this no protected endpoint can be reached after login |
+|                    | 28.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/ae20ffcf59f3f47d7a582abcbf43140ee309a2e8) | Create Game UI — lobby page with Create Game button, game code display, clipboard copy, join game input and polling for opponent | Implements the core lobby flow that allows two players to connect and start a game session|
 | **swimch**         | 27.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/badef42f6b0c210e62e7f0b048ae8c672e81e947) | Implementation of game creation with random game code generation | This is required for the for starting the whole game session |
 |                    | 27.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/b16a112a26dd493306eca9882929c65583a671d8) | Implementation of the expiration of game sessions if no one joins after 10 minutes | This keeps the game repository free of old, unused game sessions |
 | **noelgehrig**     | 26.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/3b6875c7e51115ac931ab71bb92873888ca56995) | Cleanup of frontend template | Provides a foundation for all future contributions so others can start working. |
 |                    | 27.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/e2860f41e1a502a1b38a21f6e4c4514a2fbabbbf) | I implemented the login page and the general design foundation | Provides a colour and font template for all future pages in the frontend. With login page, users can be redirected to the lobby.  |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | 28.03.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/9ea33ef5272a0f64e96185ab6dd2c924b713ff05) | added the logic for the authenticaton token used later on in endpoints | to make sure only loged in users with a token can for example create games. |
+|                    | 29.03.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/6496ff1881c02dba35c774653701a8a2f3fec2f0) | Completed the waiting page with a countdown and cancel button | to match userstory 1 |
 
 ---
 
