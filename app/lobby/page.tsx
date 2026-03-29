@@ -3,16 +3,18 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Spin, message, Input, Divider } from "antd";
+import { Button, Spin, App, Input, Divider } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { GameSession } from "@/types/game";
 
+
 export default function CreateGame() {
   const router = useRouter();
   const { value: token } = useLocalStorage<string>("token", "");
   const { value: userId } = useLocalStorage<string>("userId", "");
+  const { message } = App.useApp();
   const apiService = useApi(token);
 
   const [gameCode, setGameCode] = useState<string | null>(null);
@@ -20,6 +22,7 @@ export default function CreateGame() {
   const [joinCode, setJoinCode] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
+  
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleCreateGame = async () => {
@@ -49,9 +52,10 @@ export default function CreateGame() {
     if (!gameCode) return;
     try {
       await navigator.clipboard.writeText(gameCode);
-      message.success("Game code copied!");
+      message.success({
+        content: "Game code copied!", style: {color: "#000000", },});
     } catch {
-      message.error("Failed to copy code.");
+      message.error({content: "Failed to copy code.", style: {color: "#000000",},});
     }
   };
 
