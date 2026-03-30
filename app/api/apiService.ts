@@ -9,7 +9,7 @@ export class ApiService {
     this.baseURL = getApiDomain();
     this.defaultHeaders = {
       "Content-Type": "application/json",
-      ...(token ? { "X-Token": token } : {}),
+      ...(token ? { "Authorization": token } : {}),
     };
   }
 

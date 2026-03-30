@@ -28,11 +28,11 @@ export default function CreateGame() {
   const handleCreateGame = async () => {
     setLoading(true);
     try {
-      const response = await apiService.post<GameSession>("/game", { player1Id: userId });
+      const response = await apiService.post<GameSession>("/game", {});
       setGameCode(response.gameCode);
     } catch (error) {
       if (error instanceof Error) {
-        message.error(`Failed to create game: ${error.message}`);
+        message.error({content: `Failed to create game: ${error.message}`, style: {color: "#000000", },});
       }
     } finally {
       setLoading(false);
