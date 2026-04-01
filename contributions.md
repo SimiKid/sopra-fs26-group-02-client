@@ -61,7 +61,7 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | [1.4.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/95/changes/0f4a0f659051470fcd5e1c3243ee29284d25fc63) | added a delete gamecode endpoint for when player cancel or the time expires when creating a game | to keep the database clean |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 
 ---
