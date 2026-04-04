@@ -3,11 +3,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Spin, App, Input, Divider } from "antd";
+import { Button, Spin, App, Input, Divider, Alert } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { GameSession } from "@/types/game";
+import { ApplicationError } from "@/types/error";
 
 
 export default function CreateGame() {
@@ -22,6 +23,7 @@ export default function CreateGame() {
   const [joinCode, setJoinCode] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
+  const [joinError, setJoinError] = useState<string | null>(null);
   
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -61,17 +63,26 @@ export default function CreateGame() {
   };
 
   const handleJoinGame = async () => {
+    setJoinError(null);
+
     if (joinCode.length !== 6) {
-      message.error({content: "Please enter a valid 6-character game code.", style: {color: "#000000",},});
+      setJoinError("Please enter a valid 6-character game code.");
       return;
     }
+
     setJoinLoading(true);
     try {
       await apiService.post(`/game/${joinCode}/players`, {});
       router.push("/lobby");
     } catch (error) {
-      if (error instanceof Error) {
-        message.error({content: `Failed to join game: ${error.message}`, style: {color: "#000000",},});
+      const err = error as ApplicationError;
+
+      if (err.status === 404) {
+        setJoinError("This game is invalid or has expired.");
+      } else if (err.status === 409) {
+        setJoinError("This game is already full.");
+      } else {
+        setJoinError("Failed to join game. Please try again.");
       }
     } finally {
       setJoinLoading(false);
@@ -145,10 +156,23 @@ export default function CreateGame() {
             placeholder="Game code"
             maxLength={6}
             value={joinCode}
-            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              setJoinCode(e.target.value.toUpperCase());
+              setJoinError(null);
+            }}
             className="input"
             style={{ letterSpacing: "4px", fontFamily: "'Cinzel', serif", fontSize: "1.1rem", textAlign: "center", marginBottom: "12px" }}
           />
+
+          {joinError && (
+            <Alert
+              title={joinError}
+              type="error"
+              showIcon
+              style={{ marginBottom: "12px", textAlign: "left" }}
+            />
+          )}
+
           <Button
             block
             className="button-secondary"
