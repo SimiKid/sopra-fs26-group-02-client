@@ -129,7 +129,7 @@ export default function CreateGame() {
     const poll = async () => {
       try {
         const game = await apiService.get<GameSession>(`/game/${gameCode}`);
-        if (game.status === "CONFIGURING") {
+        if (game.gameStatus === "CONFIGURING") {
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
           }
