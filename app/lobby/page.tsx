@@ -30,11 +30,11 @@ export default function CreateGame() {
   const handleCreateGame = async () => {
     setLoading(true);
     try {
-      const response = await apiService.post<GameSession>("/game", { player1Id: userId });
+      const response = await apiService.post<GameSession>("/game", {});
       setGameCode(response.gameCode);
     } catch (error) {
       if (error instanceof Error) {
-        message.error(`Failed to create game: ${error.message}`);
+        message.error({content: `Failed to create game: ${error.message}`, style: {color: "#000000", },});
       }
     } finally {
       setLoading(false);
@@ -42,6 +42,8 @@ export default function CreateGame() {
   };
 
   const handleCancelWaiting = () => {
+    apiService.delete(`/game/${gameCode}`).catch(() => {});
+    
     if (intervalRef.current) {
         clearInterval(intervalRef.current);
     }
@@ -121,6 +123,7 @@ export default function CreateGame() {
   useEffect(() => {
     if (!gameCode || timeLeft <= 0) {
         if (gameCode && timeLeft === 0) {
+            apiService.delete(`/game/${gameCode}`).catch(() => {});
             message.error({content: "Game code expired!", style: {color: "#000000",},});
             setGameCode(null);
         }
