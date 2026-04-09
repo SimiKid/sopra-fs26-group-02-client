@@ -24,17 +24,29 @@ export default function CreateGame() {
   const [joinLoading, setJoinLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
   const [joinError, setJoinError] = useState<string | null>(null);
-  
+  const [gameFullMessage, setGameFullMessage] = useState<string | null>(null);  
+
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const goToConfirmationScreen = (text: string) => {
+    setGameFullMessage(text);
+    redirectTimeoutRef.current = setTimeout(() => {
+      router.push("/lobby");
+    }, 1500);
+  };
 
   const handleCreateGame = async () => {
     setLoading(true);
     try {
       const response = await apiService.post<GameSession>("/game", {});
-      setGameCode(response.gameCode);
+      setGameCode(response.gameCode); 
     } catch (error) {
       if (error instanceof Error) {
-        message.error({content: `Failed to create game: ${error.message}`, style: {color: "#000000", },});
+        message.error({
+          content: `Failed to create game: ${error.message}`,
+          style: { color: "#000000" },
+        });
       }
     } finally {
       setLoading(false);
@@ -42,16 +54,24 @@ export default function CreateGame() {
   };
 
   const handleCancelWaiting = () => {
-    apiService.delete(`/game/${gameCode}`).catch(() => {});
-    
-    if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+    if (gameCode) {
+      apiService.delete(`/game/${gameCode}`).catch(() => {});
     }
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    if (redirectTimeoutRef.current) {
+      clearTimeout(redirectTimeoutRef.current);
+    }
+
     setGameCode(null);
     setTimeLeft(600);
     message.info({
-        content: "Game creation cancelled.", style: {color: "#000000", },});
-    };
+      content: "Game creation cancelled.",
+      style: { color: "#000000" },
+    });
+  };
 
   const handleCopyCode = async () => {
     if (!gameCode) return;
@@ -74,8 +94,8 @@ export default function CreateGame() {
 
     setJoinLoading(true);
     try {
-      await apiService.post(`/game/${joinCode}/players`, {});
-      router.push("/lobby");
+      await apiService.put<GameSession>(`/game/${joinCode}/join`, {});
+      goToConfirmationScreen("Successfully joined game! Both players are connected.");
     } catch (error) {
       const err = error as ApplicationError;
 
@@ -95,7 +115,7 @@ export default function CreateGame() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
+  };
 
   useEffect(() => {
     if (!gameCode) return;
@@ -104,8 +124,11 @@ export default function CreateGame() {
       try {
         const game = await apiService.get<GameSession>(`/game/${gameCode}`);
         if (game.status === "CONFIGURING") {
-          clearInterval(intervalRef.current!);
-          router.push("/lobby");
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current!);
+          }
+          
+          goToConfirmationScreen("Your opponent has joined!");
         }
       } catch (error) {
         console.error("Polling error:", error);
@@ -121,22 +144,44 @@ export default function CreateGame() {
   }, [gameCode, apiService, router]);
 
   useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!gameCode || timeLeft <= 0) {
-        if (gameCode && timeLeft === 0) {
-            apiService.delete(`/game/${gameCode}`).catch(() => {});
-            message.error({content: "Game code expired!", style: {color: "#000000",},});
-            setGameCode(null);
-        }
-        return;
+      if (gameCode && timeLeft === 0) {
+        apiService.delete(`/game/${gameCode}`).catch(() => {});
+        message.error({content: "Game code expired!", style: {color: "#000000",},});
+        setGameCode(null);
+      }
+      return;
     }
 
     const timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
-}, [gameCode, timeLeft]);
+  }, [gameCode, timeLeft]);
 
+
+  if (gameFullMessage) {
+    return (
+      <div className="page">
+        <div className="container">
+          <h1 className="title">Game Ready!</h1>
+          <p className="subtitle">{gameFullMessage}</p>
+          <div style={{ marginTop: "24px" }}>
+            <Spin size="large" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   if (!gameCode) {
     return (
       <div className="page">
@@ -221,30 +266,30 @@ export default function CreateGame() {
           <p className="subtitle" style={{ marginTop: "16px" }}>
             Waiting for opponent to join...
           </p>
-        <div style={{ 
+          <div style={{ 
             marginTop: "12px", 
             fontSize: "1.2rem", 
             fontFamily: "'Cinzel', serif", 
             color: timeLeft < 60 ? "#ff4d4f" : "#a78bfa",
             fontWeight: "bold",
             textShadow: timeLeft < 60 ? "0 0 10px rgba(255, 77, 79, 0.5)" : "none"
-        }}>
+          }}>
             Code expires in: {formatTime(timeLeft)}
-        </div>
+          </div>
 
-        <Button 
+          <Button 
             block
             danger
             type="text"
             onClick={handleCancelWaiting}
             style={{ 
-                marginTop: "12px", 
-                color: "rgba(255, 77, 79, 0.8)", 
-                fontSize: "0.9rem" 
+              marginTop: "12px", 
+              color: "rgba(255, 77, 79, 0.8)", 
+              fontSize: "0.9rem" 
             }}
-            >
+          >
             Cancel and return to menu
-        </Button>
+          </Button>
         </div>
       </div>
     </div>
