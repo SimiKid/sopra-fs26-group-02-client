@@ -13,6 +13,7 @@
   text-shadow: 0 0 20px rgba(160, 100, 255, 0.5);
   font-size: 3rem;
   margin: 0 0 0.75rem;
+  text-align: center;
 }
 
 .wizardTitle {
@@ -32,6 +33,10 @@
 .wizardList {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(16px, 3vw, 48px);
+  width: min(1200px, 90%);
+  margin: 2rem auto 0;
 }
 
 .wizard {
@@ -40,7 +45,6 @@
 
 .buttonWizard {
   font-family: 'Cinzel', serif;
-  width: 100%;
   margin-bottom: 1rem;
 }
 
@@ -65,5 +69,13 @@
 
   .wizardDescription {
     margin-left: 0;
+  }
+
+  .wizardList {
+    width: 100%;
+    margin-top: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
   }
 }
