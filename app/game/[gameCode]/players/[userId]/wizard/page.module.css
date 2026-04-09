@@ -48,6 +48,17 @@
   margin-bottom: 1rem;
 }
 
+.buttonContainer {
+  width: min(1200px, 90%);
+  margin: 2rem auto 0;
+  text-align: right;
+}
+
+.confirmButton {
+  font-family: 'Cinzel', serif;
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
   .page {
     padding: 24px;

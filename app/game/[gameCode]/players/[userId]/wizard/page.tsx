@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./page.module.css";
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button, App } from "antd";
 import { useApi } from "@/hooks/useApi";
@@ -32,7 +33,7 @@ const WIZARDS = [
   {
     id: "GAMBLERWIZARD",
     title: "Gambling Wizard",
-    description: "With random multipliers and unstable health, every battle is a high-stakes risk.",
+    description: "With random health and damage, every battle is a high-stakes risk.",
     image: gambler,
   },
 ];
@@ -85,6 +86,13 @@ export default function Wizard() {
             <p className={styles.wizardDescription}>{wizard.description}</p>
           </div>
         ))}
+      </div>
+      
+      {/* buttonContainer matches wizardList size to align the confirm button at the bottom of the page */}
+      <div className={styles.buttonContainer}>
+        <Button>
+          Confirm Selection
+        </Button>
       </div>
     </div>
   );
