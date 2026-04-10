@@ -6,37 +6,8 @@ import { useRouter, useParams } from "next/navigation";
 import { Button, App } from "antd";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import attack from "./images/attack.png";
-import balanced from "./images/balanced.png";
-import tank from "./images/tank.png";
-import gambler from "./images/gambler.png";
+import { WIZARDS } from "@/constants/wizards.constants";
 
-const WIZARDS = [
-  {
-    id: "ATTACKWIZARD",
-    title: "Attack Wizard",
-    description: "Unleashes devastating damage but has very low health.",
-    image: attack,
-  },
-  {
-    id: "TANKWIZARD",
-    title: "Tank Wizard",
-    description: "With a massive health pool but reduced damage, they stand firm against any onslaught.",
-    image: tank,
-  },
-  {
-    id: "BALANCEDWIZARD",
-    title: "Balanced Wizard",
-    description: "A perfect blend of offensive power and durability.",
-    image: balanced,
-  },
-  {
-    id: "GAMBLERWIZARD",
-    title: "Gambling Wizard",
-    description: "With random health and damage, every battle is a high-stakes risk.",
-    image: gambler,
-  },
-];
 
 export default function Wizard() {
   const [attackIsSel, setWizAttack] = useState(false);
@@ -86,7 +57,7 @@ export default function Wizard() {
               width: 200,
               height: 300,
               padding: 0,
-              backgroundImage: `url(${wizard.image.src})`,
+              backgroundImage: `url(${wizard.image})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
