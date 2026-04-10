@@ -12,7 +12,6 @@ import { ApplicationError } from "@/types/error";
 export default function CreateGame() {
   const router = useRouter();
   const { value: token } = useLocalStorage<string>("token", "");
-  const { value: userId } = useLocalStorage<string>("userId", "");
   const { message } = App.useApp();
   const apiService = useApi(token);
 
@@ -30,7 +29,7 @@ export default function CreateGame() {
   const goToConfirmationScreen = (text: string, gameCode: string) => {
     setGameFullMessage(text);
     redirectTimeoutRef.current = setTimeout(() => {
-      router.push(`/game/${gameCode}/players/${userId}/wizard`);
+      router.push(`/game/${gameCode}/wizards`);
     }, 1500);
   };
 
