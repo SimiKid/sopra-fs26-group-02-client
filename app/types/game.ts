@@ -10,6 +10,6 @@ export interface Player {
 // players: list of players currently in the session (1 while waiting, 2 once opponent joins)
 export interface GameSession {
   gameCode: string;
-  status: string;
+  gameStatus: string;
   players: Player[];
 }
