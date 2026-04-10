@@ -54,11 +54,6 @@
   text-align: right;
 }
 
-.confirmButton {
-  font-family: 'Cinzel', serif;
-  margin-bottom: 1rem;
-}
-
 @media (max-width: 768px) {
   .page {
     padding: 24px;

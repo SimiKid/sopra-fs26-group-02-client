@@ -39,6 +39,10 @@ const WIZARDS = [
 ];
 
 export default function Wizard() {
+  const [attackIsSel, setWizAttack] = useState(false);
+  const [tankIsSel, setWizTank] = useState(false);
+  const [balancedIsSel, setWizBalanced] = useState(false);
+  const [gamblerIsSel, setWizGambler] = useState(false);
   const router = useRouter();
   const { message } = App.useApp();
   const { value: token } = useLocalStorage<string>("token", "");
@@ -56,6 +60,13 @@ export default function Wizard() {
     } catch (error) {
       message.error("Failed to choose wizard. Please try again.");
     }
+  };
+
+  const handleWizardSelect = (wizardId: string) => {
+    setWizAttack(wizardId === "ATTACKWIZARD" ? !attackIsSel : false);
+    setWizTank(wizardId === "TANKWIZARD" ? !tankIsSel : false);
+    setWizBalanced(wizardId === "BALANCEDWIZARD" ? !balancedIsSel : false);
+    setWizGambler(wizardId === "GAMBLERWIZARD" ? !gamblerIsSel : false);
   };
 
   return (
@@ -79,8 +90,9 @@ export default function Wizard() {
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
+              border: (attackIsSel && wizard.id === "ATTACKWIZARD") || (tankIsSel && wizard.id === "TANKWIZARD") || (balancedIsSel && wizard.id === "BALANCEDWIZARD") || (gamblerIsSel && wizard.id === "GAMBLERWIZARD") ? '5px solid blue' : 'none',
             }}
-            onClick={() => handleChooseWizard(gameCode, userId, wizard.id)}
+            onClick={() => handleWizardSelect(wizard.id)}
             >
             </Button>
             <p className={styles.wizardDescription}>{wizard.description}</p>
@@ -90,7 +102,10 @@ export default function Wizard() {
       
       {/* buttonContainer matches wizardList size to align the confirm button at the bottom of the page */}
       <div className={styles.buttonContainer}>
-        <Button>
+        <Button
+        className="button-primary"
+        onClick={() => handleChooseWizard(gameCode, userId, attackIsSel ? "ATTACKWIZARD" : tankIsSel ? "TANKWIZARD" : balancedIsSel ? "BALANCEDWIZARD" : gamblerIsSel ? "GAMBLERWIZARD" : "")}
+        >
           Confirm Selection
         </Button>
       </div>
