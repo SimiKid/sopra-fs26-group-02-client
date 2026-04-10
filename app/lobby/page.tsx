@@ -30,7 +30,7 @@ export default function CreateGame() {
   const goToConfirmationScreen = (text: string, gameCode: string) => {
     setGameFullMessage(text);
     redirectTimeoutRef.current = setTimeout(() => {
-      router.push(`/game/${gameCode}/player/${userId}/wizard`);
+      router.push(`/game/${gameCode}/players/${userId}/wizard`);
     }, 1500);
   };
 
