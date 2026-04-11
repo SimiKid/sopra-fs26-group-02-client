@@ -62,7 +62,8 @@ reason).
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **liv519**         | [1.4.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/95/changes/0f4a0f659051470fcd5e1c3243ee29284d25fc63) | added a delete gamecode endpoint for when player cancel or the time expires when creating a game | to keep the database clean |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+|                    | [8.4.2026]   | (https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/13fff6b0569247257beaf1b3cecee6b790660962) | implemented get attacks endpoint and attack as well as element entity | relevant for the attack functionality |
+|                    | [9.4.2026]   | (https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/a19c55b6101d340d0596ad8e7bc161428b8b0ba3) | implemented put endpoint for attacks | allows players to set their attacks before starting a game |
 
 ---
 
