@@ -75,6 +75,7 @@ export default function Wizard() {
       <div className={styles.buttonContainer}>
         <Button
         className="button-primary"
+        disabled={!(attackIsSel || tankIsSel || balancedIsSel || gamblerIsSel)}
         onClick={() => handleChooseWizard(gameCode, userId, attackIsSel ? "ATTACKWIZARD" : tankIsSel ? "TANKWIZARD" : balancedIsSel ? "BALANCEDWIZARD" : gamblerIsSel ? "GAMBLERWIZARD" : "")}
         >
           Confirm Selection
