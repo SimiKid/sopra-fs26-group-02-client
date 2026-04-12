@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Button, App } from "antd";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { ATTACKS } from "@/constants/attacks.constants";
 
 export default function Attacks() {
   const [fireballIsSel, setFireballIsSel] = useState(false);
@@ -24,8 +25,6 @@ export default function Attacks() {
 
   const params = useParams();
   const gameCode = params.gameCode as string;
-  const userId = parseInt(params.userId as string);
-
 
   const handleChooseAttacks = async () => {
     if (selectedAttacks.length !== 3) {
@@ -34,14 +33,19 @@ export default function Attacks() {
     }
 
     try {
-      await apiService.put(`/game/${gameCode}/players/${userId}/attacks`, {
+      await apiService.put(`/game/${gameCode}/attacks`, {
         attacks: selectedAttacks,
       });
-
-      message.success("You have chosen your attacks!");
-      router.push(`/game/${gameCode}/players/${userId}/summary`);
+      message.success({
+        content: "You have chosen your attacks!",
+        style: { color: "#000000" },
+      });
+      router.push(`/game/${gameCode}/summary`);
     } catch {
-      message.error("Failed to choose attacks.");
+      message.error({
+        content: "Failed to choose attacks.",
+        style: { color: "#000000" },
+      });
     }
   };
 
@@ -80,4 +84,76 @@ export default function Attacks() {
     if (attackId === "ICE_SPIKES") setIceSpikesIsSel(!iceSpikesIsSel);
     if (attackId === "BLIZZARD") setBlizzardIsSel(!blizzardIsSel);
   };
+
+  return (
+    <div className={styles.page}>
+      <div className={styles.headerRow}>
+        <div>
+          <h1 className={styles.title}>Attack Selection</h1>
+          <p className={styles.locationText}>
+            Selected location for the battle: Placeholder
+          </p>
+        </div>
+
+        <div className={styles.confirmArea}>
+          <div className={styles.confirmRow}>
+            <Button
+              className={
+                selectedAttacks.length === 3
+                  ? styles.buttonConfirm
+                  : styles.buttonDisabled
+              }
+              disabled={selectedAttacks.length !== 3}
+              onClick={handleChooseAttacks}
+            >
+              Confirm
+            </Button>
+
+            <span className={styles.counter}>
+              {selectedAttacks.length}/3
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.attackList}>
+        {ATTACKS.map((attack) => (
+          <div key={attack.id} className={styles.attack}>
+            <button
+              type="button"
+              className={`${styles.buttonAttack} ${
+                (fireballIsSel && attack.id === "FIREBALL") ||
+                (infernoIsSel && attack.id === "INFERNO") ||
+                (lightningIsSel && attack.id === "LIGHTNING") ||
+                (tsunamiIsSel && attack.id === "TSUNAMI") ||
+                (tornadoIsSel && attack.id === "TORNADO") ||
+                (punchIsSel && attack.id === "PUNCH") ||
+                (iceSpikesIsSel && attack.id === "ICE_SPIKES") ||
+                (blizzardIsSel && attack.id === "BLIZZARD")
+                  ? styles.selected
+                  : ""
+              }`}
+              style={{
+                backgroundImage: `url(${attack.image})`,
+              }}
+              onClick={() => handleAttackSelect(attack.id)}
+            />
+
+            <div className={styles.attackInfo}>
+              <h2 className={styles.attackTitle}>{attack.title}</h2>
+              <p className={styles.attackDescription}>
+                Base Damage: {attack.baseDamage}
+              </p>
+              <p className={styles.attackDescription}>
+                Element Type: {attack.element}
+              </p>
+              <p className={styles.attackDescription}>
+                {attack.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

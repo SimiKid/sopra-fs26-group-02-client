@@ -21,13 +21,12 @@ export default function Wizard() {
 
   const params = useParams();
   const gameCode = params.gameCode as string;
-  const userId = parseInt(params.userId as string);
 
-  const handleChooseWizard = async (gameCode: string, userId: number, wizardClass: string) => {
+  const handleChooseWizard = async (gameCode: string, wizardClass: string) => {
     try {
-      await apiService.put(`/game/${gameCode}/players/${userId}/wizard`, { wizardClass });
+      await apiService.put(`/game/${gameCode}/wizards`, { wizardClass });
       message.success(`You have chosen the ${wizardClass} Wizard!`);
-      router.push(`/game/${gameCode}/players/${userId}/attacks`);
+      router.push(`/game/${gameCode}/attacks`);
     } catch (error) {
       message.error("Failed to choose wizard. Please try again.");
     }
@@ -76,7 +75,7 @@ export default function Wizard() {
         <Button
         className="button-primary"
         disabled ={!(attackIsSel || tankIsSel || balancedIsSel || gamblerIsSel)}
-        onClick={() => handleChooseWizard(gameCode, userId, attackIsSel ? "ATTACKWIZARD" : tankIsSel ? "TANKWIZARD" : balancedIsSel ? "BALANCEDWIZARD" : gamblerIsSel ? "GAMBLERWIZARD" : "")}
+        onClick={() => handleChooseWizard(gameCode, attackIsSel ? "ATTACKWIZARD" : tankIsSel ? "TANKWIZARD" : balancedIsSel ? "BALANCEDWIZARD" : gamblerIsSel ? "GAMBLERWIZARD" : "")}
         >
           Confirm Selection
         </Button>
