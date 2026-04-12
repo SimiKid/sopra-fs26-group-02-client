@@ -55,7 +55,7 @@ reason).
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
 | **SimiKid**        | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/1a96a00cc0369d63f630e2fcb1c72cfa6a2189ba) | Implement join game endpoint with game code validation, join logic and error handling | Allows a second player to join an existing game session using a game code |
 |                    | 09.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/7d6f0e02c5ef92ef6d15d968eeeac5279e3d4430) | Add Swagger/OpenAPI documentation for all endpoints and DTOs | Provides a shared API documentation for frontend and backend development |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
+| **swimch**         | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/5114817261ae2e4163261e56e7cd4c8b7336fe02) | added functional wizard selection page | Is necessary for the game configuration |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
