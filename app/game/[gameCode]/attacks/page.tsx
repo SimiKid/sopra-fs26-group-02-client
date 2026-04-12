@@ -9,14 +9,44 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { ATTACKS } from "@/constants/attacks.constants";
 
 export default function Attacks() {
-  const [fireballIsSel, setFireballIsSel] = useState(false);
-  const [infernoIsSel, setInfernoIsSel] = useState(false);
-  const [lightningIsSel, setLightningIsSel] = useState(false);
-  const [tsunamiIsSel, setTsunamiIsSel] = useState(false);
-  const [tornadoIsSel, setTornadoIsSel] = useState(false);
-  const [punchIsSel, setPunchIsSel] = useState(false);
-  const [iceSpikesIsSel, setIceSpikesIsSel] = useState(false);
-  const [blizzardIsSel, setBlizzardIsSel] = useState(false);
+  const [selectedAttackIds, setSelectedAttackIds] = useState<string[]>([]);
+
+     const setAttackSelection = (attackId: string, isSelected: boolean) => {
+     setSelectedAttackIds((currentSelectedAttackIds) => {
+       if (isSelected) {
+         return currentSelectedAttackIds.includes(attackId)
+           ? currentSelectedAttackIds
+           : [...currentSelectedAttackIds, attackId];
+       }
+       return currentSelectedAttackIds.filter(
+         (currentAttackId) => currentAttackId !== attackId,
+       );
+     });
+   };
+   const fireballIsSel = selectedAttackIds.includes("FIREBALL");
+   const setFireballIsSel = (isSelected: boolean) =>
+     setAttackSelection("FIREBALL", isSelected);
+   const infernoIsSel = selectedAttackIds.includes("INFERNO");
+   const setInfernoIsSel = (isSelected: boolean) =>
+     setAttackSelection("INFERNO", isSelected);
+   const lightningIsSel = selectedAttackIds.includes("LIGHTNING");
+   const setLightningIsSel = (isSelected: boolean) =>
+     setAttackSelection("LIGHTNING", isSelected);
+   const tsunamiIsSel = selectedAttackIds.includes("TSUNAMI");
+   const setTsunamiIsSel = (isSelected: boolean) =>
+     setAttackSelection("TSUNAMI", isSelected);
+   const tornadoIsSel = selectedAttackIds.includes("TORNADO");
+   const setTornadoIsSel = (isSelected: boolean) =>
+     setAttackSelection("TORNADO", isSelected);
+   const punchIsSel = selectedAttackIds.includes("PUNCH");
+   const setPunchIsSel = (isSelected: boolean) =>
+     setAttackSelection("PUNCH", isSelected);
+   const iceSpikesIsSel = selectedAttackIds.includes("ICE_SPIKES");
+   const setIceSpikesIsSel = (isSelected: boolean) =>
+     setAttackSelection("ICE_SPIKES", isSelected);
+   const blizzardIsSel = selectedAttackIds.includes("BLIZZARD");
+   const setBlizzardIsSel = (isSelected: boolean) =>
+     setAttackSelection("BLIZZARD", isSelected);
 
   const router = useRouter();
   const { message } = App.useApp();
@@ -40,7 +70,7 @@ export default function Attacks() {
         content: "You have chosen your attacks!",
         style: { color: "#000000" },
       });
-      router.push(`/game/${gameCode}/summary`);
+      router.push(`/game/${gameCode}/battle`);
     } catch {
       message.error({
         content: "Failed to choose attacks.",
@@ -49,16 +79,7 @@ export default function Attacks() {
     }
   };
 
-  const selectedAttacks = [
-    fireballIsSel ? "FIREBALL" : null,
-    infernoIsSel ? "INFERNO" : null,
-    lightningIsSel ? "LIGHTNING" : null,
-    tsunamiIsSel ? "TSUNAMI" : null,
-    tornadoIsSel ? "TORNADO" : null,
-    punchIsSel ? "PUNCH" : null,
-    iceSpikesIsSel ? "ICE_SPIKES" : null,
-    blizzardIsSel ? "BLIZZARD" : null,
-  ].filter(Boolean);
+  const selectedAttacks = selectedAttackIds;
 
   const handleAttackSelect = (attackId: string) => {
     const isSelected =
