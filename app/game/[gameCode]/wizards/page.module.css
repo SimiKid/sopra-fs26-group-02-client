@@ -44,8 +44,20 @@
 }
 
 .buttonWizard {
-  font-family: 'Cinzel', serif;
+  width: 200px;
+  height: 300px;
+  padding: 0;
   margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.buttonWizard.ant-btn {
+  width: 200px !important;
+  height: 300px !important;
+}
+
+.buttonWizardSelected {
+  border: 50px solid blue;
 }
 
 .buttonContainer {
