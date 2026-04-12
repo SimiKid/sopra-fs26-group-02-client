@@ -8,12 +8,15 @@ import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { WIZARDS } from "@/constants/wizards.constants";
 
+type WizardSelectionState = {
+  selectedWizardId: string | null;
+};
 
 export default function Wizard() {
-  const [attackIsSel, setWizAttack] = useState(false);
-  const [tankIsSel, setWizTank] = useState(false);
-  const [balancedIsSel, setWizBalanced] = useState(false);
-  const [gamblerIsSel, setWizGambler] = useState(false);
+  const [selection, setSelection] = useState<WizardSelectionState>({
+    selectedWizardId: null,
+  });
+
   const router = useRouter();
   const { message } = App.useApp();
   const { value: token } = useLocalStorage<string>("token", "");
@@ -22,21 +25,48 @@ export default function Wizard() {
   const params = useParams();
   const gameCode = params.gameCode as string;
 
-  const handleChooseWizard = async (gameCode: string, wizardClass: string) => {
+  const handleChooseWizard = async (
+    selectedWizardId: string
+  ): Promise<void> => {
     try {
-      await apiService.put(`/game/${gameCode}/wizards`, { wizardClass });
-      message.success(`You have chosen the ${wizardClass} Wizard!`);
+      await apiService.put(`/game/${gameCode}/wizards`, {
+        wizardClass: selectedWizardId,
+      });
+
+      message.success({
+        content: "You have chosen your wizard!",
+        style: { color: "#000000" },
+      });
       router.push(`/game/${gameCode}/attacks`);
+
     } catch (error) {
-      message.error("Failed to choose wizard. Please try again.");
+      message.error({
+        content: "Failed to choose wizard.",
+        style: { color: "#000000" },
+      });
     }
   };
 
-  const handleWizardSelect = (wizardId: string) => {
-    setWizAttack(wizardId === "ATTACKWIZARD" ? !attackIsSel : false);
-    setWizTank(wizardId === "TANKWIZARD" ? !tankIsSel : false);
-    setWizBalanced(wizardId === "BALANCEDWIZARD" ? !balancedIsSel : false);
-    setWizGambler(wizardId === "GAMBLERWIZARD" ? !gamblerIsSel : false);
+  const handleWizardSelect = (wizardId: string): void => {
+    setSelection((prev) => ({
+      selectedWizardId: prev.selectedWizardId === wizardId ? null : wizardId,
+    }));
+  };
+
+  const determineBorder = (wizardId: string): string => {
+    console.log("border check");
+    
+    return selection.selectedWizardId === wizardId
+      ? styles.buttonWizardSelected
+      : "";
+  };
+
+  const handleConfirmSelection = async (): Promise<void> => {
+    if (!selection.selectedWizardId) {
+      return;
+    }
+
+    await handleChooseWizard(selection.selectedWizardId);
   };
 
   return (
@@ -49,22 +79,23 @@ export default function Wizard() {
         {WIZARDS.map((wizard) => (
           <div key={wizard.id} className={styles.wizard}>
             <h2 className={styles.wizardTitle}>{wizard.title}</h2>
+
+            {/* Wizard Button is overwritten by Ant Design, so the with, height and border are currently set inline. This will be fixed in the future. */}
             <Button
-            block
-            className={styles.buttonWizard}
-            style={{
-              width: 200,
-              height: 300,
-              padding: 0,
-              backgroundImage: `url(${wizard.image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              border: (attackIsSel && wizard.id === "ATTACKWIZARD") || (tankIsSel && wizard.id === "TANKWIZARD") || (balancedIsSel && wizard.id === "BALANCEDWIZARD") || (gamblerIsSel && wizard.id === "GAMBLERWIZARD") ? '5px solid blue' : 'none',
-            }}
-            onClick={() => handleWizardSelect(wizard.id)}
+              style={{
+                  width: "200px",
+                  height: "300px",
+                  border: (wizard.id === selection.selectedWizardId) ? '5px solid blue' : 'none',
+              }}
+              className={`${styles.buttonWizard} ${determineBorder(wizard.id)}`}
+              onClick={() => handleWizardSelect(wizard.id)}
             >
+              <img
+                src={wizard.image}
+                className={styles.wizardImage}
+              />
             </Button>
+
             <p className={styles.wizardDescription}>{wizard.description}</p>
           </div>
         ))}
@@ -74,8 +105,8 @@ export default function Wizard() {
       <div className={styles.buttonContainer}>
         <Button
         className="button-primary"
-        disabled ={!(attackIsSel || tankIsSel || balancedIsSel || gamblerIsSel)}
-        onClick={() => handleChooseWizard(gameCode, attackIsSel ? "ATTACKWIZARD" : tankIsSel ? "TANKWIZARD" : balancedIsSel ? "BALANCEDWIZARD" : gamblerIsSel ? "GAMBLERWIZARD" : "")}
+          disabled={!selection.selectedWizardId}
+          onClick={handleConfirmSelection}
         >
           Confirm Selection
         </Button>
