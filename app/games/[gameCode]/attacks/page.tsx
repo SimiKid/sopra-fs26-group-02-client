@@ -1,52 +1,17 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button, App } from "antd";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { ATTACKS } from "@/constants/attacks.constants";
+import { ATTACK_IMAGES, AttackId } from "@/constants/attacks.constants";
+import { Attack } from "@/types/attack";
 
 export default function Attacks() {
-  const [selectedAttackIds, setSelectedAttackIds] = useState<string[]>([]);
-
-     const setAttackSelection = (attackId: string, isSelected: boolean) => {
-     setSelectedAttackIds((currentSelectedAttackIds) => {
-       if (isSelected) {
-         return currentSelectedAttackIds.includes(attackId)
-           ? currentSelectedAttackIds
-           : [...currentSelectedAttackIds, attackId];
-       }
-       return currentSelectedAttackIds.filter(
-         (currentAttackId) => currentAttackId !== attackId,
-       );
-     });
-   };
-   const fireballIsSel = selectedAttackIds.includes("FIREBALL");
-   const setFireballIsSel = (isSelected: boolean) =>
-     setAttackSelection("FIREBALL", isSelected);
-   const infernoIsSel = selectedAttackIds.includes("INFERNO");
-   const setInfernoIsSel = (isSelected: boolean) =>
-     setAttackSelection("INFERNO", isSelected);
-   const lightningIsSel = selectedAttackIds.includes("LIGHTNING");
-   const setLightningIsSel = (isSelected: boolean) =>
-     setAttackSelection("LIGHTNING", isSelected);
-   const tsunamiIsSel = selectedAttackIds.includes("TSUNAMI");
-   const setTsunamiIsSel = (isSelected: boolean) =>
-     setAttackSelection("TSUNAMI", isSelected);
-   const tornadoIsSel = selectedAttackIds.includes("TORNADO");
-   const setTornadoIsSel = (isSelected: boolean) =>
-     setAttackSelection("TORNADO", isSelected);
-   const punchIsSel = selectedAttackIds.includes("PUNCH");
-   const setPunchIsSel = (isSelected: boolean) =>
-     setAttackSelection("PUNCH", isSelected);
-   const iceSpikesIsSel = selectedAttackIds.includes("ICE_SPIKES");
-   const setIceSpikesIsSel = (isSelected: boolean) =>
-     setAttackSelection("ICE_SPIKES", isSelected);
-   const blizzardIsSel = selectedAttackIds.includes("BLIZZARD");
-   const setBlizzardIsSel = (isSelected: boolean) =>
-     setAttackSelection("BLIZZARD", isSelected);
+  const [selectedAttacks, setSelectedAttacks] = useState<AttackId[]>([]);
+  const [attacks, setAttacks] = useState<Attack[]>([]);
 
   const router = useRouter();
   const { message } = App.useApp();
@@ -55,6 +20,22 @@ export default function Attacks() {
 
   const params = useParams();
   const gameCode = params.gameCode as string;
+
+  useEffect(() => {
+    const fetchAttacks = async () => {
+      try {
+        const response = await apiService.get<Attack[]>("/attacks");
+        setAttacks(response);
+      } catch {
+        message.error({
+          content: "Failed to load attacks.",
+          style: { color: "#000000" },
+        });
+      }
+    };
+
+    fetchAttacks();
+  }, [apiService, message]);
 
   const handleChooseAttacks = async () => {
     if (selectedAttacks.length !== 3) {
@@ -77,31 +58,25 @@ export default function Attacks() {
     }
   };
 
-  const selectedAttacks = selectedAttackIds;
+  const handleAttackSelect = (attackId: AttackId) => {
+    const isSelected = selectedAttacks.includes(attackId);
 
-  const handleAttackSelect = (attackId: string) => {
-    const isSelected =
-      (fireballIsSel && attackId === "FIREBALL") ||
-      (infernoIsSel && attackId === "INFERNO") ||
-      (lightningIsSel && attackId === "LIGHTNING") ||
-      (tsunamiIsSel && attackId === "TSUNAMI") ||
-      (tornadoIsSel && attackId === "TORNADO") ||
-      (punchIsSel && attackId === "PUNCH") ||
-      (iceSpikesIsSel && attackId === "ICE_SPIKES") ||
-      (blizzardIsSel && attackId === "BLIZZARD");
-
-    if (!isSelected && selectedAttacks.length >= 3) {
+    if (isSelected) {
+      setSelectedAttacks(
+        selectedAttacks.filter((id) => id !== attackId),
+      );
       return;
     }
 
-    if (attackId === "FIREBALL") setFireballIsSel(!fireballIsSel);
-    if (attackId === "INFERNO") setInfernoIsSel(!infernoIsSel);
-    if (attackId === "LIGHTNING") setLightningIsSel(!lightningIsSel);
-    if (attackId === "TSUNAMI") setTsunamiIsSel(!tsunamiIsSel);
-    if (attackId === "TORNADO") setTornadoIsSel(!tornadoIsSel);
-    if (attackId === "PUNCH") setPunchIsSel(!punchIsSel);
-    if (attackId === "ICE_SPIKES") setIceSpikesIsSel(!iceSpikesIsSel);
-    if (attackId === "BLIZZARD") setBlizzardIsSel(!blizzardIsSel);
+    if (selectedAttacks.length >= 3) {
+      return;
+    }
+
+    setSelectedAttacks([...selectedAttacks, attackId]);
+  };
+
+  const formatElement = (element: string) => {
+    return element.charAt(0) + element.slice(1).toLowerCase(); 
   };
 
   return (
@@ -136,35 +111,28 @@ export default function Attacks() {
       </div>
 
       <div className={styles.attackList}>
-        {ATTACKS.map((attack) => (
+        {attacks.map((attack) => (
           <div key={attack.id} className={styles.attack}>
             <button
               type="button"
               className={`${styles.buttonAttack} ${
-                (fireballIsSel && attack.id === "FIREBALL") ||
-                (infernoIsSel && attack.id === "INFERNO") ||
-                (lightningIsSel && attack.id === "LIGHTNING") ||
-                (tsunamiIsSel && attack.id === "TSUNAMI") ||
-                (tornadoIsSel && attack.id === "TORNADO") ||
-                (punchIsSel && attack.id === "PUNCH") ||
-                (iceSpikesIsSel && attack.id === "ICE_SPIKES") ||
-                (blizzardIsSel && attack.id === "BLIZZARD")
+                selectedAttacks.includes(attack.id)
                   ? styles.selected
                   : ""
               }`}
               style={{
-                backgroundImage: `url(${attack.image})`,
+                backgroundImage: `url(${ATTACK_IMAGES[attack.id]})`,
               }}
               onClick={() => handleAttackSelect(attack.id)}
             />
 
             <div className={styles.attackInfo}>
-              <h2 className={styles.attackTitle}>{attack.title}</h2>
+              <h2 className={styles.attackTitle}>{attack.name}</h2>
               <p className={styles.attackDescription}>
                 Base Damage: {attack.baseDamage}
               </p>
               <p className={styles.attackDescription}>
-                Element Type: {attack.element}
+                Element Type: {formatElement(attack.element)}
               </p>
               <p className={styles.attackDescription}>
                 {attack.description}
