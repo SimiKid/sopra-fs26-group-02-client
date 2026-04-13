@@ -29,14 +29,14 @@ export default function CreateGame() {
   const goToConfirmationScreen = (text: string, gameCode: string) => {
     setGameFullMessage(text);
     redirectTimeoutRef.current = setTimeout(() => {
-      router.push(`/game/${gameCode}/wizards`);
+      router.push(`/games/${gameCode}/wizards`);
     }, 1500);
   };
 
   const handleCreateGame = async () => {
     setLoading(true);
     try {
-      const response = await apiService.post<GameSession>("/game", {});
+      const response = await apiService.post<GameSession>("/games", {});
       setGameCode(response.gameCode);
     } catch (error) {
       if (error instanceof Error) {
@@ -52,7 +52,7 @@ export default function CreateGame() {
 
   const handleCancelWaiting = () => {
     if (gameCode) {
-      apiService.delete(`/game/${gameCode}`).catch(() => {});
+      apiService.delete(`/games/${gameCode}`).catch(() => {});
     }
 
     if (intervalRef.current) {
@@ -96,7 +96,7 @@ export default function CreateGame() {
 
     setJoinLoading(true);
     try {
-      await apiService.put<GameSession>(`/game/${joinCode}/join`, {});
+      await apiService.put<GameSession>(`/games/${joinCode}/join`, {});
       goToConfirmationScreen(
         "Successfully joined game! Both players are connected.",
         joinCode
@@ -127,7 +127,7 @@ export default function CreateGame() {
 
     const poll = async () => {
       try {
-        const game = await apiService.get<GameSession>(`/game/${gameCode}`);
+        const game = await apiService.get<GameSession>(`/games/${gameCode}`);
         if (game.gameStatus === "CONFIGURING") {
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -157,7 +157,7 @@ export default function CreateGame() {
   useEffect(() => {
     if (!gameCode || timeLeft <= 0) {
       if (gameCode && timeLeft === 0) {
-        apiService.delete(`/game/${gameCode}`).catch(() => {});
+        apiService.delete(`/games/${gameCode}`).catch(() => {});
         message.error({
           content: "Game code expired!",
           style: { color: "#000000" },

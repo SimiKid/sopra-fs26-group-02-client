@@ -63,12 +63,12 @@ export default function Attacks() {
     }
 
     try {
-      await apiService.put(`/game/${gameCode}/attacks`, selectedAttacks,);
+      await apiService.put(`/games/${gameCode}/attacks`, selectedAttacks,);
       message.success({
         content: "You have chosen your attacks!",
         style: { color: "#000000" },
       });
-      router.push(`/game/${gameCode}/battle`);
+      router.push(`/games/${gameCode}/battle`);
     } catch {
       message.error({
         content: "Failed to choose attacks.",

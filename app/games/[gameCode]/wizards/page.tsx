@@ -29,7 +29,7 @@ export default function Wizard() {
     selectedWizardId: string
   ): Promise<void> => {
     try {
-      await apiService.put(`/game/${gameCode}/wizards`, {
+      await apiService.put(`/games/${gameCode}/wizards`, {
         wizardClass: selectedWizardId,
       });
 
@@ -37,7 +37,7 @@ export default function Wizard() {
         content: "You have chosen your wizard!",
         style: { color: "#000000" },
       });
-      router.push(`/game/${gameCode}/attacks`);
+      router.push(`/games/${gameCode}/attacks`);
 
     } catch (error) {
       message.error({
