@@ -82,17 +82,13 @@ export default function Wizard() {
 
             {/* Wizard Button is overwritten by Ant Design, so the with, height and border are currently set inline. This will be fixed in the future. */}
             <Button
-              style={{
-                  width: "200px",
-                  height: "300px",
-                  border: (wizard.id === selection.selectedWizardId) ? '5px solid blue' : 'none',
-              }}
               className={`${styles.buttonWizard} ${determineBorder(wizard.id)}`}
               onClick={() => handleWizardSelect(wizard.id)}
             >
               <img
                 src={wizard.image}
                 className={styles.wizardImage}
+                alt={wizard.title}
               />
             </Button>
 
