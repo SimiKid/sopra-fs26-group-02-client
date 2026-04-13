@@ -49,7 +49,7 @@ reason).
 
 ---
 
-## Contributions Week 2 - 30.03.2026 to 05.04.2026
+## Contributions Week 2 & 3 - 30.03.2026 to 12.04.2026
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
@@ -61,26 +61,9 @@ reason).
 |                    | 12.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/fae9f27b1a7821dee1973782757279fcbaece146) | Implemented the attack selection page, including UI layout, selection logic (max. 3 attacks), and  backend API calls with token-based authentication. | Player can now do the core gameplay decisions (choose his attacks) and from there on will later be redirect directly to the battle.  |
 | **OHaas61**        | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/30f96d0ab480f3da06e9f0cda18f26ddca2a63be) | Add WizardClass enum with stats and GET /wizard endpoint | Defines the four wizard classes with HP and attack multipliers and exposes them via an authenticated endpoint so the frontend can display the selection screen |
 |                    | 10.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/add3028d778316044991f1089e0adee79e0a1e20) | Add PUT /game/{gameCode}/players/{userId}/wizard endpoint with wizard selection service logic, gambler HP randomization, player creation on game join, and controller/service tests | Implements the full wizard selection flow including saving the chosen class, calculating initial HP based on class multipliers, randomly assigning HP for the Gambler Wizard, creating Player entities when games are created and joined |
-| **liv519**         | [1.4.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/95/changes/0f4a0f659051470fcd5e1c3243ee29284d25fc63) | added a delete gamecode endpoint for when player cancel or the time expires when creating a game | to keep the database clean |
-|                    | [8.4.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/13fff6b0569247257beaf1b3cecee6b790660962) | implemented get attacks endpoint and attack as well as element entity | relevant for the attack functionality |
-|                    | [9.4.2026]   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/a19c55b6101d340d0596ad8e7bc161428b8b0ba3) | implemented put endpoint for attacks | allows players to set their attacks before starting a game |
-
----
-
-## Contributions Week 3 - 06.04.2026 to 12.04.2026
-
-| **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
-| ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | 01.4.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/95/changes/0f4a0f659051470fcd5e1c3243ee29284d25fc63) | added a delete gamecode endpoint for when player cancel or the time expires when creating a game | to keep the database clean |
+|                    | 08.4.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/13fff6b0569247257beaf1b3cecee6b790660962) | implemented get attacks endpoint and attack as well as element entity | relevant for the attack functionality |
+|                    | 09.4.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/a19c55b6101d340d0596ad8e7bc161428b8b0ba3) | implemented put endpoint for attacks | allows players to set their attacks before starting a game |
 
 ---
 

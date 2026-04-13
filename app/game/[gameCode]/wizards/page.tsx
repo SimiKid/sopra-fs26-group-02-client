@@ -80,7 +80,6 @@ export default function Wizard() {
           <div key={wizard.id} className={styles.wizard}>
             <h2 className={styles.wizardTitle}>{wizard.title}</h2>
 
-            {/* Wizard Button is overwritten by Ant Design, so the with, height and border are currently set inline. This will be fixed in the future. */}
             <Button
               className={`${styles.buttonWizard} ${determineBorder(wizard.id)}`}
               onClick={() => handleWizardSelect(wizard.id)}
