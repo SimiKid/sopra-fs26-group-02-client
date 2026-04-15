@@ -1,0 +1,90 @@
+.page {
+  min-height: 100vh;
+  background: #1a1025;
+  color: #d4ccf0;
+  font-family: 'Raleway', sans-serif;
+  position: relative;
+  padding: 32px 40px;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  text-shadow: 0 0 20px rgba(160, 100, 255, 0.5);
+  font-size: 3rem;
+  margin: 0 0 0.75rem;
+  text-align: center;
+}
+
+.wizardTitle {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+.wizardDescription {
+  color: #d4ccf0;
+  font-size: 1rem;
+  width: 200px;
+  margin: 0;
+}
+
+.wizardList {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(16px, 3vw, 48px);
+  width: min(1200px, 90%);
+  margin: 2rem auto 0;
+}
+
+.wizard {
+  text-align: center;
+}
+
+.buttonWizard {
+  width: 200px !important;
+  height: 300px !important;
+  border: none;
+  padding: 0;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.buttonWizardSelected {
+  border: 5px solid #a78bfa !important;
+}
+
+.buttonContainer {
+  width: min(1200px, 90%);
+  margin: 2rem auto 0;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 2.3rem;
+  }
+
+  .wizardTitle {
+    margin-left: 0;
+    margin-top: 40px;
+  }
+
+  .wizardDescription {
+    margin-left: 0;
+  }
+
+  .wizardList {
+    width: 100%;
+    margin-top: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+}

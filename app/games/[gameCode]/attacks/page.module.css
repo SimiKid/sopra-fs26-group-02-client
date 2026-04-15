@@ -1,0 +1,126 @@
+.page {
+  min-height: 100vh;
+  background: #1a1025;
+  color: #d4ccf0;
+  font-family: 'Raleway', sans-serif;
+  padding: 28px 36px;
+}
+
+.headerRow {
+  width: min(1200px, 90%);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  text-shadow: 0 0 20px rgba(160, 100, 255, 0.5);
+  font-size: 2rem;
+  margin: 0 0 0.75rem;
+}
+
+.locationText {
+  color: #d4ccf0;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.confirmArea {
+  text-align: right;
+}
+
+.confirmRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.counter {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  font-size: 1.4rem;
+  width: 40px;
+  text-align: center;
+}
+
+.buttonConfirm {
+  background: #7c3aed !important;
+  color: white !important;
+  border: none !important;
+  font-family: 'Cinzel', serif !important;
+}
+
+.buttonDisabled {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  font-family: 'Cinzel', serif !important;
+}
+
+.attackList {
+  width: min(1200px, 90%);
+  margin: 2rem auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 56px;
+}
+
+.attack {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.buttonAttack {
+  width: 130px;
+  height: 130px;
+  padding: 0;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.selected {
+  border: 5px solid #a78bfa !important;
+}
+
+.attackInfo {
+  text-align: left;
+}
+
+.attackTitle {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.attackDescription {
+  color: #d4ccf0;
+  font-size: 1rem;
+  margin: 0 0 8px 0;
+  max-width: 320px;
+}
+
+@media (max-width: 768px) {
+  .attackList {
+    grid-template-columns: 1fr;
+  }
+
+  .headerRow {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .confirmArea {
+    text-align: left;
+  }
+}

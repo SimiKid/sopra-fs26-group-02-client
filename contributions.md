@@ -49,37 +49,21 @@ reason).
 
 ---
 
-## Contributions Week 2 - 30.03.2026 to 05.04.2026
+## Contributions Week 2 & 3 - 30.03.2026 to 12.04.2026
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-
----
-
-## Contributions Week 3 - 06.04.2026 to 12.04.2026
-
-| **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
-| ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/1a96a00cc0369d63f630e2fcb1c72cfa6a2189ba) | Implement join game endpoint with game code validation, join logic and error handling | Allows a second player to join an existing game session using a game code |
+|                    | 09.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/7d6f0e02c5ef92ef6d15d968eeeac5279e3d4430) | Add Swagger/OpenAPI documentation for all endpoints and DTOs | Provides a shared API documentation for frontend and backend development |
+| **swimch**         | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/5114817261ae2e4163261e56e7cd4c8b7336fe02) | added functional wizard selection page | Is necessary for the game configuration |
+|                    | 12.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/cc2d5fdfeb7dccd59e3f429e701fb38b70b41ee9) | Implemented feedback into wizard selection frontend | Keeps the code clean & maintainable |
+| **noelgehrig**     | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/5a5b42c160a01fcffe6626ee96538d28778c3fdd) | Implemented the confirmation screen in the lobby that renders once both players join via a game code, including polling to detect player readiness, automatic redirection to the wizard selection, and added better error handling. | This feature ensures both players are synchronized in real time by continuously polling the game state, allowing the frontend to react immediately once all participants have joined and are ready. This is the transition from single user experience to when both players get connected and can now do gameplay decisions (wizard, attacks). |
+|                    | 12.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/fae9f27b1a7821dee1973782757279fcbaece146) | Implemented the attack selection page, including UI layout, selection logic (max. 3 attacks), and  backend API calls with token-based authentication. | Player can now do the core gameplay decisions (choose his attacks) and from there on will later be redirect directly to the battle.  |
+| **OHaas61**        | 09.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/30f96d0ab480f3da06e9f0cda18f26ddca2a63be) | Add WizardClass enum with stats and GET /wizard endpoint | Defines the four wizard classes with HP and attack multipliers and exposes them via an authenticated endpoint so the frontend can display the selection screen |
+|                    | 10.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/add3028d778316044991f1089e0adee79e0a1e20) | Add PUT /game/{gameCode}/players/{userId}/wizard endpoint with wizard selection service logic, gambler HP randomization, player creation on game join, and controller/service tests | Implements the full wizard selection flow including saving the chosen class, calculating initial HP based on class multipliers, randomly assigning HP for the Gambler Wizard, creating Player entities when games are created and joined |
+| **liv519**         | 01.4.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/95/changes/0f4a0f659051470fcd5e1c3243ee29284d25fc63) | added a delete gamecode endpoint for when player cancel or the time expires when creating a game | to keep the database clean |
+|                    | 08.4.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/13fff6b0569247257beaf1b3cecee6b790660962) | implemented get attacks endpoint and attack as well as element entity | relevant for the attack functionality |
+|                    | 09.4.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/102/changes/a19c55b6101d340d0596ad8e7bc161428b8b0ba3) | implemented put endpoint for attacks | allows players to set their attacks before starting a game |
 
 ---
 
