@@ -33,17 +33,11 @@ export default function Wizard() {
         wizardClass: selectedWizardId,
       });
 
-      message.success({
-        content: "You have chosen your wizard!",
-        style: { color: "#000000" },
-      });
+      message.success("You have chosen your wizard!");
       router.push(`/games/${gameCode}/attacks`);
 
     } catch (error) {
-      message.error({
-        content: "Failed to choose wizard.",
-        style: { color: "#000000" },
-      });
+      message.error("Failed to choose wizard.");
     }
   };
 

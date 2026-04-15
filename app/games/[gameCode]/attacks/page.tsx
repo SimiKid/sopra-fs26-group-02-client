@@ -27,10 +27,7 @@ export default function Attacks() {
         const response = await apiService.get<Attack[]>("/attacks");
         setAttacks(response);
       } catch {
-        message.error({
-          content: "Failed to load attacks.",
-          style: { color: "#000000" },
-        });
+        message.error("Failed to load attacks.");
       }
     };
 
@@ -45,16 +42,10 @@ export default function Attacks() {
 
     try {
       await apiService.put(`/games/${gameCode}/attacks`, selectedAttacks,);
-      message.success({
-        content: "You have chosen your attacks!",
-        style: { color: "#000000" },
-      });
+      message.success("You have chosen your attacks!");
       router.push(`/games/${gameCode}/battle`);
     } catch {
-      message.error({
-        content: "Failed to choose attacks.",
-        style: { color: "#000000" },
-      });
+      message.error("Failed to choose attacks.");
     }
   };
 

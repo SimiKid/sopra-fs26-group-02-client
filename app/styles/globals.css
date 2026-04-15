@@ -73,3 +73,7 @@ body {
 .button-back:hover {
   background: rgba(167, 139, 250, 0.1) !important;
 }
+
+.ant-message-notice-content {
+  color: #000000 !important;
+}

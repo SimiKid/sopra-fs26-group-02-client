@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation"; 
 import { useApi } from "@/hooks/useApi";
-import { Alert, Button, Form, Input } from "antd";
+import { App, Button, Form, Input } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { AuthCredentials, AuthToken } from "@/types/user";
 import { ApplicationError } from "@/types/error"; 
@@ -12,37 +12,25 @@ const Register: React.FC = () => {
   const router = useRouter();
   const apiService = useApi(); 
   const [form] = Form.useForm();
-
-  const {set: setToken} = useLocalStorage<string>("token", "");
-  const {set: setUserId} = useLocalStorage<string>("userId", "");
-  
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const { set: setToken } = useLocalStorage<string>("token", "");
+  const { set: setUserId } = useLocalStorage<string>("userId", "");
 
   const handleRegister = async (values: AuthCredentials) => { 
     setLoading(true);
-    setErrorMessage(null);
-
     try {
       await apiService.post("/register", values); 
-
       const response = await apiService.post<AuthToken>("/login", values); 
-
       setToken(response.token);
       setUserId(response.id);
-
       router.push("/lobby");
-
     } catch (error) {
       const err = error as ApplicationError;
-
-      if (err.status === 409) {
-        setErrorMessage("Username already exists.");
-      } else {
-        setErrorMessage("Registration failed");
-      }
+      message.error(err.message ?? "Registration failed");
     } finally {
-      setLoading(false); // Reset loading state after failed or successful login
+      setLoading(false);
     }
   };
 
@@ -51,15 +39,6 @@ const Register: React.FC = () => {
       <div className="container">
         <h1 className="title">Create Account</h1>
         <p className="subtitle">Choose your credentials</p>
-
-        {errorMessage && (  
-          <Alert
-            title={errorMessage}
-            type="error"
-            showIcon
-            style={{ marginBottom: 16 }}
-          />
-        )} 
 
         <Form form={form} onFinish={handleRegister} layout="vertical">
           <Form.Item name="username" label="Username" rules={[{ required: true, message: "Please enter your username" }]}>
