@@ -1,74 +1,39 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { Button, App } from "antd";
-import { useApi } from "@/hooks/useApi";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import { ATTACK_IMAGES, AttackId } from "@/constants/attacks.constants";
-import { Attack } from "@/types/attack";
+import { useParams } from "next/navigation";
+import { Button, Spin } from "antd";
+import { ATTACK_IMAGES } from "@/constants/attacks.constants";
+import { useAttackSelection } from "@/hooks/useAttackSelection";
 
 export default function Attacks() {
-  const [selectedAttacks, setSelectedAttacks] = useState<AttackId[]>([]);
-  const [attacks, setAttacks] = useState<Attack[]>([]);
-
-  const router = useRouter();
-  const { message } = App.useApp();
-  const { value: token } = useLocalStorage<string>("token", "");
-  const apiService = useApi(token);
-
   const params = useParams();
   const gameCode = params.gameCode as string;
 
-  useEffect(() => {
-    const fetchAttacks = async () => {
-      try {
-        const response = await apiService.get<Attack[]>("/attacks");
-        setAttacks(response);
-      } catch {
-        message.error("Failed to load attacks.");
-      }
-    };
+  const {
+    selectedAttacks,
+    attacks,
+    waitingForOpponent,
+    handleChooseAttacks,
+    handleAttackSelect,
+    formatElement,
+  } = useAttackSelection(gameCode);
 
-    fetchAttacks();
-  }, [apiService, message]);
-
-  const handleChooseAttacks = async () => {
-    if (selectedAttacks.length !== 3) {
-      message.error("Please select exactly 3 attacks.");
-      return;
-    }
-
-    try {
-      await apiService.put(`/games/${gameCode}/attacks`, selectedAttacks,);
-      message.success("You have chosen your attacks!");
-      router.push(`/games/${gameCode}/battle`);
-    } catch {
-      message.error("Failed to choose attacks.");
-    }
-  };
-
-  const handleAttackSelect = (attackId: AttackId) => {
-    const isSelected = selectedAttacks.includes(attackId);
-
-    if (isSelected) {
-      setSelectedAttacks(
-        selectedAttacks.filter((id) => id !== attackId),
-      );
-      return;
-    }
-
-    if (selectedAttacks.length >= 3) {
-      return;
-    }
-
-    setSelectedAttacks([...selectedAttacks, attackId]);
-  };
-
-  const formatElement = (element: string) => {
-    return element.charAt(0) + element.slice(1).toLowerCase(); 
-  };
+  if (waitingForOpponent) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.waitingContainer}>
+          <h1 className={styles.title}>Attacks Selected!</h1>
+          <p className={styles.locationText}>
+            Waiting for your opponent to finish selecting attacks...
+          </p>
+          <div className={styles.spinnerWrapper}>
+            <Spin size="large" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -107,9 +72,7 @@ export default function Attacks() {
             <button
               type="button"
               className={`${styles.buttonAttack} ${
-                selectedAttacks.includes(attack.id)
-                  ? styles.selected
-                  : ""
+                selectedAttacks.includes(attack.id) ? styles.selected : ""
               }`}
               style={{
                 backgroundImage: `url(${ATTACK_IMAGES[attack.id]})`,

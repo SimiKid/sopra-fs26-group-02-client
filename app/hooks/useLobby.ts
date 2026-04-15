@@ -105,12 +105,12 @@ export function useLobby() {
 
   // Countdown timer
   useEffect(() => {
-    if (!gameCode || timeLeft <= 0) {
-      if (gameCode && timeLeft === 0) {
-        apiService.delete(`/games/${gameCode}`).catch(() => {});
-        message.error("Game code expired!");
-        setGameCode(null);
-      }
+    if (!gameCode) return;
+
+    if (timeLeft === 0) {
+      apiService.delete(`/games/${gameCode}`).catch(() => {});
+      message.error("Game code expired!");
+      setGameCode(null);
       return;
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
