@@ -71,7 +71,7 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 17.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/c3935a36b6fdd31cef00b1fa5167acff3d15b5a1) | Implement US-11a attack selection UI with STOMP/SockJS — turn-aware AttackInterface, WebSocketService and useBattle hook, battle page | Enables real-time turn-based combat after players finish attack configuration |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
