@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { App, Button, Spin } from "antd";
 
@@ -13,7 +13,9 @@ import FighterPanel from "@/components/battle/FighterPanel";
 import WizardAvatar from "@/components/battle/WizardAvatar";
 
 import { Attack } from "@/types/attack";
+import { BattleStateDTO } from "@/types/battle";
 import { AttackId } from "@/constants/attacks.constants";
+import { getElementModifier } from "@/utils/weatherModifiers";
 
 import styles from "./page.module.css";
 
@@ -35,8 +37,11 @@ export default function Battle() {
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
   const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
   const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
+  const [player1DamageText, setPlayer1DamageText] = useState("");
+  const [player2DamageText, setPlayer2DamageText] = useState("");
 
   const { battleState, isConnected, error, sendAttack } = useBattle(gameCode);
+  const previousStateRef = useRef<BattleStateDTO | null>(null);
 
   useEffect(() => {
     if (!token || storedAttackIds.length === 0) return;
@@ -69,6 +74,44 @@ export default function Battle() {
       setInitialPlayer2Hp(battleState.player2Hp);
     }
   }, [battleState, initialPlayer1Hp, initialPlayer2Hp]);
+
+  useEffect(() => {
+    if (!battleState) return;
+
+    const previous = previousStateRef.current;
+
+    if (!previous) {
+      previousStateRef.current = battleState;
+      return;
+    }
+
+    const player1Loss = previous.player1Hp - battleState.player1Hp;
+    const player2Loss = previous.player2Hp - battleState.player2Hp;
+
+    if (player1Loss > 0) {
+      setPlayer1DamageText(`-${player1Loss}`);
+      setTimeout(() => setPlayer1DamageText(""), 1800);
+    }
+
+    if (player2Loss > 0) {
+      setPlayer2DamageText(`-${player2Loss}`);
+      setTimeout(() => setPlayer2DamageText(""), 1800);
+    }
+
+    previousStateRef.current = battleState;
+  }, [battleState]);
+
+  const elementModifiers = useMemo(() => {
+    const temperature = battleState?.temperature ?? null;
+    const rain = battleState?.rain ?? null;
+
+    return {
+      FIRE: getElementModifier("FIRE", temperature, rain),
+      ICE: getElementModifier("ICE", temperature, rain),
+      LIGHTNING: getElementModifier("LIGHTNING", temperature, rain),
+      NEUTRAL: getElementModifier("NEUTRAL", temperature, rain),
+    };
+  }, [battleState?.temperature, battleState?.rain]);
 
   const myUserId = userIdStr ? Number(userIdStr) : null;
 
@@ -121,48 +164,88 @@ export default function Battle() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.opponentCorner}>
-        <WizardAvatar wizardType={opponentWizardType} align="right" />
-        <div className={styles.opponentHp}>
-          <FighterPanel
-            username={battleState.player2Username ?? "Opponent"}
-            wizardClass={opponentWizardType}
-            currentHp={battleState.player2Hp}
-            maxHp={initialPlayer2Hp ?? battleState.player2Hp}
-          />
-        </div>
-      </div>
-
-      <div className={styles.statusCenter}>
-        <span
-          className={`${styles.turnBadge} ${
-            isMyTurn ? styles.turnMine : styles.turnTheirs
-          }`}
-        >
-          {isMyTurn ? "Your turn" : "Opponent's turn"}
-        </span>
-        <span className={styles.statusLine}>{statusLine}</span>
-      </div>
-
-      <div className={styles.playerCorner}>
-        <div className={styles.playerHp}>
+      <div className={styles.battleRow}>
+        <div className={styles.fighterColumn}>
           <FighterPanel
             username={battleState.player1Username ?? "You"}
             wizardClass={playerWizardType}
             currentHp={battleState.player1Hp}
             maxHp={initialPlayer1Hp ?? battleState.player1Hp}
+            damageText={player1DamageText}
           />
+          <WizardAvatar wizardType={playerWizardType} align="left" />
         </div>
-        <WizardAvatar wizardType={playerWizardType} align="left" />
+
+        <div className={styles.statusCenter}>
+          <span
+            className={`${styles.turnBadge} ${
+              isMyTurn ? styles.turnMine : styles.turnTheirs
+            }`}
+          >
+            {isMyTurn ? "Your turn" : "Opponent's turn"}
+          </span>
+          <span className={styles.statusLine}>{statusLine}</span>
+        </div>
+
+        <div className={styles.fighterColumn}>
+          <FighterPanel
+            username={battleState.player2Username ?? "Opponent"}
+            wizardClass={opponentWizardType}
+            currentHp={battleState.player2Hp}
+            maxHp={initialPlayer2Hp ?? battleState.player2Hp}
+            damageText={player2DamageText}
+          />
+          <WizardAvatar wizardType={opponentWizardType} align="right" />
+        </div>
       </div>
 
-      <div className={styles.attackDock}>
-        <AttackInterface
-          attacks={myAttacks}
-          isMyTurn={isMyTurn}
-          disabled={!isConnected}
-          onAttackSelected={sendAttack}
-        />
+      <div className={styles.bottomBar}>
+        <section className={styles.infoPanel}>
+          <h2 className={styles.infoTitle}>Arena</h2>
+
+          <div className={styles.infoBlock}>
+            <div className={styles.infoLine}>
+              <span className={styles.infoLabel}>Location:</span>
+              <span>{battleState.location}</span>
+            </div>
+            <div className={styles.infoLine}>
+              <span className={styles.infoLabel}>Rain:</span>
+              <span>{battleState.rain ?? "Unknown"}</span>
+            </div>
+            <div className={styles.infoLine}>
+              <span className={styles.infoLabel}>Temperature:</span>
+              <span>{battleState.temperature ?? "Unknown"}</span>
+            </div>
+          </div>
+
+          <div className={styles.modifierBox}>
+            <div className={styles.modifierTitle}>Element Modifiers</div>
+            <div className={styles.modifierGrid}>
+              <span>Fire</span>
+              <span>x{elementModifiers.FIRE.toFixed(2)}</span>
+
+              <span>Ice</span>
+              <span>x{elementModifiers.ICE.toFixed(2)}</span>
+
+              <span>Lightning</span>
+              <span>x{elementModifiers.LIGHTNING.toFixed(2)}</span>
+
+              <span>Neutral</span>
+              <span>x{elementModifiers.NEUTRAL.toFixed(2)}</span>
+            </div>
+          </div>
+        </section>
+
+        <div className={styles.attackDock}>
+          <AttackInterface
+            attacks={myAttacks}
+            isMyTurn={isMyTurn}
+            disabled={!isConnected}
+            onAttackSelected={sendAttack}
+            rain={battleState.rain}
+            temperature={battleState.temperature}
+          />
+        </div>
       </div>
     </main>
   );
