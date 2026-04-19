@@ -22,15 +22,6 @@ export function useBattle(gameCode: string) {
     serviceRef.current = service;
 
     const init = async () => {
-      try {
-        const initialState = await apiService.get<BattleStateDTO>(`/games/${gameCode}/battle`);
-        if (!cancelled) {
-          setBattleState(initialState);
-        }
-      } catch (e) {
-        console.error("Failed to load initial battle state:", e);
-      }
-
       service
         .connect(
           gameCode,
@@ -47,6 +38,18 @@ export function useBattle(gameCode: string) {
         .catch((e) => {
           if (!cancelled) setError(e instanceof Error ? e.message : String(e));
         });
+
+      try {
+        const state = await apiService.get<BattleStateDTO>(
+          `/games/${gameCode}/battle`,
+        );
+
+        if (!cancelled) {
+          setBattleState(state);
+        }
+      } catch {
+        // ignore if not ready yet
+      }
     };
 
     init();
@@ -56,6 +59,7 @@ export function useBattle(gameCode: string) {
       service.disconnect();
       serviceRef.current = null;
       setIsConnected(false);
+      setBattleState(null);
     };
   }, [apiService, gameCode, token]);
 
