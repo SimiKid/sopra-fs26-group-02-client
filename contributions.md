@@ -73,8 +73,8 @@ reason).
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
 | **SimiKid**        | 17.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/c3935a36b6fdd31cef00b1fa5167acff3d15b5a1) | Implement US-11a attack selection UI with STOMP/SockJS, turn-aware AttackInterface, WebSocketService and useBattle hook, battle page | Enables real-time turn-based combat after players finish attack configuration |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **swimch**         | 18.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/def54224b8cb8542ee08e96400cae56b42c32ca9) | Added 30 locations and random choosing on game creation | Every game needs a random arena location to set the weather for the battle |
+|                    | 19.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/ba33ca8133ddd9bef17ebe6932b7cd2a393898d4) | Implemented calls to the openweather API | Necessary to set the weather according to the arena location |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
