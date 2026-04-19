@@ -1,0 +1,82 @@
+.page {
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 46, 136, 0.15), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(0, 234, 255, 0.15), transparent 55%),
+    #0a0a1a;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panels {
+  width: 100%;
+  max-width: 960px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.opponentPanelRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.playerPanelRow {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 90px;
+}
+
+.attackDock {
+  width: 100%;
+  max-width: 960px;
+  margin-top: 28px;
+}
+
+.center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #0a0a1a;
+  color: #f2f4ff;
+}
+
+.loadingStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.loadingText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #aab0c4;
+}
+
+.endCard {
+  padding: 40px;
+  border-radius: 16px;
+  background: rgba(12, 14, 28, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+}
+
+.victory {
+  font-size: 2.6rem;
+  margin: 0;
+  color: #7ef3b0;
+  text-shadow: 0 0 24px rgba(56, 214, 129, 0.5);
+}
+
+.defeat {
+  font-size: 2.6rem;
+  margin: 0;
+  color: #ff6b8b;
+  text-shadow: 0 0 24px rgba(255, 46, 136, 0.5);
+}

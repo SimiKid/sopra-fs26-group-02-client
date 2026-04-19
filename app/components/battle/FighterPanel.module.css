@@ -1,0 +1,50 @@
+.card {
+  width: 100%;
+  max-width: 520px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(12, 14, 28, 0.72);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.name {
+  font-weight: 700;
+  color: #f2f4ff;
+}
+
+.className {
+  color: #aab0c4;
+  font-size: 0.9rem;
+}
+
+.barBg {
+  width: 100%;
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.08);
+}
+
+.barFill {
+  height: 100%;
+  background: linear-gradient(90deg, #38d681, #7ef3b0);
+}
+
+.hpText {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #f2f4ff;
+}
+
+.damage {
+  margin-top: 6px;
+  min-height: 18px;
+  font-size: 0.85rem;
+  color: #ff7a7a;
+}
