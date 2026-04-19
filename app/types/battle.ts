@@ -66,3 +66,12 @@ export interface BattleGameSession {
     damageDealt: number;
   };
 }
+
+export interface WeatherDTO {
+  rainCategory: "CLEAR" | "RAINING";
+  temperatureCategory: "HOT" | "NEUTRAL" | "COLD";
+}
+
+export interface LocationDTO {
+  city: string;
+}

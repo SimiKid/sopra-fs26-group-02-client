@@ -3,12 +3,17 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { App, Button, Spin } from "antd";
+
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useApi } from "@/hooks/useApi";
 import { useBattle } from "@/hooks/useBattle";
+
 import AttackInterface from "@/components/battle/AttackInterface";
+import FighterPanel from "@/components/battle/FighterPanel";
+
 import { Attack } from "@/types/attack";
 import { AttackId } from "@/constants/attacks.constants";
+
 import styles from "./page.module.css";
 
 export default function Battle() {
@@ -25,13 +30,17 @@ export default function Battle() {
   );
 
   const apiService = useApi(token);
+
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
+  const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
+  const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
+
   const { battleState, isConnected, error, sendAttack } = useBattle(gameCode);
 
-  // Fetch the full attack catalog, then filter to the 3 the player configured.
   useEffect(() => {
     if (!token || storedAttackIds.length === 0) return;
     let cancelled = false;
+
     apiService
       .get<Attack[]>("/attacks")
       .then((all) => {
@@ -39,6 +48,7 @@ export default function Battle() {
         setMyAttacks(all.filter((a) => storedAttackIds.includes(a.id)));
       })
       .catch(() => message.error("Failed to load your attacks."));
+
     return () => {
       cancelled = true;
     };
@@ -48,23 +58,32 @@ export default function Battle() {
     if (error) message.error(error);
   }, [error, message]);
 
+  useEffect(() => {
+    if (!battleState) return;
+
+    if (initialPlayer1Hp === null) {
+      setInitialPlayer1Hp(battleState.player1Hp);
+    }
+    if (initialPlayer2Hp === null) {
+      setInitialPlayer2Hp(battleState.player2Hp);
+    }
+  }, [battleState, initialPlayer1Hp, initialPlayer2Hp]);
+
   const myUserId = userIdStr ? Number(userIdStr) : null;
+
   const isMyTurn =
-    battleState !== null
-    && myUserId !== null
-    && battleState.activePlayerId === myUserId
-    && battleState.gameStatus === "BATTLE";
+    battleState !== null &&
+    myUserId !== null &&
+    battleState.activePlayerId === myUserId &&
+    battleState.gameStatus === "BATTLE";
 
   const isGameOver = battleState?.gameStatus === "FINISHED";
-  const isInitialBroadcast =
-    battleState !== null
-    && battleState.attackUsed === null
-    && battleState.damageDealt === 0;
 
   if (!isConnected || battleState === null) {
     const statusText = isConnected
       ? "Waiting for battle to start…"
       : "Connecting…";
+
     return (
       <div className={styles.center}>
         <div className={styles.loadingStack}>
@@ -77,6 +96,7 @@ export default function Battle() {
 
   if (isGameOver) {
     const youWon = battleState.winnerId === myUserId;
+
     return (
       <div className={styles.center}>
         <div className={styles.endCard}>
@@ -93,29 +113,34 @@ export default function Battle() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.status}>
-        {isInitialBroadcast ? (
-          <p className={styles.statusLine}>
-            Battle begins — {isMyTurn ? "you strike first!" : "opponent strikes first."}
-          </p>
-        ) : (
-          <p className={styles.statusLine}>
-            Last turn: <strong>{battleState.attackUsed}</strong> dealt{" "}
-            <strong>{battleState.damageDealt}</strong> damage.
-          </p>
-        )}
-        <p className={styles.hpLine}>
-          P1 HP: <strong>{battleState.player1Hp}</strong> · P2 HP:{" "}
-          <strong>{battleState.player2Hp}</strong>
-        </p>
-      </header>
+      <section className={styles.panels}>
+        <div className={styles.opponentPanelRow}>
+          <FighterPanel
+            username="Opponent"
+            wizardClass="Wizard"
+            currentHp={battleState.player2Hp}
+            maxHp={initialPlayer2Hp ?? battleState.player2Hp}
+          />
+        </div>
 
-      <AttackInterface
-        attacks={myAttacks}
-        isMyTurn={isMyTurn}
-        disabled={!isConnected}
-        onAttackSelected={sendAttack}
-      />
+        <div className={styles.playerPanelRow}>
+          <FighterPanel
+            username="You"
+            wizardClass="Wizard"
+            currentHp={battleState.player1Hp}
+            maxHp={initialPlayer1Hp ?? battleState.player1Hp}
+          />
+        </div>
+      </section>
+
+      <div className={styles.attackDock}>
+        <AttackInterface
+          attacks={myAttacks}
+          isMyTurn={isMyTurn}
+          disabled={!isConnected}
+          onAttackSelected={sendAttack}
+        />
+      </div>
     </main>
   );
 }

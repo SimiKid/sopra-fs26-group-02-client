@@ -21,8 +21,6 @@ export default function AttackInterface({
   const [pendingId, setPendingId] = useState<AttackId | null>(null);
   const locked = !isMyTurn || disabled;
 
-  // Clear the pending highlight whenever the turn leaves us or the
-  // component is externally re-enabled for a new turn.
   useEffect(() => {
     if (!isMyTurn) setPendingId(null);
   }, [isMyTurn]);
@@ -59,6 +57,7 @@ export default function AttackInterface({
       <div className={styles.grid}>
         {attacks.map((attack) => {
           const isPending = pendingId === attack.id;
+
           return (
             <button
               key={attack.id}

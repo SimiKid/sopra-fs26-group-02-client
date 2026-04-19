@@ -1,12 +1,12 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  max-width: 960px;
-  padding: 20px;
+  max-width: 840px;
+  padding: 14px;
   border-radius: 16px;
-  background: rgba(12, 14, 28, 0.72);
+  background: rgba(12, 14, 28, 0.76);
   backdrop-filter: blur(6px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   color: #f2f4ff;
@@ -54,7 +54,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 @media (max-width: 720px) {
@@ -67,8 +67,8 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
-  padding: 12px;
+  gap: 8px;
+  padding: 10px;
   border-radius: 14px;
   background: linear-gradient(180deg, #1a1e3a 0%, #11132a 100%);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -106,13 +106,17 @@
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(255, 46, 136, 0.55), 0 10px 24px rgba(255, 46, 136, 0.25); }
-  50%      { box-shadow: 0 0 0 3px rgba(255, 46, 136, 0.75), 0 14px 28px rgba(255, 46, 136, 0.35); }
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(255, 46, 136, 0.55), 0 10px 24px rgba(255, 46, 136, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(255, 46, 136, 0.75), 0 14px 28px rgba(255, 46, 136, 0.35);
+  }
 }
 
 .thumb {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   border-radius: 10px;
   background-color: #0a0a1a;
   background-size: cover;
@@ -129,13 +133,13 @@
 }
 
 .name {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 
 .damage {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #ff9f43;
 }
