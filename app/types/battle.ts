@@ -30,10 +30,19 @@ export interface BattleStateDTO {
   attackUsed: string | null;
   gameStatus: string;
   winnerId: number | null;
+
+  player1UserId: number;
+  player2UserId: number;
+  player1Username: string;
+  player2Username: string;
+  player1WizardClass: string;
+  player2WizardClass: string;
+
+  location: string;
+  rain: "CLEAR" | "RAINING" | null;
+  temperature: "HOT" | "NEUTRAL" | "COLD" | null;
 }
 
-// Client publishes this to /app/game/{gameCode}/attack.
-// Auth token travels in STOMP connect headers, not in this body.
 export interface AttackMessage {
   attackName: AttackId;
 }
