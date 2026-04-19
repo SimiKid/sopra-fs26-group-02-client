@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Attack } from "@/types/attack";
-import { AttackId, ATTACK_IMAGES } from "@/constants/attacks.constants";
+import {
+  AttackId,
+  ATTACK_IMAGES,
+  ATTACK_GRADIENTS,
+} from "@/constants/attacks.constants";
 import styles from "./AttackInterface.module.css";
 
 interface AttackInterfaceProps {
@@ -31,29 +35,8 @@ export default function AttackInterface({
     onAttackSelected(id);
   };
 
-  const turnLabel = isMyTurn ? "Your turn" : "Opponent's turn";
-  const hint = disabled
-    ? "Action unavailable"
-    : !isMyTurn
-      ? "Waiting for opponent…"
-      : pendingId
-        ? "Attack sent — resolving…"
-        : "Choose an attack";
-
   return (
     <section className={styles.container} aria-label="Attack interface">
-      <header className={styles.header}>
-        <span
-          className={`${styles.turnBadge} ${
-            isMyTurn ? styles.turnMine : styles.turnTheirs
-          }`}
-          aria-live="polite"
-        >
-          {turnLabel}
-        </span>
-        <span className={styles.hint}>{hint}</span>
-      </header>
-
       <div className={styles.grid}>
         {attacks.map((attack) => {
           const isPending = pendingId === attack.id;
@@ -69,7 +52,9 @@ export default function AttackInterface({
             >
               <span
                 className={styles.thumb}
-                style={{ backgroundImage: `url(${ATTACK_IMAGES[attack.id]})` }}
+                style={{
+                  backgroundImage: `url(${ATTACK_IMAGES[attack.id]}), ${ATTACK_GRADIENTS[attack.id]}`,
+                }}
                 aria-hidden
               />
               <span className={styles.meta}>
