@@ -75,8 +75,8 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **swimch**         | 18.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/def54224b8cb8542ee08e96400cae56b42c32ca9) | Added 30 locations and random choosing on game creation | Every game needs a random arena location to set the weather for the battle |
 |                    | 19.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/ba33ca8133ddd9bef17ebe6932b7cd2a393898d4) | Implemented calls to the openweather API | Necessary to set the weather according to the arena location |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **noelgehrig**     | 19.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/335348eb05624274ae4e89026a6ec313dc1b3d53) | Fixed websocket synchronization for the battle with REST fallback and added backend BattleStateDTO support for required information in the frontend. | Ensures stable real-time multiplayer gameplay by keeping both clients synchronized and providing all necessary battle data to the frontend. |
+|                    | 19.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/31d90f2511a55b5735511a9a3bbe150926c995d3) | Implemented battle UI fighter panels displaying players, HP bars, and other feedback. | Gameplay interface improvement that gives players clear real-time battle information and improves user experience during fights. |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
