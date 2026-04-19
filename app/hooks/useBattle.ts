@@ -41,7 +41,7 @@ export function useBattle(gameCode: string) {
 
       try {
         const state = await apiService.get<BattleStateDTO>(
-          `/games/${gameCode}/battle`,
+          `/games/${gameCode}/battles`,
         );
 
         if (!cancelled) {
