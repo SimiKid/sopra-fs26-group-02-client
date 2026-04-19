@@ -2,13 +2,36 @@
 
 import styles from "./page.module.css";
 import { useParams } from "next/navigation";
-import { Button, Spin } from "antd";
+import { Button, Spin, App } from "antd";
 import { ATTACK_IMAGES } from "@/constants/attacks.constants";
 import { useAttackSelection } from "@/hooks/useAttackSelection";
+import { useApi } from "@/hooks/useApi";
+import { useEffect, useState } from "react";
+import useLocalStorage from "@/hooks/useLocalStorage";
+
 
 export default function Attacks() {
+  const { value: token } = useLocalStorage<string>("token", "");
+  const apiService = useApi(token);
   const params = useParams();
   const gameCode = params.gameCode as string;
+  const { message } = App.useApp();
+
+  const [location, setLocation] = useState<string>("Loading...", );
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const response = await apiService.get<{ locationName: string }>(`/games/${gameCode}/location`);
+        setLocation(response.locationName);
+      } catch (error) {
+        message.error("Failed to get location.");
+        setLocation("Unknown location");
+      }
+    };
+
+    fetchLocation();
+  }, [apiService, gameCode, message]);
 
   const {
     selectedAttacks,
@@ -41,7 +64,9 @@ export default function Attacks() {
         <div>
           <h1 className={styles.title}>Attack Selection</h1>
           <p className={styles.locationText}>
-            Selected location for the battle: Placeholder
+            Location: {location} 
+            <br />
+            Select 3 attacks for the battle.
           </p>
         </div>
 
