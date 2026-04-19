@@ -80,8 +80,8 @@ reason).
 |                    | 19.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/31d90f2511a55b5735511a9a3bbe150926c995d3) | Implemented battle UI fighter panels displaying players, HP bars, and other feedback. | Gameplay interface improvement that gives players clear real-time battle information and improves user experience during fights. |
 | **OHaas61**        | 15.04.2026  | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/4301df34bb53bffcaa732100b9ce652aee5bbea6) | Add WebSocket STOMP configuration and random first player selection on battle start | Enables WebSocket infrastructure for real-time battle communication and determines which player attacks first when both players are ready |
 |                    | 16.04.2026 | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/8c0953162fb95c66106885165f2e87379df8a685) | Add BattleService turn resolution, WebSocket controller, and battle DTOs | Implements core battle logic including damage calculation, turn switching, win condition detection, and real-time broadcasting of battle state to both clients via WebSocket |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | [16.04.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/110/changes/28c956170861a2dbfbafe4c84a462886e15819f9)| Build multiplier for each element for all weather options | Important for the calculation of the damage |
+|                    | [19.04.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/110/changes/8354fd85e121d6664298104c2e80dc47675a2a1a) | damage calculation for given attack | Important logic for calculation of the damage as well as calculating and saving the new hp of a player |
 
 --- 
 
