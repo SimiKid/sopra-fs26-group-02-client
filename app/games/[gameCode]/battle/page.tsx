@@ -10,6 +10,7 @@ import { useBattle } from "@/hooks/useBattle";
 
 import AttackInterface from "@/components/battle/AttackInterface";
 import FighterPanel from "@/components/battle/FighterPanel";
+import WizardAvatar from "@/components/battle/WizardAvatar";
 
 import { Attack } from "@/types/attack";
 import { AttackId } from "@/constants/attacks.constants";
@@ -111,27 +112,49 @@ export default function Battle() {
     );
   }
 
+  const playerWizardType = battleState.player1WizardClass;
+  const opponentWizardType = battleState.player2WizardClass;
+
+  const statusLine = isMyTurn
+    ? "Your turn — choose an attack"
+    : "Waiting for opponent…";
+
   return (
     <main className={styles.page}>
-      <section className={styles.panels}>
-        <div className={styles.opponentPanelRow}>
+      <div className={styles.opponentCorner}>
+        <WizardAvatar wizardType={opponentWizardType} align="right" />
+        <div className={styles.opponentHp}>
           <FighterPanel
-            username="Opponent"
-            wizardClass="Wizard"
+            username={battleState.player2Username ?? "Opponent"}
+            wizardClass={opponentWizardType}
             currentHp={battleState.player2Hp}
             maxHp={initialPlayer2Hp ?? battleState.player2Hp}
           />
         </div>
+      </div>
 
-        <div className={styles.playerPanelRow}>
+      <div className={styles.statusCenter}>
+        <span
+          className={`${styles.turnBadge} ${
+            isMyTurn ? styles.turnMine : styles.turnTheirs
+          }`}
+        >
+          {isMyTurn ? "Your turn" : "Opponent's turn"}
+        </span>
+        <span className={styles.statusLine}>{statusLine}</span>
+      </div>
+
+      <div className={styles.playerCorner}>
+        <div className={styles.playerHp}>
           <FighterPanel
-            username="You"
-            wizardClass="Wizard"
+            username={battleState.player1Username ?? "You"}
+            wizardClass={playerWizardType}
             currentHp={battleState.player1Hp}
             maxHp={initialPlayer1Hp ?? battleState.player1Hp}
           />
         </div>
-      </section>
+        <WizardAvatar wizardType={playerWizardType} align="left" />
+      </div>
 
       <div className={styles.attackDock}>
         <AttackInterface
