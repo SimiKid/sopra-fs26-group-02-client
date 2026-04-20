@@ -72,7 +72,7 @@ export function useLobby() {
 
     setJoinLoading(true);
     try {
-      await apiService.put<GameSession>(`/games/${joinCode}/join`, {});
+      await apiService.post<GameSession>(`/games/${joinCode}/join`, {});
       goToConfirmationScreen("Successfully joined game! Both players are connected.", joinCode);
     } catch (error) {
       const err = error as ApplicationError;
