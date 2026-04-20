@@ -93,8 +93,11 @@ reason).
 |                    | 20.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/ad5587ea437f5259ec3ccac30f75ee7a37b09c79) | Change join game ame frontend to POST| Feedback week 2&3 |
 |                    | 20.04.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/f7f2eed2d94bd7efbfd2bb04e0ee6298ba1fb713) | Refactor join endpoint and simplify  checks | Feedback week 2&3 |
 |                    | 20.04.2026   | [Link to Commit 4](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/d12b9e91a9d4aab3478b0e3ba7f333dba59a7001) | Add GET /games/{gameCode}/attacks endpoint | Feedback week 4 useLocalStorage<AttackId[]> not ok so getting attacks via backend |
+|                    | [date]   | [Link to Commit 5] | [Brief description of the task] | [Why this contribution is relevant] |
+|                    | [date]   | [Link to Commit 6] | [Brief description of the task] | [Why this contribution is relevant] |
+|                    | [date]   | [Link to Commit 7] | [Brief description of the task] | [Why this contribution is relevant] |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2]https://github.com/SimiKid/sopra-fs26-group-02-server/commit/d12b9e91a9d4aab3478b0e3ba7f333dba59a7001 | [Brief description of the task] | [Why this contribution is relevant] |
+|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
