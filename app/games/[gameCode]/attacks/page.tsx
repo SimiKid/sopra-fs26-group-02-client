@@ -20,17 +20,24 @@ export default function Attacks() {
   const [location, setLocation] = useState<string>("Loading...", );
 
   useEffect(() => {
+    let cancelled = false;
     const fetchLocation = async () => {
       try {
         const response = await apiService.get<{ locationName: string }>(`/games/${gameCode}/location`);
-        setLocation(response.locationName);
-      } catch (error) {
+        if (cancelled) return;
+          setLocation(response.locationName);
+      } catch {
+        if (cancelled) return;
         message.error("Failed to get location.");
         setLocation("Unknown location");
       }
     };
 
     fetchLocation();
+
+    return () => {
+    cancelled = true;
+    };
   }, [apiService, gameCode, message]);
 
   const {

@@ -24,16 +24,23 @@ export function useAttackSelection(gameCode: string) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchAttacks = async () => {
       try {
         const response = await apiService.get<Attack[]>("/attacks");
+        if (cancelled) return;
         setAttacks(response);
       } catch {
+        if (cancelled) return;
         message.error("Failed to load attacks.");
       }
     };
 
     fetchAttacks();
+
+    return () => {
+      cancelled = true;
+    };
   }, [apiService, message]);
 
   const handleChooseAttacks = async () => {
