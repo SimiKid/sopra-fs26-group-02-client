@@ -10,6 +10,7 @@ import { useBattle } from "@/hooks/useBattle";
 
 import AttackInterface from "@/components/battle/AttackInterface";
 import FighterPanel from "@/components/battle/FighterPanel";
+import TurnStatus from "@/components/battle/TurnStatus";
 import WizardAvatar from "@/components/battle/WizardAvatar";
 
 import { Attack } from "@/types/attack";
@@ -19,52 +20,61 @@ import { getElementModifier } from "@/utils/weatherModifiers";
 
 import styles from "./page.module.css";
 
-export default function Battle() {
-  const params = useParams();
-  const router = useRouter();
-  const gameCode = params.gameCode as string;
-  const { message } = App.useApp();
+interface PlayerGetDTO {
+  id: number;
+  userId: number;
+  wizardClass: string;
+  attacks: AttackId[];
+  hp: number;
+  ready: boolean;
+}
 
+export default function Battle() {
+  // Routing & identity
+  const router = useRouter();
+  const params = useParams();
+  const gameCode = params.gameCode as string;
   const { value: token } = useLocalStorage<string>("token", "");
   const { value: userIdStr } = useLocalStorage<string>("userId", "");
-  const { value: storedAttackIds } = useLocalStorage<AttackId[]>(
-    `selectedAttacks-${gameCode}`,
-    [],
-  );
+  const myUserId = userIdStr ? Number(userIdStr) : null;
 
+  // Services
+  const { message } = App.useApp();
   const apiService = useApi(token);
+  const { battleState, isConnected, sendAttack } = useBattle(gameCode);
 
+  // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
+
+  // Starting HP snapshot — captured once per player to compute the HP bar %
   const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
   const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
+
+  // Transient UI state
   const [timeLeft, setTimeLeft] = useState<number>(30);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
-  
-
-  const { battleState, isConnected, error, sendAttack } = useBattle(gameCode);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
 
   useEffect(() => {
-    if (!token || storedAttackIds.length === 0) return;
+    if (!token) return;
     let cancelled = false;
 
-    apiService
-      .get<Attack[]>("/attacks")
-      .then((all) => {
+    Promise.all([
+      apiService.get<Attack[]>("/attacks"),
+      apiService.get<PlayerGetDTO>(`/games/${gameCode}/attacks`),
+    ])
+      .then(([all, player]) => {
         if (cancelled) return;
-        setMyAttacks(all.filter((a) => storedAttackIds.includes(a.id)));
+        const selected = new Set(player.attacks);
+        setMyAttacks(all.filter((a) => selected.has(a.id)));
       })
       .catch(() => message.error("Failed to load your attacks."));
 
     return () => {
       cancelled = true;
     };
-  }, [apiService, storedAttackIds, token, message]);
-
-  useEffect(() => {
-    if (error) message.error(error);
-  }, [error, message]);
+  }, [apiService, gameCode, token, message]);
 
   useEffect(() => {
     if (!battleState) return;
@@ -116,8 +126,6 @@ export default function Battle() {
       NEUTRAL: getElementModifier("NEUTRAL", temperature, rain),
     };
   }, [battleState?.temperature, battleState?.rain]);
-
-  const myUserId = userIdStr ? Number(userIdStr) : null;
 
   const isMyTurn =
     battleState !== null &&
@@ -181,10 +189,6 @@ export default function Battle() {
   const playerWizardType = battleState.player1WizardClass;
   const opponentWizardType = battleState.player2WizardClass;
 
-  const statusLine = isMyTurn
-    ? "Your turn — choose an attack"
-    : "Waiting for opponent…";
-
   return (
     <main className={styles.page}>
       <div className={styles.battleRow}>
@@ -199,18 +203,7 @@ export default function Battle() {
           <WizardAvatar wizardType={playerWizardType} align="left" />
         </div>
 
-        <div className={styles.statusCenter}>
-          <span
-            className={`${styles.turnBadge} ${
-              isMyTurn ? styles.turnMine : styles.turnTheirs
-            }`}
-          >
-            {isMyTurn ? "Your turn" : "Opponent's turn"}
-          </span>
-          <span className={styles.statusLine}>
-            {isMyTurn ? `Your turn — ${timeLeft}s left` : statusLine}
-          </span>
-        </div>
+        <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
 
         <div className={styles.fighterColumn}>
           <FighterPanel
