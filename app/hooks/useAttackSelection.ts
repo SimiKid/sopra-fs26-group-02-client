@@ -83,7 +83,7 @@ export function useAttackSelection(gameCode: string) {
         const game = await apiService.get<GameSession>(`/games/${gameCode}`);
         if (game.gameStatus !== "BATTLE") return;
         if (intervalRef.current) clearInterval(intervalRef.current);
-        router.push(`/games/${gameCode}/battle`);
+        router.push(`/games/${gameCode}/battles`);
       } catch (error) {
         console.error("Polling error:", error);
       }
