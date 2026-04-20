@@ -43,6 +43,20 @@
   text-align: center;
 }
 
+.buttonConfirm {
+  background: #7c3aed !important;
+  color: white !important;
+  border: none !important;
+  font-family: 'Cinzel', serif !important;
+}
+
+.buttonDisabled {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  font-family: 'Cinzel', serif !important;
+}
+
 .buttonWizard {
   width: 200px !important;
   height: 300px !important;
