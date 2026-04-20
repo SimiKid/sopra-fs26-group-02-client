@@ -185,8 +185,18 @@ export default function Battle() {
     ? "Your turn — choose an attack"
     : "Waiting for opponent…";
 
+  const temperatureClass =
+    battleState.temperature === "HOT"
+      ? styles.hot
+      : battleState.temperature === "COLD"
+        ? styles.cold
+        : styles.neutral;
+
+  const rainClass =
+    battleState.rain === "RAINING" ? styles.raining : "";
+
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${temperatureClass} ${rainClass}`}>
       <div className={styles.battleRow}>
         <div className={styles.fighterColumn}>
           <FighterPanel
