@@ -37,8 +37,10 @@ export default function Battle() {
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
   const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
   const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(30);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
+  
 
   const { battleState, isConnected, error, sendAttack } = useBattle(gameCode);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
@@ -101,6 +103,8 @@ export default function Battle() {
     previousStateRef.current = battleState;
   }, [battleState]);
 
+
+
   const elementModifiers = useMemo(() => {
     const temperature = battleState?.temperature ?? null;
     const rain = battleState?.rain ?? null;
@@ -122,6 +126,25 @@ export default function Battle() {
     battleState.gameStatus === "BATTLE";
 
   const isGameOver = battleState?.gameStatus === "FINISHED";
+
+  useEffect(() => {
+    if (!isMyTurn) {
+      setTimeLeft(30);
+      return;
+    }
+  
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  
+    return () => clearInterval(timer);
+  }, [isMyTurn]);
 
   if (!isConnected || battleState === null) {
     const statusText = isConnected
@@ -184,7 +207,9 @@ export default function Battle() {
           >
             {isMyTurn ? "Your turn" : "Opponent's turn"}
           </span>
-          <span className={styles.statusLine}>{statusLine}</span>
+          <span className={styles.statusLine}>
+            {isMyTurn ? `Your turn — ${timeLeft}s left` : statusLine}
+          </span>
         </div>
 
         <div className={styles.fighterColumn}>
