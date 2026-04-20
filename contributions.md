@@ -89,7 +89,7 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 20.04.2026 | [[Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/00a9feaf45ad2cd76a77be0130774a74be3cb793)] | Fixed hardcoded WebSocket URL | Without this fix, the deployed Vercel frontend could not connect to the backend because the WebSocket client was pointing at localhost:8080 |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
