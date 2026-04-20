@@ -1,11 +1,9 @@
 .card {
   width: 100%;
-  max-width: 520px;
-  padding: 12px 14px;
+  max-width: 600px;
+  padding: 14px 16px;
   border-radius: 12px;
-  background: rgba(40, 40, 60, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  background: rgba(40,40,60,0.9);
 }
 
 .topRow {
@@ -15,6 +13,7 @@
 }
 
 .name {
+  font-size: 1.2rem;
   font-weight: 700;
   color: #f2f4ff;
 }

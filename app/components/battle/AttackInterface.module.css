@@ -3,10 +3,11 @@
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 620px;
-  margin: 0 auto;
-  padding: 10px;
-  border-radius: 14px;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 8px;
+  border-radius: 0 14px 14px 0;
   background: rgba(12, 14, 28, 0.76);
   backdrop-filter: blur(6px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
@@ -30,7 +31,7 @@
   flex-direction: column;
   align-items: stretch;
   gap: 6px;
-  padding: 8px;
+  padding: 7px;
   border-radius: 12px;
   background: linear-gradient(180deg, #1a1e3a 0%, #11132a 100%);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -78,7 +79,7 @@
 
 .thumb {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 7;
   border-radius: 8px;
   background-color: #0a0a1a;
   background-size: cover;
@@ -90,20 +91,46 @@
 .meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 0 2px 4px;
+  gap: 6px;
+  padding: 2px 2px 4px;
 }
 
 .name {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.92rem;
+  font-weight: 800;
   letter-spacing: 0.01em;
 }
 
 .damage {
-  font-size: 0.72rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 159, 67, 0.16);
+  border: 1px solid rgba(255, 159, 67, 0.55);
+  box-shadow: 0 0 14px rgba(255, 159, 67, 0.18);
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
   color: #ff9f43;
+}
+
+.modifier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(126, 243, 176, 0.14);
+  border: 1px solid rgba(126, 243, 176, 0.55);
+  box-shadow: 0 0 14px rgba(126, 243, 176, 0.16);
+  font-size: 1.14rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  color: #7ef3b0;
 }
 
 .description {
