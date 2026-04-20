@@ -71,18 +71,19 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 17.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/c3935a36b6fdd31cef00b1fa5167acff3d15b5a1) | Implement US-11a attack selection UI with STOMP/SockJS, turn-aware AttackInterface, WebSocketService and useBattle hook, battle page | Enables real-time turn-based combat after players finish attack configuration |
+|                    | 17.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/5a8072e30d00878e737195967e0ee9b27c22599e) | Fix backend battle system and WebSocket state management| Provides essential backend infrastructure for real-time multiplayer battles, enables frontend battle UI functionality.|
+|                    | 19.04.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/65308f723a6e33139e48de28f69858d5a3b66c81) | Add wizard to battle UI and redesign battle UI| Display wizards in frontend.|
+| **swimch**         | 18.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/def54224b8cb8542ee08e96400cae56b42c32ca9) | Added 30 locations and random choosing on game creation | Every game needs a random arena location to set the weather for the battle |
+|                    | 19.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/ba33ca8133ddd9bef17ebe6932b7cd2a393898d4) | Implemented calls to the openweather API | Necessary to set the weather according to the arena location |
+| **noelgehrig**     | 19.04.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/335348eb05624274ae4e89026a6ec313dc1b3d53) | Fixed websocket synchronization for the battle with REST fallback and added backend BattleStateDTO support for required information in the frontend. | Ensures stable real-time multiplayer gameplay by keeping both clients synchronized and providing all necessary battle data to the frontend. |
+|                    | 19.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/31d90f2511a55b5735511a9a3bbe150926c995d3) | Implemented battle UI fighter panels displaying players, HP bars, and other feedback. | Gameplay interface improvement that gives players clear real-time battle information and improves user experience during fights. |
+| **OHaas61**        | 15.04.2026  | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/4301df34bb53bffcaa732100b9ce652aee5bbea6) | Add WebSocket STOMP configuration and random first player selection on battle start | Enables WebSocket infrastructure for real-time battle communication and determines which player attacks first when both players are ready |
+|                    | 16.04.2026 | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/8c0953162fb95c66106885165f2e87379df8a685) | Add BattleService turn resolution, WebSocket controller, and battle DTOs | Implements core battle logic including damage calculation, turn switching, win condition detection, and real-time broadcasting of battle state to both clients via WebSocket |
+| **liv519**         | [16.04.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/110/changes/28c956170861a2dbfbafe4c84a462886e15819f9)| Build multiplier for each element for all weather options | Important for the calculation of the damage |
+|                    | [19.04.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/110/changes/8354fd85e121d6664298104c2e80dc47675a2a1a) | damage calculation for given attack | Important logic for calculation of the damage as well as calculating and saving the new hp of a player |
 
----
+--- 
 
 ## Contributions Week 5 - 20.04.2026 to 24.04.2026
 
