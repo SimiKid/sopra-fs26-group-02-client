@@ -260,11 +260,6 @@
     justify-items: center;
   }
 
-  .statusCenter {
-    order: -1;
-    margin-bottom: 8px;
-  }
-
   .bottomBar {
     grid-template-columns: 1fr;
   }

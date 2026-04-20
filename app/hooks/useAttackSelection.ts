@@ -11,10 +11,6 @@ export function useAttackSelection(gameCode: string) {
   const router = useRouter();
   const { message } = App.useApp();
   const { value: token } = useLocalStorage<string>("token", "");
-  const { set: persistSelectedAttacks } = useLocalStorage<AttackId[]>(
-    `selectedAttacks-${gameCode}`,
-    [],
-  );
   const apiService = useApi(token);
 
   const [selectedAttacks, setSelectedAttacks] = useState<AttackId[]>([]);
@@ -51,7 +47,6 @@ export function useAttackSelection(gameCode: string) {
 
     try {
       await apiService.put(`/games/${gameCode}/attacks`, selectedAttacks);
-      persistSelectedAttacks(selectedAttacks);
       message.success("You have chosen your attacks!");
       setWaitingForOpponent(true);
     } catch {
