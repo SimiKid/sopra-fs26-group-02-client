@@ -1,178 +1,25 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { Button, Spin, App, Input, Divider, Alert } from "antd";
+import { Button, Spin, Input, Divider } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
-import { useApi } from "@/hooks/useApi";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import { GameSession } from "@/types/game";
-import { ApplicationError } from "@/types/error";
+import { useLobby } from "@/hooks/useLobby";
+import styles from "./page.module.css";
 
-export default function CreateGame() {
-  const router = useRouter();
-  const { value: token } = useLocalStorage<string>("token", "");
-  const { message } = App.useApp();
-  const apiService = useApi(token);
-
-  const [gameCode, setGameCode] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [joinCode, setJoinCode] = useState("");
-  const [joinLoading, setJoinLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600);
-  const [joinError, setJoinError] = useState<string | null>(null);
-  const [gameFullMessage, setGameFullMessage] = useState<string | null>(null);
-
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const goToConfirmationScreen = (text: string, gameCode: string) => {
-    setGameFullMessage(text);
-    redirectTimeoutRef.current = setTimeout(() => {
-      router.push(`/games/${gameCode}/wizards`);
-    }, 1500);
-  };
-
-  const handleCreateGame = async () => {
-    setLoading(true);
-    try {
-      const response = await apiService.post<GameSession>("/games", {});
-      setGameCode(response.gameCode);
-    } catch (error) {
-      if (error instanceof Error) {
-        message.error({
-          content: `Failed to create game: ${error.message}`,
-          style: { color: "#000000" },
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCancelWaiting = () => {
-    if (gameCode) {
-      apiService.delete(`/games/${gameCode}`).catch(() => {});
-    }
-
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    if (redirectTimeoutRef.current) {
-      clearTimeout(redirectTimeoutRef.current);
-    }
-
-    setGameCode(null);
-    setTimeLeft(600);
-    message.info({
-      content: "Game creation cancelled.",
-      style: { color: "#000000" },
-    });
-  };
-
-  const handleCopyCode = async () => {
-    if (!gameCode) return;
-    try {
-      await navigator.clipboard.writeText(gameCode);
-      message.success({
-        content: "Game code copied!",
-        style: { color: "#000000" },
-      });
-    } catch {
-      message.error({
-        content: "Failed to copy code.",
-        style: { color: "#000000" },
-      });
-    }
-  };
-
-  const handleJoinGame = async () => {
-    setJoinError(null);
-
-    if (joinCode.length !== 6) {
-      setJoinError("Please enter a valid 6-character game code.");
-      return;
-    }
-
-    setJoinLoading(true);
-    try {
-      await apiService.put<GameSession>(`/games/${joinCode}/join`, {});
-      goToConfirmationScreen(
-        "Successfully joined game! Both players are connected.",
-        joinCode
-      );
-    } catch (error) {
-      const err = error as ApplicationError;
-
-      if (err.status === 404) {
-        setJoinError("This game is invalid or has expired.");
-      } else if (err.status === 409) {
-        setJoinError("This game is already full.");
-      } else {
-        setJoinError("Failed to join game. Please try again.");
-      }
-    } finally {
-      setJoinLoading(false);
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  useEffect(() => {
-    if (!gameCode) return;
-
-    const poll = async () => {
-      try {
-        const game = await apiService.get<GameSession>(`/games/${gameCode}`);
-        if (game.gameStatus === "CONFIGURING") {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-          }
-
-          goToConfirmationScreen("Your opponent has joined!", gameCode);
-        }
-      } catch (error) {
-        console.error("Polling error:", error);
-      }
-    };
-
-    intervalRef.current = setInterval(poll, 4000);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [gameCode, apiService]);
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!gameCode || timeLeft <= 0) {
-      if (gameCode && timeLeft === 0) {
-        apiService.delete(`/games/${gameCode}`).catch(() => {});
-        message.error({
-          content: "Game code expired!",
-          style: { color: "#000000" },
-        });
-        setGameCode(null);
-      }
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [gameCode, timeLeft]);
+export default function Lobby() {
+  const {
+    gameCode,
+    loading,
+    joinCode,
+    setJoinCode,
+    joinLoading,
+    timeLeft,
+    gameFullMessage,
+    handleCreateGame,
+    handleCancelWaiting,
+    handleCopyCode,
+    handleJoinGame,
+    formatTime,
+  } = useLobby();
 
   if (gameFullMessage) {
     return (
@@ -180,7 +27,7 @@ export default function CreateGame() {
         <div className="container">
           <h1 className="title">Game Ready!</h1>
           <p className="subtitle">{gameFullMessage}</p>
-          <div style={{ marginTop: "24px" }}>
+          <div className={styles.spinnerWrapper}>
             <Spin size="large" />
           </div>
         </div>
@@ -204,38 +51,15 @@ export default function CreateGame() {
             Create Game
           </Button>
 
-          <Divider
-            style={{ borderColor: "rgba(167, 139, 250, 0.3)", color: "#7a6f99" }}
-          >
-            or
-          </Divider>
+          <Divider className={styles.divider}>or</Divider>
 
           <Input
             placeholder="Game code"
             maxLength={6}
             value={joinCode}
-            onChange={(e) => {
-              setJoinCode(e.target.value.toUpperCase());
-              setJoinError(null);
-            }}
-            className="input"
-            style={{
-              letterSpacing: "4px",
-              fontFamily: "'Cinzel', serif",
-              fontSize: "1.1rem",
-              textAlign: "center",
-              marginBottom: "12px",
-            }}
+            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+            className={`input ${styles.codeInput}`}
           />
-
-          {joinError && (
-            <Alert
-              title={joinError}
-              type="error"
-              showIcon
-              style={{ marginBottom: "12px", textAlign: "left" }}
-            />
-          )}
 
           <Button
             block
@@ -256,19 +80,7 @@ export default function CreateGame() {
         <h1 className="title">Game Created!</h1>
         <p className="subtitle">Share this code with your opponent</p>
 
-        <div
-          style={{
-            fontSize: "2.5rem",
-            fontWeight: "bold",
-            letterSpacing: "8px",
-            fontFamily: "'Cinzel', serif",
-            color: "#c8b0ff",
-            textShadow: "0 0 20px rgba(160, 100, 255, 0.5)",
-            margin: "24px 0",
-          }}
-        >
-          {gameCode}
-        </div>
+        <div className={styles.gameCode}>{gameCode}</div>
 
         <Button
           block
@@ -279,35 +91,20 @@ export default function CreateGame() {
           Copy Code
         </Button>
 
-        <div style={{ marginTop: "48px" }}>
+        <div className={styles.spinnerWrapper}>
           <Spin size="large" />
-          <p className="subtitle" style={{ marginTop: "16px" }}>
-            Waiting for opponent to join...
-          </p>
-          <div
-            style={{
-              marginTop: "12px",
-              fontSize: "1.2rem",
-              fontFamily: "'Cinzel', serif",
-              color: timeLeft < 60 ? "#ff4d4f" : "#a78bfa",
-              fontWeight: "bold",
-              textShadow:
-                timeLeft < 60 ? "0 0 10px rgba(255, 77, 79, 0.5)" : "none",
-            }}
-          >
+          <p className={styles.waitingSubtitle}>Waiting for opponent to join...</p>
+
+          <p className={timeLeft < 60 ? styles.timerWarning : styles.timerDefault}>
             Code expires in: {formatTime(timeLeft)}
-          </div>
+          </p>
 
           <Button
             block
             danger
             type="text"
+            className={styles.cancelButton}
             onClick={handleCancelWaiting}
-            style={{
-              marginTop: "12px",
-              color: "rgba(255, 77, 79, 0.8)",
-              fontSize: "0.9rem",
-            }}
           >
             Cancel and return to menu
           </Button>

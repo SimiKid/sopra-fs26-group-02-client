@@ -1,83 +1,69 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { Button, App } from "antd";
+import { useParams } from "next/navigation";
+import { Button, Spin, App } from "antd";
+import { ATTACK_IMAGES } from "@/constants/attacks.constants";
+import { useAttackSelection } from "@/hooks/useAttackSelection";
 import { useApi } from "@/hooks/useApi";
+import { useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { ATTACK_IMAGES, AttackId } from "@/constants/attacks.constants";
-import { Attack } from "@/types/attack";
+
 
 export default function Attacks() {
-  const [selectedAttacks, setSelectedAttacks] = useState<AttackId[]>([]);
-  const [attacks, setAttacks] = useState<Attack[]>([]);
-
-  const router = useRouter();
-  const { message } = App.useApp();
   const { value: token } = useLocalStorage<string>("token", "");
   const apiService = useApi(token);
-
   const params = useParams();
   const gameCode = params.gameCode as string;
+  const { message } = App.useApp();
+
+  const [location, setLocation] = useState<string>("Loading...", );
 
   useEffect(() => {
-    const fetchAttacks = async () => {
+    let cancelled = false;
+    const fetchLocation = async () => {
       try {
-        const response = await apiService.get<Attack[]>("/attacks");
-        setAttacks(response);
+        const response = await apiService.get<{ locationName: string }>(`/games/${gameCode}/location`);
+        if (cancelled) return;
+          setLocation(response.locationName);
       } catch {
-        message.error({
-          content: "Failed to load attacks.",
-          style: { color: "#000000" },
-        });
+        if (cancelled) return;
+        message.error("Failed to get location.");
+        setLocation("Unknown location");
       }
     };
 
-    fetchAttacks();
-  }, [apiService, message]);
+    fetchLocation();
 
-  const handleChooseAttacks = async () => {
-    if (selectedAttacks.length !== 3) {
-      message.error("Please select exactly 3 attacks.");
-      return;
-    }
+    return () => {
+    cancelled = true;
+    };
+  }, [apiService, gameCode, message]);
 
-    try {
-      await apiService.put(`/games/${gameCode}/attacks`, selectedAttacks,);
-      message.success({
-        content: "You have chosen your attacks!",
-        style: { color: "#000000" },
-      });
-      router.push(`/games/${gameCode}/battle`);
-    } catch {
-      message.error({
-        content: "Failed to choose attacks.",
-        style: { color: "#000000" },
-      });
-    }
-  };
+  const {
+    selectedAttacks,
+    attacks,
+    waitingForOpponent,
+    handleChooseAttacks,
+    handleAttackSelect,
+    formatElement,
+  } = useAttackSelection(gameCode);
 
-  const handleAttackSelect = (attackId: AttackId) => {
-    const isSelected = selectedAttacks.includes(attackId);
-
-    if (isSelected) {
-      setSelectedAttacks(
-        selectedAttacks.filter((id) => id !== attackId),
-      );
-      return;
-    }
-
-    if (selectedAttacks.length >= 3) {
-      return;
-    }
-
-    setSelectedAttacks([...selectedAttacks, attackId]);
-  };
-
-  const formatElement = (element: string) => {
-    return element.charAt(0) + element.slice(1).toLowerCase(); 
-  };
+  if (waitingForOpponent) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.waitingContainer}>
+          <h1 className={styles.title}>Attacks Selected!</h1>
+          <p className={styles.locationText}>
+            Waiting for your opponent to finish selecting attacks...
+          </p>
+          <div className={styles.spinnerWrapper}>
+            <Spin size="large" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -85,7 +71,9 @@ export default function Attacks() {
         <div>
           <h1 className={styles.title}>Attack Selection</h1>
           <p className={styles.locationText}>
-            Selected location for the battle: Placeholder
+            Location: {location} 
+            <br />
+            Select 3 attacks for the battle.
           </p>
         </div>
 
@@ -116,9 +104,7 @@ export default function Attacks() {
             <button
               type="button"
               className={`${styles.buttonAttack} ${
-                selectedAttacks.includes(attack.id)
-                  ? styles.selected
-                  : ""
+                selectedAttacks.includes(attack.id) ? styles.selected : ""
               }`}
               style={{
                 backgroundImage: `url(${ATTACK_IMAGES[attack.id]})`,

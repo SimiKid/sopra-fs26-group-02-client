@@ -110,6 +110,17 @@
   max-width: 320px;
 }
 
+.waitingContainer {
+  width: min(1200px, 90%);
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 120px;
+}
+
+.spinnerWrapper {
+  margin-top: 32px;
+}
+
 @media (max-width: 768px) {
   .attackList {
     grid-template-columns: 1fr;
