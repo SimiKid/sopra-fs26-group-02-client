@@ -2,8 +2,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
-
-const DEFAULT_WS_URL = "http://localhost:8080/ws";
+import { getApiDomain } from "@/utils/domain";
 
 export class WebSocketService {
   private client: Client | null = null;
@@ -16,7 +15,7 @@ export class WebSocketService {
     onError?: (message: string) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      const url = process.env.NEXT_PUBLIC_WS_URL ?? DEFAULT_WS_URL;
+      const url = `${getApiDomain()}/ws`;
       console.log("[WebSocketService] connecting to", url, "for game", gameCode);
 
       const client = new Client({
