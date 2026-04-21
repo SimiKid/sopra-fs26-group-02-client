@@ -16,6 +16,7 @@ import { Attack } from "@/types/attack";
 import { BattleStateDTO } from "@/types/battle";
 import { AttackId } from "@/constants/attacks.constants";
 import { getElementModifier } from "@/utils/weatherModifiers";
+import { BattleResult } from "@/types/battleResult";
 
 import styles from "./page.module.css";
 
@@ -39,6 +40,7 @@ export default function Battle() {
   const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
+  const [resultStats, setResultStats] = useState<BattleResult | null>(null);
 
   const { battleState, isConnected, error, sendAttack } = useBattle(gameCode);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
@@ -101,6 +103,7 @@ export default function Battle() {
     previousStateRef.current = battleState;
   }, [battleState]);
 
+
   const elementModifiers = useMemo(() => {
     const temperature = battleState?.temperature ?? null;
     const rain = battleState?.rain ?? null;
@@ -123,6 +126,15 @@ export default function Battle() {
 
   const isGameOver = battleState?.gameStatus === "FINISHED";
 
+  useEffect(() => {
+  if (!isGameOver || !token) return;
+
+  apiService
+    .get<BattleResult>(`/games/${gameCode}/battles/result`)
+    .then((data) => setResultStats(data))
+    .catch(() => message.error("Failed to load battle results."));
+  }, [isGameOver, apiService, gameCode, message, token]);
+
   if (!isConnected || battleState === null) {
     const statusText = isConnected
       ? "Waiting for battle to start…"
@@ -138,22 +150,50 @@ export default function Battle() {
     );
   }
 
-  if (isGameOver) {
-    const youWon = battleState.winnerId === myUserId;
+if (isGameOver) {
+  const youWon = battleState.winnerId === myUserId;
 
-    return (
-      <div className={styles.center}>
-        <div className={styles.endCard}>
-          <h1 className={youWon ? styles.victory : styles.defeat}>
-            {youWon ? "Victory!" : "Defeat"}
-          </h1>
-          <Button type="primary" onClick={() => router.push("/lobby")}>
-            Back to lobby
-          </Button>
+  return (
+    <div className={styles.center}>
+      <div className={styles.endCard}>
+        <h1 className={youWon ? styles.victory : styles.defeat}>
+          {youWon ? "Victory!" : "Defeat"}
+        </h1>
+        <p className={styles.battleComplete}>Battle complete</p>
+
+        {resultStats ? (
+          <>
+            <div className={styles.statsGrid}>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.totalDamageDealt}</span>
+                <span className={styles.statLabel}>Total damage dealt</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.turnsPlayed}</span>
+                <span className={styles.statLabel}>Turns played</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.weather.rainCategory.toLowerCase()}</span>
+                <span className={styles.statLabel}>Rain</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.weather.temperatureCategory.toLowerCase()}</span>
+                <span className={styles.statLabel}>Temperature</span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Spin style={{ margin: "1.5rem 0" }} />
+        )}
+
+        <div className={styles.buttonStack}>
+          <Button type="primary" block>Rematch</Button>
+          <Button block onClick={() => router.push("/lobby")}>Back to lobby</Button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const playerWizardType = battleState.player1WizardClass;
   const opponentWizardType = battleState.player2WizardClass;
