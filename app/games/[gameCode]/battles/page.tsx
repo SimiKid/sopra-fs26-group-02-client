@@ -10,6 +10,7 @@ import { useBattle } from "@/hooks/useBattle";
 
 import AttackInterface from "@/components/battle/AttackInterface";
 import FighterPanel from "@/components/battle/FighterPanel";
+import TurnStatus from "@/components/battle/TurnStatus";
 import WizardAvatar from "@/components/battle/WizardAvatar";
 
 import { Attack } from "@/types/attack";
@@ -20,51 +21,62 @@ import { BattleResult } from "@/types/battleResult";
 
 import styles from "./page.module.css";
 
-export default function Battle() {
-  const params = useParams();
-  const router = useRouter();
-  const gameCode = params.gameCode as string;
-  const { message } = App.useApp();
+interface PlayerGetDTO {
+  id: number;
+  userId: number;
+  wizardClass: string;
+  attacks: AttackId[];
+  hp: number;
+  ready: boolean;
+}
 
+export default function Battle() {
+  // Routing & identity
+  const router = useRouter();
+  const params = useParams();
+  const gameCode = params.gameCode as string;
   const { value: token } = useLocalStorage<string>("token", "");
   const { value: userIdStr } = useLocalStorage<string>("userId", "");
-  const { value: storedAttackIds } = useLocalStorage<AttackId[]>(
-    `selectedAttacks-${gameCode}`,
-    [],
-  );
+  const myUserId = userIdStr ? Number(userIdStr) : null;
 
+  // Services
+  const { message } = App.useApp();
   const apiService = useApi(token);
+  const { battleState, isConnected, sendAttack } = useBattle(gameCode);
 
+  // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
+
+  // Starting HP snapshot — captured once per player to compute the HP bar %
   const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
   const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
+
+  // Transient UI state
+  const [timeLeft, setTimeLeft] = useState<number>(30);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
-
-  const { battleState, isConnected, error, sendAttack } = useBattle(gameCode);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
 
   useEffect(() => {
-    if (!token || storedAttackIds.length === 0) return;
+    if (!token) return;
     let cancelled = false;
 
-    apiService
-      .get<Attack[]>("/attacks")
-      .then((all) => {
+    Promise.all([
+      apiService.get<Attack[]>("/attacks"),
+      apiService.get<PlayerGetDTO>(`/games/${gameCode}/attacks`),
+    ])
+      .then(([all, player]) => {
         if (cancelled) return;
-        setMyAttacks(all.filter((a) => storedAttackIds.includes(a.id)));
+        const selected = new Set(player.attacks);
+        setMyAttacks(all.filter((a) => selected.has(a.id)));
       })
       .catch(() => message.error("Failed to load your attacks."));
 
     return () => {
       cancelled = true;
     };
-  }, [apiService, storedAttackIds, token, message]);
-
-  useEffect(() => {
-    if (error) message.error(error);
-  }, [error, message]);
+  }, [apiService, gameCode, token, message]);
 
   useEffect(() => {
     if (!battleState) return;
@@ -104,6 +116,7 @@ export default function Battle() {
   }, [battleState]);
 
 
+
   const elementModifiers = useMemo(() => {
     const temperature = battleState?.temperature ?? null;
     const rain = battleState?.rain ?? null;
@@ -116,8 +129,6 @@ export default function Battle() {
     };
   }, [battleState?.temperature, battleState?.rain]);
 
-  const myUserId = userIdStr ? Number(userIdStr) : null;
-
   const isMyTurn =
     battleState !== null &&
     myUserId !== null &&
@@ -126,14 +137,33 @@ export default function Battle() {
 
   const isGameOver = battleState?.gameStatus === "FINISHED";
 
-  useEffect(() => {
+useEffect(() => {
   if (!isGameOver || !token) return;
 
   apiService
     .get<BattleResult>(`/games/${gameCode}/battles/result`)
     .then((data) => setResultStats(data))
     .catch(() => message.error("Failed to load battle results."));
-  }, [isGameOver, apiService, gameCode, message, token]);
+}, [isGameOver, apiService, gameCode, message, token]);
+
+useEffect(() => {
+  if (!isMyTurn) {
+    setTimeLeft(30);
+    return;
+  }
+
+  const timer = setInterval(() => {
+    setTimeLeft((prev) => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(timer);
+}, [isMyTurn]);
 
   if (!isConnected || battleState === null) {
     const statusText = isConnected
@@ -202,8 +232,18 @@ if (isGameOver) {
     ? "Your turn — choose an attack"
     : "Waiting for opponent…";
 
+  const temperatureClass =
+    battleState.temperature === "HOT"
+      ? styles.hot
+      : battleState.temperature === "COLD"
+        ? styles.cold
+        : styles.neutral;
+
+  const rainClass =
+    battleState.rain === "RAINING" ? styles.raining : "";
+
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${temperatureClass} ${rainClass}`}>
       <div className={styles.battleRow}>
         <div className={styles.fighterColumn}>
           <FighterPanel
@@ -216,16 +256,7 @@ if (isGameOver) {
           <WizardAvatar wizardType={playerWizardType} align="left" />
         </div>
 
-        <div className={styles.statusCenter}>
-          <span
-            className={`${styles.turnBadge} ${
-              isMyTurn ? styles.turnMine : styles.turnTheirs
-            }`}
-          >
-            {isMyTurn ? "Your turn" : "Opponent's turn"}
-          </span>
-          <span className={styles.statusLine}>{statusLine}</span>
-        </div>
+        <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
 
         <div className={styles.fighterColumn}>
           <FighterPanel

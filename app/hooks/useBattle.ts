@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { App } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useApi } from "@/hooks/useApi";
 import { WebSocketService } from "@/api/websocketService";
@@ -8,11 +9,16 @@ import type { BattleStateDTO } from "@/types/battle";
 export function useBattle(gameCode: string) {
   const { value: token } = useLocalStorage<string>("token", "");
   const apiService = useApi(token);
+  const { message } = App.useApp();
 
   const [battleState, setBattleState] = useState<BattleStateDTO | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const serviceRef = useRef<WebSocketService | null>(null);
+
+  useEffect(() => {
+    if (error) message.error(error);
+  }, [error, message]);
 
   useEffect(() => {
     if (!token || !gameCode) return;
@@ -74,5 +80,5 @@ export function useBattle(gameCode: string) {
     [gameCode],
   );
 
-  return { battleState, isConnected, error, sendAttack };
+  return { battleState, isConnected, sendAttack };
 }
