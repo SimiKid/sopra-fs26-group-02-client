@@ -110,8 +110,8 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | 21.04.2026 | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/pull/25) | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | 21.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/4b2cc3fd893209a739f480e532dc243b2a480b5d) | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 21.04.2026 | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/4b2cc3fd893209a739f480e532dc243b2a480b5d) | Add GET /users/me/games endpoint for game history| Implements US-20 (View My Game History). Returns the authenticated user's finished games sorted most recent first, with date, location, weather, wizard classes, and win/loss/draw result. Data the profile page needs to show for past battles.|
+|                    | 21.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/82cbda98e9fe212abc62ec676f0c69b2330d7c83) | Add profile page with battle history, auth-gated header nav, and login redirect for protected routes| Users can track past battles. Also introduces the shared AppHeader nav and a reusable route guard that future authenticated pages can rely on. |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
