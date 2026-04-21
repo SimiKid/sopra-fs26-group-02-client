@@ -1,0 +1,101 @@
+.card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 20px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(12, 14, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(6px);
+  color: #d7dbeb;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+
+.resultBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.resultWin {
+  background: rgba(74, 222, 128, 0.18);
+  border-color: rgba(74, 222, 128, 0.55);
+  color: #7ef3b0;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+}
+
+.resultLoss {
+  background: rgba(255, 107, 139, 0.15);
+  border-color: rgba(255, 107, 139, 0.5);
+  color: #ff8ea5;
+}
+
+.resultDraw {
+  background: rgba(160, 170, 200, 0.12);
+  border-color: rgba(160, 170, 200, 0.35);
+  color: #c6cbdc;
+}
+
+.date {
+  font-size: 0.9rem;
+  color: #aab0c4;
+}
+
+.location {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f2f4ff;
+}
+
+.weather {
+  font-size: 0.85rem;
+  color: #c8b0ff;
+}
+
+.matchup {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #d7dbeb;
+}
+
+.side {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.sideLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a6f99;
+}
+
+.sideValue {
+  font-weight: 600;
+  color: #f2f4ff;
+}
+
+.vs {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}

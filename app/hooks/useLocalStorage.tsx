@@ -4,6 +4,9 @@ interface LocalStorage<T> {
   value: T;
   set: (newVal: T) => void;
   clear: () => void;
+  // False until the post-mount read completes. Lets callers tell
+  // "empty because not set yet" apart from "empty because SSR/first render".
+  hydrated: boolean;
 }
 
 /**
@@ -26,6 +29,7 @@ export default function useLocalStorage<T>(
   defaultValue: T,
 ): LocalStorage<T> {
   const [value, setValue] = useState<T>(defaultValue);
+  const [hydrated, setHydrated] = useState(false);
 
   // On mount, try to read the stored value
   useEffect(() => {
@@ -37,6 +41,8 @@ export default function useLocalStorage<T>(
       }
     } catch (error) {
       console.error(`Error reading localStorage key "${key}":`, error);
+    } finally {
+      setHydrated(true);
     }
   }, [key]);
 
@@ -56,5 +62,5 @@ export default function useLocalStorage<T>(
     }
   };
 
-  return { value, set, clear };
+  return { value, set, clear, hydrated };
 }
