@@ -58,6 +58,40 @@ export default function Battle() {
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
 
+  const [rematchWaiting, setRematchWaiting] = useState(false);
+  const [rematchTimeLeft, setRematchTimeLeft] = useState(30);
+  const rematchPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rematchTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const handleRematch = async () => {
+    try {
+      await apiService.post(`/games/${gameCode}/rematch`, {});
+      setRematchWaiting(true);
+
+      rematchPollRef.current = setInterval(async () => {
+        const game = await apiService.get<{ rematchGameCode?: string }>(`/games/${gameCode}`);
+        if (!game.rematchGameCode) return;
+        clearInterval(rematchPollRef.current!);
+        clearInterval(rematchTimerRef.current!);
+        router.push(`/games/${game.rematchGameCode}/wizards`); // ← here
+      }, 4000);
+
+      rematchTimerRef.current = setInterval(() => {
+        setRematchTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(rematchPollRef.current!);
+            clearInterval(rematchTimerRef.current!);
+            router.push("/lobby");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch {
+      router.push("/lobby");
+    }
+  };
+
   useEffect(() => {
     if (!token) return;
     let cancelled = false;
@@ -181,13 +215,14 @@ useEffect(() => {
   }
 
 if (isGameOver) {
-  const youWon = battleState.winnerId === myUserId;
+  const isDraw = battleState.winnerId === null;
+  const youWon = !isDraw && battleState.winnerId === myUserId;
 
   return (
     <div className={styles.center}>
       <div className={styles.endCard}>
         <h1 className={youWon ? styles.victory : styles.defeat}>
-          {youWon ? "Victory!" : "Defeat"}
+          {isDraw ? "Draw!" : youWon ? "Victory!" : "Defeat"}
         </h1>
         <p className={styles.battleComplete}>Battle complete</p>
 
@@ -217,7 +252,15 @@ if (isGameOver) {
         )}
 
         <div className={styles.buttonStack}>
-          <Button type="primary" block>Rematch</Button>
+          {rematchWaiting ? (
+            <Button type="primary" block disabled>
+              <Spin size="small" /> Waiting for opponent… {rematchTimeLeft}s
+            </Button>
+          ) : (
+            <Button type="primary" block onClick={handleRematch}>
+              Play Again
+            </Button>
+          )}
           <Button block onClick={() => router.push("/lobby")}>Back to lobby</Button>
         </div>
       </div>
