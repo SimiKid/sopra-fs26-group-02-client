@@ -189,8 +189,22 @@ export default function Battle() {
   const playerWizardType = battleState.player1WizardClass;
   const opponentWizardType = battleState.player2WizardClass;
 
+  const statusLine = isMyTurn
+    ? "Your turn — choose an attack"
+    : "Waiting for opponent…";
+
+  const temperatureClass =
+    battleState.temperature === "HOT"
+      ? styles.hot
+      : battleState.temperature === "COLD"
+        ? styles.cold
+        : styles.neutral;
+
+  const rainClass =
+    battleState.rain === "RAINING" ? styles.raining : "";
+
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${temperatureClass} ${rainClass}`}>
       <div className={styles.battleRow}>
         <div className={styles.fighterColumn}>
           <FighterPanel
