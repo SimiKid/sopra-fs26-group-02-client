@@ -35,7 +35,7 @@ export default function Battle() {
   const router = useRouter();
   const params = useParams();
   const gameCode = params.gameCode as string;
-  const { value: token } = useLocalStorage<string>("token", "");
+  const { value: token, hydrated: tokenHydrated } = useLocalStorage<string>("token", "");
   const { value: userIdStr } = useLocalStorage<string>("userId", "");
   const myUserId = userIdStr ? Number(userIdStr) : null;
 
@@ -93,7 +93,7 @@ export default function Battle() {
   };
 
   useEffect(() => {
-    if (!token) return;
+    if (!tokenHydrated || !token) return;
     let cancelled = false;
 
     Promise.all([
@@ -110,7 +110,7 @@ export default function Battle() {
     return () => {
       cancelled = true;
     };
-  }, [apiService, gameCode, token, message]);
+  }, [apiService, gameCode, tokenHydrated, token, message]);
 
   useEffect(() => {
     if (!battleState) return;
@@ -172,13 +172,13 @@ export default function Battle() {
   const isGameOver = battleState?.gameStatus === "FINISHED";
 
 useEffect(() => {
-  if (!isGameOver || !token) return;
+  if (!isGameOver || !tokenHydrated || !token) return;
 
   apiService
     .get<BattleResult>(`/games/${gameCode}/battles/result`)
     .then((data) => setResultStats(data))
     .catch(() => message.error("Failed to load battle results."));
-}, [isGameOver, apiService, gameCode, message, token]);
+}, [isGameOver, apiService, gameCode, message, tokenHydrated, token]);
 
 useEffect(() => {
   if (!isMyTurn) {
