@@ -1,0 +1,29 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.empty {
+  padding: 40px 24px;
+  border-radius: 14px;
+  background: rgba(12, 14, 28, 0.6);
+  border: 1px dashed rgba(200, 176, 255, 0.25);
+  text-align: center;
+  color: #aab0c4;
+}
+
+.emptyTitle {
+  margin: 0 0 6px;
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  font-size: 1.1rem;
+}
+
+.emptyHint {
+  margin: 0;
+  font-size: 0.9rem;
+}

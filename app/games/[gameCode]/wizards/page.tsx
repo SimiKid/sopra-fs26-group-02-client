@@ -93,7 +93,11 @@ export default function Wizard() {
       {/* buttonContainer matches wizardList size to align the confirm button at the bottom of the page */}
       <div className={styles.buttonContainer}>
         <Button
-        className="button-primary"
+          className={
+            selection.selectedWizardId
+              ? styles.buttonConfirm
+              : styles.buttonDisabled
+          }
           disabled={!selection.selectedWizardId}
           onClick={handleConfirmSelection}
         >

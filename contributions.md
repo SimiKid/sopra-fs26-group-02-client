@@ -89,16 +89,20 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 20.04.2026 | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/00a9feaf45ad2cd76a77be0130774a74be3cb793) | Fixed hardcoded WebSocket URL | Without this fix, the deployed Vercel frontend could not connect to the backend because the WebSocket client was pointing at localhost:8080 |
+|                    | 20.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/ad5587ea437f5259ec3ccac30f75ee7a37b09c79) | Change join game ame frontend to POST| Feedback week 2&3 |
+|                    | 20.04.2026 | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/f7f2eed2d94bd7efbfd2bb04e0ee6298ba1fb713) | Refactor join endpoint and simplify  checks | Feedback week 2&3 |
+|                    | 20.04.2026 | [Link to Commit 4](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/d12b9e91a9d4aab3478b0e3ba7f333dba59a7001) | Add GET /games/{gameCode}/attacks endpoint | Feedback week 4: replace useLocalStorage with backend fetch |
+|                    | 20.04.2026 | [Link to Commit 5](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/27d0b9e368b428b335d0550c3e20bd2090038dd2)| refactor battle: fetch selected attacks from backend and tidy up battle page  | Replaced localStorage based attack persistence with a backend fetch, fixes empty-attacks-after-refresh bug, and refactored the battle page for readability. |
+|                    | 21.04.2026   | [Link to Commit 6](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/117/changes/3bf2564a9aacc2354583a129861ec23563d2eb38) [Link to Commit 7](https://github.com/SimiKid/sopra-fs26-group-02-server/pull/117/changes/093966740ae5a380db4ff443987eacb76c014d80) | refactor player: link Player to GameSession via gameSessionId | Without the player beeing connected to a game we can not say what wizerd X a user had in game Y. We need to know this to be able to diplay the game history |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | [20.04.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/1e42babc21d55dba32d01698f6d3f7a13a844de2) | When a player doesn't make an attack within 30 seconds, one out of his three attacks is randomly executed | that the gameflow won't stop even though one player won't make a move |
+|                    | [20.04.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/3deaa44893cfa6e1043ccc7d37b679dd120038dd) | 30 seconds countdown on battle page | that the player knows how much time he has left |
 
 ---
 
@@ -106,8 +110,8 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 21.04.2026 | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/4b2cc3fd893209a739f480e532dc243b2a480b5d) | Add GET /users/me/games endpoint for game history| Implements US-20 (View My Game History). Returns the authenticated user's finished games sorted most recent first, with date, location, weather, wizard classes, and win/loss/draw result. Data the profile page needs to show for past battles.|
+|                    | 21.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/82cbda98e9fe212abc62ec676f0c69b2330d7c83) | Add profile page with battle history, auth-gated header nav, and login redirect for protected routes| Users can track past battles. Also introduces the shared AppHeader nav and a reusable route guard that future authenticated pages can rely on. |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |

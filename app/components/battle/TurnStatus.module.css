@@ -1,0 +1,46 @@
+.statusCenter {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.turnBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.turnMine {
+  background: rgba(74, 222, 128, 0.18);
+  border-color: rgba(74, 222, 128, 0.55);
+  color: #7ef3b0;
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.35);
+}
+
+.turnTheirs {
+  background: rgba(160, 170, 200, 0.12);
+  border-color: rgba(160, 170, 200, 0.35);
+  color: #c6cbdc;
+}
+
+.statusLine {
+  font-size: 0.9rem;
+  color: #aab0c4;
+}
+
+@media (max-width: 980px) {
+  .statusCenter {
+    order: -1;
+    margin-bottom: 8px;
+  }
+}

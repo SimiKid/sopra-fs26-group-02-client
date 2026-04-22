@@ -1,0 +1,53 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 32px;
+  background: rgba(12, 14, 28, 0.82);
+  border-bottom: 1px solid rgba(200, 176, 255, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: #c8b0ff;
+  text-shadow: 0 0 12px rgba(160, 100, 255, 0.4);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d4ccf0;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.link:hover {
+  background: rgba(200, 176, 255, 0.08);
+  border-color: rgba(200, 176, 255, 0.25);
+  color: #f2f4ff;
+}
+
+.linkActive {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: rgba(200, 176, 255, 0.45);
+  color: #f2f4ff;
+}

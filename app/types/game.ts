@@ -12,4 +12,5 @@ export interface GameSession {
   gameCode: string;
   gameStatus: string;
   players: Player[];
+  rematchGameCode?: string; // null until both players accept rematch
 }
