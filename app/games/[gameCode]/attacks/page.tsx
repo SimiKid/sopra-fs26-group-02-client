@@ -11,7 +11,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 
 
 export default function Attacks() {
-  const { value: token } = useLocalStorage<string>("token", "");
+  const { value: token, hydrated } = useLocalStorage<string>("token", "");
   const apiService = useApi(token);
   const params = useParams();
   const gameCode = params.gameCode as string;
@@ -20,6 +20,7 @@ export default function Attacks() {
   const [location, setLocation] = useState<string>("Loading...", );
 
   useEffect(() => {
+    if (!hydrated || !token) return;
     let cancelled = false;
     const fetchLocation = async () => {
       try {
@@ -38,7 +39,7 @@ export default function Attacks() {
     return () => {
     cancelled = true;
     };
-  }, [apiService, gameCode, message]);
+  }, [apiService, gameCode, hydrated, token, message]);
 
   const {
     selectedAttacks,
