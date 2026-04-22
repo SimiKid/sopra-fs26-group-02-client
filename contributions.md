@@ -108,7 +108,6 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **liv519**         | [20.04.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/1e42babc21d55dba32d01698f6d3f7a13a844de2) | When a player doesn't make an attack within 30 seconds, one out of his three attacks is randomly executed | that the gameflow won't stop even though one player won't make a move |
 |                    | [20.04.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/3deaa44893cfa6e1043ccc7d37b679dd120038dd) | 30 seconds countdown on battle page | that the player knows how much time he has left |
-| [20.04.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/1e42babc21d55dba32d01698f6d3f7a13a844de2) | When a player doesn't make an attack within 30 seconds, one out of his three attacks is randomly executed | that the gameflow won't stop even though one player won't make a move |
 |                    | [22.04.2026]   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/1f23cc3000dc49f570418c912f2dbbf6464c14dc) | logout endpoint | to make it possible that a user can logout |
 |                    | [22.04.2026]   | [Link to Commit 4](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/49a1e0f65319bdd76eb9c4c065060c15764638cb) | logout button | logout button in header so a user can see quickly the option to logout|
 
