@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
 import styles from "./AppHeader.module.css";
-
+import { useLobby } from "@/hooks/useLobby"
+import { Button } from "antd";
 const HIDDEN_EXACT = ["/", "/login", "/register"];
 // Battle route is /games/[gameCode]/battles — keep it immersive (no chrome).
 const HIDDEN_SUFFIXES = ["/battles"];
@@ -22,13 +23,14 @@ const NAV_LINKS = [
 
 export default function AppHeader() {
   const pathname = usePathname();
-  const { value: token, hydrated } = useLocalStorage<string>("token", "");
-
+  const { value: token, hydrated } = useLocalStorage<string>("token", ""); 
+  const { handleLogout } = useLobby();
   if (shouldHide(pathname)) return null;
 
   // Until we know the auth state, render a minimal shell so we don't
   // flash the nav links for a frame before hiding them.
   const isLoggedIn = hydrated && !!token;
+
 
   return (
     <header className={styles.header}>
@@ -50,6 +52,9 @@ export default function AppHeader() {
               </Link>
             );
           })}
+          <Button onClick={handleLogout} className="button-secondary">
+            Logout
+          </Button>
         </nav>
       )}
     </header>

@@ -43,6 +43,18 @@ export function useLobby() {
     }
   };
 
+  const handleLogout = async () => {
+    try { 
+      await apiService.post<void>("/logout", {});
+    } catch (error) {
+      const err = error as ApplicationError;
+      message.error(err.message ?? "Failed to logout");
+    } finally {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+  };
+
   const handleCancelWaiting = () => {
     if (gameCode) {
       apiService.delete(`/games/${gameCode}`).catch(() => {});
@@ -134,6 +146,7 @@ export function useLobby() {
     timeLeft,
     gameFullMessage,
     handleCreateGame,
+    handleLogout,
     handleCancelWaiting,
     handleCopyCode,
     handleJoinGame,
