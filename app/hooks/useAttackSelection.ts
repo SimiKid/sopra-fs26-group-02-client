@@ -10,7 +10,7 @@ import { GameSession } from "@/types/game";
 export function useAttackSelection(gameCode: string) {
   const router = useRouter();
   const { message } = App.useApp();
-  const { value: token } = useLocalStorage<string>("token", "");
+  const { value: token, hydrated } = useLocalStorage<string>("token", "");
   const apiService = useApi(token);
 
   const [selectedAttacks, setSelectedAttacks] = useState<AttackId[]>([]);
@@ -20,6 +20,7 @@ export function useAttackSelection(gameCode: string) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    if (!hydrated || !token) return;
     let cancelled = false;
     const fetchAttacks = async () => {
       try {
@@ -37,7 +38,7 @@ export function useAttackSelection(gameCode: string) {
     return () => {
       cancelled = true;
     };
-  }, [apiService, message]);
+  }, [apiService, hydrated, token, message]);
 
   const handleChooseAttacks = async () => {
     if (selectedAttacks.length !== 3) {
