@@ -17,6 +17,7 @@ import { Attack } from "@/types/attack";
 import { BattleStateDTO } from "@/types/battle";
 import { AttackId } from "@/constants/attacks.constants";
 import { getElementModifier } from "@/utils/weatherModifiers";
+import { BattleResult } from "@/types/battleResult";
 
 import styles from "./page.module.css";
 
@@ -54,7 +55,42 @@ export default function Battle() {
   const [timeLeft, setTimeLeft] = useState<number>(30);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
+  const [resultStats, setResultStats] = useState<BattleResult | null>(null);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
+
+  const [rematchWaiting, setRematchWaiting] = useState(false);
+  const [rematchTimeLeft, setRematchTimeLeft] = useState(30);
+  const rematchPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rematchTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const handleRematch = async () => {
+    try {
+      await apiService.post(`/games/${gameCode}/rematch`, {});
+      setRematchWaiting(true);
+
+      rematchPollRef.current = setInterval(async () => {
+        const game = await apiService.get<{ rematchGameCode?: string }>(`/games/${gameCode}`);
+        if (!game.rematchGameCode) return;
+        clearInterval(rematchPollRef.current!);
+        clearInterval(rematchTimerRef.current!);
+        router.push(`/games/${game.rematchGameCode}/wizards`); // ← here
+      }, 4000);
+
+      rematchTimerRef.current = setInterval(() => {
+        setRematchTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(rematchPollRef.current!);
+            clearInterval(rematchTimerRef.current!);
+            router.push("/lobby");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch {
+      router.push("/lobby");
+    }
+  };
 
   useEffect(() => {
     if (!token) return;
@@ -135,24 +171,33 @@ export default function Battle() {
 
   const isGameOver = battleState?.gameStatus === "FINISHED";
 
-  useEffect(() => {
-    if (!isMyTurn) {
-      setTimeLeft(30);
-      return;
-    }
-  
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  
-    return () => clearInterval(timer);
-  }, [isMyTurn]);
+useEffect(() => {
+  if (!isGameOver || !token) return;
+
+  apiService
+    .get<BattleResult>(`/games/${gameCode}/battles/result`)
+    .then((data) => setResultStats(data))
+    .catch(() => message.error("Failed to load battle results."));
+}, [isGameOver, apiService, gameCode, message, token]);
+
+useEffect(() => {
+  if (!isMyTurn) {
+    setTimeLeft(30);
+    return;
+  }
+
+  const timer = setInterval(() => {
+    setTimeLeft((prev) => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(timer);
+}, [isMyTurn]);
 
   if (!isConnected || battleState === null) {
     const statusText = isConnected
@@ -169,22 +214,59 @@ export default function Battle() {
     );
   }
 
-  if (isGameOver) {
-    const youWon = battleState.winnerId === myUserId;
+if (isGameOver) {
+  const isDraw = battleState.winnerId === null;
+  const youWon = !isDraw && battleState.winnerId === myUserId;
 
-    return (
-      <div className={styles.center}>
-        <div className={styles.endCard}>
-          <h1 className={youWon ? styles.victory : styles.defeat}>
-            {youWon ? "Victory!" : "Defeat"}
-          </h1>
-          <Button type="primary" onClick={() => router.push("/lobby")}>
-            Back to lobby
-          </Button>
+  return (
+    <div className={styles.center}>
+      <div className={styles.endCard}>
+        <h1 className={youWon ? styles.victory : styles.defeat}>
+          {isDraw ? "Draw!" : youWon ? "Victory!" : "Defeat"}
+        </h1>
+        <p className={styles.battleComplete}>Battle complete</p>
+
+        {resultStats ? (
+          <>
+            <div className={styles.statsGrid}>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.totalDamageDealt}</span>
+                <span className={styles.statLabel}>Total damage dealt</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.turnsPlayed}</span>
+                <span className={styles.statLabel}>Turns played</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.weather.rainCategory.toLowerCase()}</span>
+                <span className={styles.statLabel}>Rain</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statValue}>{resultStats.weather.temperatureCategory.toLowerCase()}</span>
+                <span className={styles.statLabel}>Temperature</span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Spin style={{ margin: "1.5rem 0" }} />
+        )}
+
+        <div className={styles.buttonStack}>
+          {rematchWaiting ? (
+            <Button type="primary" block disabled>
+              <Spin size="small" /> Waiting for opponent… {rematchTimeLeft}s
+            </Button>
+          ) : (
+            <Button type="primary" block onClick={handleRematch}>
+              Play Again
+            </Button>
+          )}
+          <Button block onClick={() => router.push("/lobby")}>Back to lobby</Button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const playerWizardType = battleState.player1WizardClass;
   const opponentWizardType = battleState.player2WizardClass;
