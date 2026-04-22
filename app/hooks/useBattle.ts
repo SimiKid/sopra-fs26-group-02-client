@@ -7,7 +7,7 @@ import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
 
 export function useBattle(gameCode: string) {
-  const { value: token } = useLocalStorage<string>("token", "");
+  const { value: token, hydrated } = useLocalStorage<string>("token", "");
   const apiService = useApi(token);
   const { message } = App.useApp();
 
@@ -21,7 +21,7 @@ export function useBattle(gameCode: string) {
   }, [error, message]);
 
   useEffect(() => {
-    if (!token || !gameCode) return;
+    if (!hydrated || !token || !gameCode) return;
 
     let cancelled = false;
     const service = new WebSocketService(token);
@@ -67,7 +67,7 @@ export function useBattle(gameCode: string) {
       setIsConnected(false);
       setBattleState(null);
     };
-  }, [apiService, gameCode, token]);
+  }, [apiService, gameCode, hydrated, token]);
 
   const sendAttack = useCallback(
     (attackName: AttackId) => {
