@@ -24,7 +24,7 @@ const Login: React.FC = () => {
       const response = await apiService.post<AuthToken>("/login", values);
       setToken(response.token);
       setUserId(response.id);
-      router.push("/lobby");
+      window.location.href = "/lobby";
     } catch (error) {
       const err = error as ApplicationError;
       message.error(err.message ?? "Login failed");
