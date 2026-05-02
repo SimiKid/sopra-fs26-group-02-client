@@ -271,10 +271,6 @@ if (isGameOver) {
   const playerWizardType = battleState.player1WizardClass;
   const opponentWizardType = battleState.player2WizardClass;
 
-  const statusLine = isMyTurn
-    ? "Your turn — choose an attack"
-    : "Waiting for opponent…";
-
   const temperatureClass =
     battleState.temperature === "HOT"
       ? styles.hot
@@ -314,42 +310,6 @@ if (isGameOver) {
       </div>
 
       <div className={styles.bottomBar}>
-        <section className={styles.infoPanel}>
-          <h2 className={styles.infoTitle}>Arena</h2>
-
-          <div className={styles.infoBlock}>
-            <div className={styles.infoLine}>
-              <span className={styles.infoLabel}>Location:</span>
-              <span>{battleState.location}</span>
-            </div>
-            <div className={styles.infoLine}>
-              <span className={styles.infoLabel}>Rain:</span>
-              <span>{battleState.rain ?? "Unknown"}</span>
-            </div>
-            <div className={styles.infoLine}>
-              <span className={styles.infoLabel}>Temperature:</span>
-              <span>{battleState.temperature ?? "Unknown"}</span>
-            </div>
-          </div>
-
-          <div className={styles.modifierBox}>
-            <div className={styles.modifierTitle}>Element Modifiers</div>
-            <div className={styles.modifierGrid}>
-              <span>Fire</span>
-              <span>x{elementModifiers.FIRE.toFixed(2)}</span>
-
-              <span>Ice</span>
-              <span>x{elementModifiers.ICE.toFixed(2)}</span>
-
-              <span>Lightning</span>
-              <span>x{elementModifiers.LIGHTNING.toFixed(2)}</span>
-
-              <span>Neutral</span>
-              <span>x{elementModifiers.NEUTRAL.toFixed(2)}</span>
-            </div>
-          </div>
-        </section>
-
         <div className={styles.attackDock}>
           <AttackInterface
             attacks={myAttacks}

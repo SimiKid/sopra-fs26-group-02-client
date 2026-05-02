@@ -49,7 +49,7 @@ export default function AttackInterface({
 
   return (
     <section className={styles.container} aria-label="Attack interface">
-      <div className={styles.grid}>
+      <div className={styles.spellList}>
         {attacks.map((attack) => {
           const isPending = pendingId === attack.id;
 
@@ -63,35 +63,38 @@ export default function AttackInterface({
             <button
               key={attack.id}
               type="button"
-              className={`${styles.card} ${isPending ? styles.pending : ""}`}
+              className={`${styles.spellButton} ${
+                styles[attack.element.toLowerCase()]
+              } ${isPending ? styles.pending : ""}`}
               disabled={locked || pendingId !== null}
               onClick={() => handleClick(attack.id)}
             >
               <span
-                className={styles.thumb}
+                className={styles.spellIcon}
                 style={{
                   backgroundImage: `url(${ATTACK_IMAGES[attack.id]}), ${ATTACK_GRADIENTS[attack.id]}`,
                 }}
               />
-              <span className={styles.meta}>
-                <span className={styles.name}>{attack.name}</span>
+              <span className={styles.tooltip}>
+                <strong>{attack.name}</strong>
 
-                <span className={styles.damage}>
-                  {attack.baseDamage} DMG
-                </span>
+                <div className={styles.statsRow}>
+                  <span className={styles.damage}>
+                    {attack.baseDamage} DMG
+                  </span>
 
-                <span className={styles.modifier}>
-                  x{modifier.toFixed(2)} MOD
-                </span>
+                  <span className={styles.modifier}>
+                    x{modifier.toFixed(2)}
+                  </span>
+                </div>
 
-                <span className={styles.description}>
-                  {attack.description}
-                </span>
+                <small>{attack.description}</small>
               </span>
             </button>
           );
         })}
       </div>
+      <span className={styles.spellLabel}>Spells</span>
     </section>
   );
 }
