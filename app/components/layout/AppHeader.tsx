@@ -9,7 +9,7 @@ import { useLobby } from "@/hooks/useLobby"
 import { Button } from "antd";
 const HIDDEN_EXACT = ["/", "/login", "/register"];
 // Battle route is /games/[gameCode]/battles — keep it immersive (no chrome).
-const HIDDEN_SUFFIXES = ["/battles"];
+const HIDDEN_SUFFIXES = ["/battles","/wizards","/attacks"];
 
 function shouldHide(pathname: string): boolean {
   if (HIDDEN_EXACT.includes(pathname)) return true;

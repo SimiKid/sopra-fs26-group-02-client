@@ -1,0 +1,32 @@
+.row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr; 
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.rank, .user, .gamesplayed, .wins, .losses, .winrate {
+    text-align: left;
+}
+
+
+
+
+.gamesplayed {
+    color:white;
+}
+
+.wins {
+    color:green;
+    font-weight: bold;
+}
+
+.losses {
+    color:red;
+}
+
+.winrate {
+    color:white;
+    font-style: italic;
+}
