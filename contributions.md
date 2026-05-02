@@ -134,8 +134,8 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | 01.5.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/d1c9044d66cffc12ba1f7a34336d59ea6ff7e90b) | Made a Get endpoint for the best 50 players and changed user entity | that the frontend can display the most successful users |
+|                    | 02.5.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/005c9138a851ab546519189dd9a2757dfb7b57c0) | Created Leaderboard for best 50 players  | Users should be ambitious to reach the leaderboard. |
 
 ---
 
