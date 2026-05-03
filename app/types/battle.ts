@@ -26,6 +26,8 @@ export interface BattleStateDTO {
   activePlayerId: number;
   player1Hp: number;
   player2Hp: number;
+  player1MaxHp: number;
+  player2MaxHp: number;
   damageDealt: number;
   attackUsed: string | null;
   gameStatus: string;

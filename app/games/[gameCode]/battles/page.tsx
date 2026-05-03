@@ -47,10 +47,6 @@ export default function Battle() {
   // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
 
-  // Starting HP snapshot — captured once per player to compute the HP bar %
-  const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
-  const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
-
   // Transient UI state
   const [timeLeft, setTimeLeft] = useState<number>(30);
   const [player1DamageText, setPlayer1DamageText] = useState("");
@@ -111,17 +107,6 @@ export default function Battle() {
       cancelled = true;
     };
   }, [apiService, gameCode, tokenHydrated, token, message]);
-
-  useEffect(() => {
-    if (!battleState) return;
-
-    if (initialPlayer1Hp === null) {
-      setInitialPlayer1Hp(battleState.player1Hp);
-    }
-    if (initialPlayer2Hp === null) {
-      setInitialPlayer2Hp(battleState.player2Hp);
-    }
-  }, [battleState, initialPlayer1Hp, initialPlayer2Hp]);
 
   useEffect(() => {
     if (!battleState) return;
@@ -289,7 +274,7 @@ if (isGameOver) {
             username={battleState.player1Username ?? "You"}
             wizardClass={playerWizardType}
             currentHp={battleState.player1Hp}
-            maxHp={initialPlayer1Hp ?? battleState.player1Hp}
+            maxHp={battleState.player1MaxHp}
             damageText={player1DamageText}
           />
           <WizardAvatar wizardType={playerWizardType} align="left" />
@@ -302,7 +287,7 @@ if (isGameOver) {
             username={battleState.player2Username ?? "Opponent"}
             wizardClass={opponentWizardType}
             currentHp={battleState.player2Hp}
-            maxHp={initialPlayer2Hp ?? battleState.player2Hp}
+            maxHp={battleState.player2MaxHp}
             damageText={player2DamageText}
           />
           <WizardAvatar wizardType={opponentWizardType} align="right" />
