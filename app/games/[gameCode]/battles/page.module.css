@@ -244,6 +244,10 @@
   gap: 10px;
 }
 
+.spinMargin {
+  margin: 1.5rem 0;
+}
+
 @media (max-width: 980px) {
   .battleRow {
     grid-template-columns: 1fr;

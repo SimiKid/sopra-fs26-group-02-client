@@ -60,32 +60,39 @@ export default function Battle() {
   const rematchTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleRematch = async () => {
+    if (rematchWaiting) return;
     try {
       await apiService.post(`/games/${gameCode}/rematch`, {});
       setRematchWaiting(true);
+      setRematchTimeLeft(30);
+    } catch (err) {
+      message.error((err as Error)?.message ?? "Failed to request rematch.");
+      router.push("/lobby");
+      return;
+    }
 
       rematchPollRef.current = setInterval(async () => {
-        const game = await apiService.get<{ rematchGameCode?: string }>(`/games/${gameCode}`);
-        if (!game.rematchGameCode) return;
-        clearInterval(rematchPollRef.current!);
-        clearInterval(rematchTimerRef.current!);
-        router.push(`/games/${game.rematchGameCode}/wizards`); // ← here
-      }, 4000);
-
-      rematchTimerRef.current = setInterval(() => {
-        setRematchTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(rematchPollRef.current!);
-            clearInterval(rematchTimerRef.current!);
-            router.push("/lobby");
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+    try {
+      const game = await apiService.get<{ rematchGameCode?: string }>(`/games/${gameCode}`);
+      if (!game.rematchGameCode) return;
+      clearInterval(rematchPollRef.current!);
+      clearInterval(rematchTimerRef.current!);
+      router.push(`/games/${game.rematchGameCode}/wizards`);
     } catch {
-      router.push("/lobby");
-    }
+      }
+    }, 4000);
+
+    rematchTimerRef.current = setInterval(() => {
+      setRematchTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(rematchPollRef.current!);
+          clearInterval(rematchTimerRef.current!);
+          router.push("/lobby");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   useEffect(() => {
@@ -160,10 +167,17 @@ useEffect(() => {
   if (!isGameOver || !tokenHydrated || !token) return;
 
   apiService
-    .get<BattleResult>(`/games/${gameCode}/battles/result`)
+    .get<BattleResult>(`/games/${gameCode}/result`)
     .then((data) => setResultStats(data))
-    .catch(() => message.error("Failed to load battle results."));
+    .catch((err) => message.error(err?.message ?? "Failed to load battle results."));
 }, [isGameOver, apiService, gameCode, message, tokenHydrated, token]);
+
+useEffect(() => {
+  return () => {
+    clearInterval(rematchPollRef.current!);
+    clearInterval(rematchTimerRef.current!);
+  };
+}, []);
 
 useEffect(() => {
   if (!isMyTurn) {
@@ -233,7 +247,7 @@ if (isGameOver) {
             </div>
           </>
         ) : (
-          <Spin style={{ margin: "1.5rem 0" }} />
+          <Spin className={styles.spinMargin} />
         )}
 
         <div className={styles.buttonStack}>
