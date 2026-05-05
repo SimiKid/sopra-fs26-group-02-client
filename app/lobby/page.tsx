@@ -3,6 +3,7 @@
 import { Button, Spin, Input, Divider } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useLobby } from "@/hooks/useLobby";
+import Leaderboard from "@/components/profile/Leaderboard/Leaderboard";
 import styles from "./page.module.css";
 
 export default function Lobby() {
@@ -38,6 +39,7 @@ export default function Lobby() {
   if (!gameCode) {
     return (
       <div className="page">
+        <div className={styles.lobbyWrapper}>
         <div className="container">
           <h1 className="title">Weather Wizards</h1>
           <p className="subtitle">Start a new battle</p>
@@ -69,6 +71,12 @@ export default function Lobby() {
           >
             Join Game
           </Button>
+        </div>
+
+        <aside className={styles.leaderboardSide}>
+          <h2 className={styles.leaderboardTitle}>Top Wizards</h2>
+          <Leaderboard limit={5} compact />
+        </aside>
         </div>
       </div>
     );
