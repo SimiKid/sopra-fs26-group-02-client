@@ -48,7 +48,8 @@ export default function Battle() {
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
 
   // Transient UI state
-  const [timeLeft, setTimeLeft] = useState<number>(30);
+  const [targetTime, setTargetTime] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
@@ -180,23 +181,42 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (!isMyTurn) {
-    setTimeLeft(30);
-    return;
+  const fetchTimer = async () => {
+    setTimeLeft(null);
+    setTargetTime(null);
+    try {
+      const response = await apiService.get<string>(`/timer/${gameCode}`);
+      setTargetTime(response); 
+      
+    } catch (error) {
+      console.error("Error loading timer", error);
+    }
+  };
+
+  if (isMyTurn) {
+    fetchTimer();
   }
+}, [isMyTurn, gameCode]);
+
+useEffect(() => {
+  if (!targetTime || !isMyTurn) return;
 
   const timer = setInterval(() => {
-    setTimeLeft((prev) => {
-      if (prev <= 1) {
-        clearInterval(timer);
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
+    const now = new Date(); 
+    const end = new Date(targetTime); 
+    const diffInMs = end.getTime() - now.getTime();
+    const seconds = Math.floor(diffInMs / 1000);
 
+    if (seconds <= 0) {
+      setTimeLeft(0);
+      clearInterval(timer); 
+    } else {
+      setTimeLeft(seconds); 
+    }
+  }, 1000);
   return () => clearInterval(timer);
-}, [isMyTurn]);
+}, [targetTime, isMyTurn]); 
+
 
   if (!isConnected || battleState === null) {
     const statusText = isConnected

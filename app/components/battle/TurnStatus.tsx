@@ -4,12 +4,13 @@ import styles from "./TurnStatus.module.css";
 
 interface TurnStatusProps {
   isMyTurn: boolean;
-  timeLeft: number;
+  timeLeft: number | null;
 }
 
 export default function TurnStatus({ isMyTurn, timeLeft }: TurnStatusProps) {
+  const timerText = timeLeft !== null ? ` — ${timeLeft}s left` : "";
   const statusLine = isMyTurn
-    ? `Your turn — ${timeLeft}s left`
+    ? `Your turn${timerText}`
     : "Waiting for opponent…";
 
   return (
