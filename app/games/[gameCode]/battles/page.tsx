@@ -267,8 +267,26 @@ if (isGameOver) {
   );
 }
 
-  const playerWizardType = battleState.player1WizardClass;
-  const opponentWizardType = battleState.player2WizardClass;
+  const amIPlayer1 = battleState.player1UserId === myUserId;
+
+  const p1 = {
+    wizard: battleState.player1WizardClass,
+    username: battleState.player1Username ?? "You",
+    hp: battleState.player1Hp,
+    maxHp: battleState.player1MaxHp,
+    damage: player1DamageText,
+  };
+
+  const p2 = {
+    wizard: battleState.player2WizardClass,
+    username: battleState.player2Username ?? "Opponent",
+    hp: battleState.player2Hp,
+    maxHp: battleState.player2MaxHp,
+    damage: player2DamageText,
+  };
+
+  const me = amIPlayer1 ? p1 : p2;
+  const opponent = amIPlayer1 ? p2 : p1;
 
   const temperatureClass =
     battleState.temperature === "HOT"
@@ -285,26 +303,26 @@ if (isGameOver) {
       <div className={styles.battleRow}>
         <div className={styles.fighterColumn}>
           <FighterPanel
-            username={battleState.player1Username ?? "You"}
-            wizardClass={playerWizardType}
-            currentHp={battleState.player1Hp}
-            maxHp={battleState.player1MaxHp}
-            damageText={player1DamageText}
+            username={me.username}
+            wizardClass={me.wizard}
+            currentHp={me.hp}
+            maxHp={me.maxHp}
+            damageText={me.damage}
           />
-          <WizardAvatar wizardType={playerWizardType} align="left" />
+          <WizardAvatar wizardType={me.wizard} align="left" />
         </div>
 
         <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
 
         <div className={styles.fighterColumn}>
           <FighterPanel
-            username={battleState.player2Username ?? "Opponent"}
-            wizardClass={opponentWizardType}
-            currentHp={battleState.player2Hp}
-            maxHp={battleState.player2MaxHp}
-            damageText={player2DamageText}
+            username={opponent.username}
+            wizardClass={opponent.wizard}
+            currentHp={opponent.hp}
+            maxHp={opponent.maxHp}
+            damageText={opponent.damage}
           />
-          <WizardAvatar wizardType={opponentWizardType} align="right" />
+          <WizardAvatar wizardType={opponent.wizard} align="right" />
         </div>
       </div>
 
@@ -317,6 +335,7 @@ if (isGameOver) {
             onAttackSelected={sendAttack}
             rain={battleState.rain}
             temperature={battleState.temperature}
+            wizardClass={me.wizard}
           />
         </div>
       </div>
