@@ -59,11 +59,24 @@
 
 .buttonWizard {
   width: 200px !important;
-  height: 300px !important;
+  height: 200px !important;
   border: none;
   padding: 0;
   margin-bottom: 1rem;
   overflow: hidden;
+  display: grid !important;
+  border: solid 3px #a78bfa46 !important; 
+  background: transparent !important;
+}
+
+.wizardImage,
+.animatedSprite {
+  display: block;
+  margin: 0 auto;
+}
+
+.animatedSprite {
+  transform: translateY(-60px); /* Change value to align sprite with bottom border */
 }
 
 .buttonWizardSelected {

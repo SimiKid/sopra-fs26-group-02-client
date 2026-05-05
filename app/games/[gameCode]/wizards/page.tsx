@@ -7,6 +7,7 @@ import { Button, App } from "antd";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { WIZARDS } from "@/constants/wizards.constants";
+import SpriteAnimation from "@/components/SpriteAnimation";
 
 type WizardSelectionState = {
   selectedWizardId: string | null;
@@ -48,8 +49,6 @@ export default function Wizard() {
   };
 
   const determineBorder = (wizardId: string): string => {
-    console.log("border check");
-    
     return selection.selectedWizardId === wizardId
       ? styles.buttonWizardSelected
       : "";
@@ -78,10 +77,14 @@ export default function Wizard() {
               className={`${styles.buttonWizard} ${determineBorder(wizard.id)}`}
               onClick={() => handleWizardSelect(wizard.id)}
             >
-              <img
-                src={wizard.image}
-                className={styles.wizardImage}
-                alt={wizard.title}
+              <SpriteAnimation
+                src={wizard.selection_sheet}
+                frames={wizard.selection_frames}
+                spriteWidth={64}
+                spriteHeight={64}
+                scale={4}
+                animationSpeed={120}
+                className={styles.animatedSprite}
               />
             </Button>
 

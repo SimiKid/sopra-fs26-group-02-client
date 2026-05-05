@@ -1,0 +1,7 @@
+.sprite {
+  background-repeat: no-repeat;
+  display: inline-block;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

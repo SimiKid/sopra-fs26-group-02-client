@@ -47,10 +47,6 @@ export default function Battle() {
   // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
 
-  // Starting HP snapshot — captured once per player to compute the HP bar %
-  const [initialPlayer1Hp, setInitialPlayer1Hp] = useState<number | null>(null);
-  const [initialPlayer2Hp, setInitialPlayer2Hp] = useState<number | null>(null);
-
   // Transient UI state
   const [timeLeft, setTimeLeft] = useState<number>(30);
   const [player1DamageText, setPlayer1DamageText] = useState("");
@@ -64,32 +60,39 @@ export default function Battle() {
   const rematchTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleRematch = async () => {
+    if (rematchWaiting) return;
     try {
       await apiService.post(`/games/${gameCode}/rematch`, {});
       setRematchWaiting(true);
+      setRematchTimeLeft(30);
+    } catch (err) {
+      message.error((err as Error)?.message ?? "Failed to request rematch.");
+      router.push("/lobby");
+      return;
+    }
 
       rematchPollRef.current = setInterval(async () => {
-        const game = await apiService.get<{ rematchGameCode?: string }>(`/games/${gameCode}`);
-        if (!game.rematchGameCode) return;
-        clearInterval(rematchPollRef.current!);
-        clearInterval(rematchTimerRef.current!);
-        router.push(`/games/${game.rematchGameCode}/wizards`); // ← here
-      }, 4000);
-
-      rematchTimerRef.current = setInterval(() => {
-        setRematchTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(rematchPollRef.current!);
-            clearInterval(rematchTimerRef.current!);
-            router.push("/lobby");
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+    try {
+      const game = await apiService.get<{ rematchGameCode?: string }>(`/games/${gameCode}`);
+      if (!game.rematchGameCode) return;
+      clearInterval(rematchPollRef.current!);
+      clearInterval(rematchTimerRef.current!);
+      router.push(`/games/${game.rematchGameCode}/wizards`);
     } catch {
-      router.push("/lobby");
-    }
+      }
+    }, 4000);
+
+    rematchTimerRef.current = setInterval(() => {
+      setRematchTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(rematchPollRef.current!);
+          clearInterval(rematchTimerRef.current!);
+          router.push("/lobby");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   useEffect(() => {
@@ -111,17 +114,6 @@ export default function Battle() {
       cancelled = true;
     };
   }, [apiService, gameCode, tokenHydrated, token, message]);
-
-  useEffect(() => {
-    if (!battleState) return;
-
-    if (initialPlayer1Hp === null) {
-      setInitialPlayer1Hp(battleState.player1Hp);
-    }
-    if (initialPlayer2Hp === null) {
-      setInitialPlayer2Hp(battleState.player2Hp);
-    }
-  }, [battleState, initialPlayer1Hp, initialPlayer2Hp]);
 
   useEffect(() => {
     if (!battleState) return;
@@ -175,10 +167,17 @@ useEffect(() => {
   if (!isGameOver || !tokenHydrated || !token) return;
 
   apiService
-    .get<BattleResult>(`/games/${gameCode}/battles/result`)
+    .get<BattleResult>(`/games/${gameCode}/result`)
     .then((data) => setResultStats(data))
-    .catch(() => message.error("Failed to load battle results."));
+    .catch((err) => message.error(err?.message ?? "Failed to load battle results."));
 }, [isGameOver, apiService, gameCode, message, tokenHydrated, token]);
+
+useEffect(() => {
+  return () => {
+    clearInterval(rematchPollRef.current!);
+    clearInterval(rematchTimerRef.current!);
+  };
+}, []);
 
 useEffect(() => {
   if (!isMyTurn) {
@@ -248,7 +247,7 @@ if (isGameOver) {
             </div>
           </>
         ) : (
-          <Spin style={{ margin: "1.5rem 0" }} />
+          <Spin className={styles.spinMargin} />
         )}
 
         <div className={styles.buttonStack}>
@@ -271,10 +270,6 @@ if (isGameOver) {
   const playerWizardType = battleState.player1WizardClass;
   const opponentWizardType = battleState.player2WizardClass;
 
-  const statusLine = isMyTurn
-    ? "Your turn — choose an attack"
-    : "Waiting for opponent…";
-
   const temperatureClass =
     battleState.temperature === "HOT"
       ? styles.hot
@@ -293,7 +288,7 @@ if (isGameOver) {
             username={battleState.player1Username ?? "You"}
             wizardClass={playerWizardType}
             currentHp={battleState.player1Hp}
-            maxHp={initialPlayer1Hp ?? battleState.player1Hp}
+            maxHp={battleState.player1MaxHp}
             damageText={player1DamageText}
           />
           <WizardAvatar wizardType={playerWizardType} align="left" />
@@ -306,7 +301,7 @@ if (isGameOver) {
             username={battleState.player2Username ?? "Opponent"}
             wizardClass={opponentWizardType}
             currentHp={battleState.player2Hp}
-            maxHp={initialPlayer2Hp ?? battleState.player2Hp}
+            maxHp={battleState.player2MaxHp}
             damageText={player2DamageText}
           />
           <WizardAvatar wizardType={opponentWizardType} align="right" />
@@ -314,42 +309,6 @@ if (isGameOver) {
       </div>
 
       <div className={styles.bottomBar}>
-        <section className={styles.infoPanel}>
-          <h2 className={styles.infoTitle}>Arena</h2>
-
-          <div className={styles.infoBlock}>
-            <div className={styles.infoLine}>
-              <span className={styles.infoLabel}>Location:</span>
-              <span>{battleState.location}</span>
-            </div>
-            <div className={styles.infoLine}>
-              <span className={styles.infoLabel}>Rain:</span>
-              <span>{battleState.rain ?? "Unknown"}</span>
-            </div>
-            <div className={styles.infoLine}>
-              <span className={styles.infoLabel}>Temperature:</span>
-              <span>{battleState.temperature ?? "Unknown"}</span>
-            </div>
-          </div>
-
-          <div className={styles.modifierBox}>
-            <div className={styles.modifierTitle}>Element Modifiers</div>
-            <div className={styles.modifierGrid}>
-              <span>Fire</span>
-              <span>x{elementModifiers.FIRE.toFixed(2)}</span>
-
-              <span>Ice</span>
-              <span>x{elementModifiers.ICE.toFixed(2)}</span>
-
-              <span>Lightning</span>
-              <span>x{elementModifiers.LIGHTNING.toFixed(2)}</span>
-
-              <span>Neutral</span>
-              <span>x{elementModifiers.NEUTRAL.toFixed(2)}</span>
-            </div>
-          </div>
-        </section>
-
         <div className={styles.attackDock}>
           <AttackInterface
             attacks={myAttacks}

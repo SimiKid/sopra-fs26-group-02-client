@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { App } from "antd";
 import { useApi } from "@/hooks/useApi";
@@ -6,6 +6,9 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { GameSession } from "@/types/game";
 import { ApplicationError } from "@/types/error";
 import { formatTime } from "@/utils/formatTime";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { getApiDomain } from "@/utils/domain";
 
 export function useLobby() {
   const router = useRouter();
@@ -20,15 +23,15 @@ export function useLobby() {
   const [timeLeft, setTimeLeft] = useState(600);
   const [gameFullMessage, setGameFullMessage] = useState<string | null>(null);
 
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stompClientRef = useRef<Client | null>(null);
 
-  const goToConfirmationScreen = (text: string, code: string) => {
+  const goToConfirmationScreen = useCallback((text: string, code: string) => {
     setGameFullMessage(text);
     redirectTimeoutRef.current = setTimeout(() => {
       router.push(`/games/${code}/wizards`);
     }, 1500);
-  };
+  }, [router]);
 
   const handleCreateGame = async () => {
     setLoading(true);
@@ -59,7 +62,8 @@ export function useLobby() {
     if (gameCode) {
       apiService.delete(`/games/${gameCode}`).catch(() => {});
     }
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    stompClientRef.current?.deactivate();
+    stompClientRef.current = null;
     if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current);
     setGameCode(null);
     setTimeLeft(600);
@@ -94,26 +98,29 @@ export function useLobby() {
     }
   };
 
-  // Poll for opponent joining
+// WebSocket subscription for opponent joining
   useEffect(() => {
-    if (!gameCode) return;
+    if (!gameCode || !token) return;
 
-    const poll = async () => {
-      try {
-        const game = await apiService.get<GameSession>(`/games/${gameCode}`);
-        if (game.gameStatus !== "CONFIGURING") return;
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        goToConfirmationScreen("Your opponent has joined!", gameCode);
-      } catch (error) {
-        console.error("Polling error:", error);
-      }
-    };
+    const client = new Client({
+      webSocketFactory: () => new SockJS(`${getApiDomain()}/ws`),
+      connectHeaders: { Authorization: token },
+      reconnectDelay: 0,
+      onConnect: () => {
+        client.subscribe(`/topic/game/${gameCode}/lobby`, () => {
+          goToConfirmationScreen("Your opponent has joined!", gameCode);
+        });
+      },
+    });
 
-    intervalRef.current = setInterval(poll, 4000);
+    stompClientRef.current = client;
+    client.activate();
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      client.deactivate();
+      stompClientRef.current = null;
     };
-  }, [gameCode, apiService]);
+}, [gameCode, token, goToConfirmationScreen]);
 
   // Countdown timer
   useEffect(() => {
@@ -132,7 +139,6 @@ export function useLobby() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
       if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current);
     };
   }, []);
