@@ -35,14 +35,15 @@ export default function Leaderboard({ compact = false, limit = 50 }: Leaderboard
   }
 
   return (
-    <div className={`${styles.list} ${compact ? styles.compact : ""}`}>
-      <div className={styles.headerRow}>
-        <span>#</span> <span>Username</span> <span>Games</span> <span>Wins</span> {!compact && <span>Losses</span>} {!compact && <span>Win Rate</span>}
-      </div>
+  <section className={`${styles.container} ${compact ? styles.compact : ""}`}>
+    <div className={styles.headerRow}> <span>Rank</span> <span>Username</span> <span>Games</span> <span>Wins</span> {!compact && <span>Losses</span>} {!compact && <span>Win Rate</span>}
+    </div>
+    <div className={styles.list}>
       {leaderboard.map((entry, index) => (
         <LeaderboardEntry key={`${entry.username}-${index}`} entry={entry} rank={index + 1} compact={compact} />
         
       ))}
     </div>
+  </section>
   );
 }

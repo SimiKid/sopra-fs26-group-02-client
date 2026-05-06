@@ -38,7 +38,7 @@ export default function Lobby() {
 
   if (!gameCode) {
     return (
-      <div className="page">
+      <div className={`page ${styles.pageOverride}`}>
         <div className={styles.lobbyWrapper}>
         <div className="container">
           <h1 className="title">Weather Wizards</h1>
@@ -74,7 +74,7 @@ export default function Lobby() {
         </div>
 
         <aside className={styles.leaderboardSide}>
-          <h2 className={styles.leaderboardTitle}>Top Wizards</h2>
+          <h2 className={styles.leaderboardTitle}>Leaderboard</h2>
           <Leaderboard limit={5} compact />
         </aside>
         </div>
