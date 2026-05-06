@@ -13,6 +13,7 @@ interface SpriteAnimationProps {
   scale?: number;
   displayWidth?: number; // width to display the sprite at
   displayHeight?: number; // height to display the sprite at
+  flipX?: boolean; // whether to flip the sprite horizontally
 }
 
 export default function SpriteAnimation({
@@ -25,6 +26,7 @@ export default function SpriteAnimation({
   scale = 1, // sprites can be scaled up or down with this factor
   displayWidth, // can be used to override the default width (spriteWidth * scale)
   displayHeight, // can be used to override the default height (spriteHeight * scale)
+  flipX = false, // whether to flip the sprite horizontally
 }: SpriteAnimationProps) {
   const [frameIndex, setFrameIndex] = useState(0); // current frame index
 
@@ -56,6 +58,7 @@ export default function SpriteAnimation({
         width: `${width}px`,
         height: `${height}px`,
         backgroundSize: `${scaledTotalWidth}px ${scaledTotalHeight}px`,
+        transform: flipX ? "translateX(-60px) scaleX(-1)" : undefined, // flip horizontally if flipX is true (for opponent in the battle screen)
       }}
     />
   );
