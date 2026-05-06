@@ -76,10 +76,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div className={`${styles.infoBox} ${styles.lightning}`}>
+            <div className={`${styles.infoBox} ${styles.storm}`}>
               <span>⚡</span>
               <div>
-                <div className={styles.itemTitle}>Lightning</div>
+                <div className={styles.itemTitle}>Storm</div>
                 <div className={styles.itemText}>
                   Strong in rain, weak in clear weather
                 </div>

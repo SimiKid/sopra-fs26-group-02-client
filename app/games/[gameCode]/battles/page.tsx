@@ -151,7 +151,7 @@ export default function Battle() {
     return {
       FIRE: getElementModifier("FIRE", temperature, rain),
       ICE: getElementModifier("ICE", temperature, rain),
-      LIGHTNING: getElementModifier("LIGHTNING", temperature, rain),
+      STORM: getElementModifier("STORM", temperature, rain),
       NEUTRAL: getElementModifier("NEUTRAL", temperature, rain),
     };
   }, [battleState?.temperature, battleState?.rain]);
