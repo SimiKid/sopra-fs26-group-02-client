@@ -2,17 +2,17 @@
 
 import { useLeaderboard } from "@/hooks/useLeaderboard";
 import styles from "./Leaderboard.module.css";
-import type { Leaderboard } from "@/types/leaderboard";
 import LeaderboardEntry from "./LeaderboardEntry";
 
 
 
 interface LeaderboardProps {
-  leaderboard: Leaderboard[];
+  compact?: boolean;
+  limit?: 5 | 50;
 }
 
-export default function Leaderboard() {
-  const { leaderboard, loading } = useLeaderboard();
+export default function Leaderboard({ compact = false, limit = 50 }: LeaderboardProps) {
+  const { leaderboard, loading } = useLeaderboard(limit);
 
   if (loading) {
     return (
@@ -35,14 +35,15 @@ export default function Leaderboard() {
   }
 
   return (
+  <section className={`${styles.container} ${compact ? styles.compact : ""}`}>
+    <div className={styles.headerRow}> <span>Rank</span> <span>Username</span> <span>Games</span> <span>Wins</span> {!compact && <span>Losses</span>} {!compact && <span>Win Rate</span>}
+    </div>
     <div className={styles.list}>
-      <div className={styles.headerRow}>
-        <span>#</span> <span>Username</span> <span>Games</span> <span>Wins</span> <span>Losses</span> <span>Win Rate</span>
-      </div>
       {leaderboard.map((entry, index) => (
-        <LeaderboardEntry key={`${entry.username}-${index}`} entry={entry} rank={index + 1} />
+        <LeaderboardEntry key={`${entry.username}-${index}`} entry={entry} rank={index + 1} compact={compact} />
         
       ))}
     </div>
+  </section>
   );
 }
