@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./LeaderboardEntry.module.css";
 import type { Leaderboard } from "@/types/leaderboard";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 type LeaderboardEntryProps = {
     entry: Leaderboard;
@@ -21,8 +22,11 @@ function formatWinRate(winRate: number) {
 }
 
 export default function LeaderboardEntry({entry, rank, compact = false}:LeaderboardEntryProps){
+    const { value: userId } = useLocalStorage<number>("userId", 0);
+    const isCurrentUser = userId === entry.userId;
+
     return (
-      <article className={`${styles.card} ${compact ? styles.compact : ""}`}>
+      <article className={`${styles.card} ${compact ? styles.compact : ""} ${isCurrentUser ? styles.currentUser : ""}`}>
         <span className={`${styles.rankBadge} ${getRankClass(rank)}`}>#{rank}</span>
         <span className={styles.user}>{entry.username}</span>
         <span className={styles.gamesplayed}>{entry.totalGames}</span>

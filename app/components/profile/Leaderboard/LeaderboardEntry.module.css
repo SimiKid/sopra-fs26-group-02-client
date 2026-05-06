@@ -84,3 +84,9 @@
     color: #c8b0ff;
     font-weight: 600;
 }
+
+.currentUser {
+    border-color: rgba(167, 139, 250, 0.7);
+    background: rgba(167, 139, 250, 0.12);
+    box-shadow: 0 0 18px rgba(167, 139, 250, 0.18);
+}
