@@ -78,12 +78,10 @@ export default function Wizard() {
               onClick={() => handleWizardSelect(wizard.id)}
             >
               <SpriteAnimation
+                {...wizard}
                 src={wizard.selection_sheet}
                 frames={wizard.selection_frames}
-                spriteWidth={64}
-                spriteHeight={64}
                 scale={4}
-                animationSpeed={120}
                 className={styles.animatedSprite}
               />
             </Button>
