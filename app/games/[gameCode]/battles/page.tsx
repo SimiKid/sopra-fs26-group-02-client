@@ -54,10 +54,15 @@ export default function Battle() {
   const [player2DamageText, setPlayer2DamageText] = useState("");
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
-  const [myAnimation, setMyAnimation] = useState<"idle" | "attack">("idle");
-  const [opponentAnimation, setOpponentAnimation] = useState<"idle" | "attack">("idle");
+  const [myAnimation, setMyAnimation] = useState<"idle" | "attack" | "death">("idle");
+  const [opponentAnimation, setOpponentAnimation] = useState<"idle" | "attack" | "death">("idle");
   const [myAnimationKey, setMyAnimationKey] = useState(0);
   const [opponentAnimationKey, setOpponentAnimationKey] = useState(0);
+
+  const myAnimationRef = useRef<"idle" | "attack" | "death">("idle");
+  const opponentAnimationRef = useRef<"idle" | "attack" | "death">("idle");
+
+  const [showResults, setShowResults] = useState(false);
 
   const [rematchWaiting, setRematchWaiting] = useState(false);
   const [rematchTimeLeft, setRematchTimeLeft] = useState(30);
@@ -123,6 +128,9 @@ export default function Battle() {
   useEffect(() => {
     if (!battleState) return;
 
+    // Don't process state changes after game is over
+    if (battleState.gameStatus === "FINISHED") return;
+
     const previous = previousStateRef.current;
 
     if (!previous) {
@@ -161,8 +169,26 @@ export default function Battle() {
     previousStateRef.current = battleState;
   }, [battleState, myUserId]);
 
-  const handleMyAnimationComplete = useCallback(() => setMyAnimation("idle"), []);
-  const handleOpponentAnimationComplete = useCallback(() => setOpponentAnimation("idle"), []);
+  const handleMyAnimationComplete = useCallback(() => {
+    if (myAnimationRef.current !== "death") {
+      setMyAnimation("idle");
+    }
+  }, []);
+  
+  const handleOpponentAnimationComplete = useCallback(() => {
+    if (opponentAnimationRef.current !== "death") {
+      setOpponentAnimation("idle");
+    }
+  }, []);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    myAnimationRef.current = myAnimation;
+  }, [myAnimation]);
+
+  useEffect(() => {
+    opponentAnimationRef.current = opponentAnimation;
+  }, [opponentAnimation]);
 
 
 
@@ -194,6 +220,36 @@ useEffect(() => {
     .then((data) => setResultStats(data))
     .catch((err) => message.error(err?.message ?? "Failed to load battle results."));
 }, [isGameOver, apiService, gameCode, message, tokenHydrated, token]);
+
+useEffect(() => {
+  if (!isGameOver || !battleState || !myUserId) return;
+
+  // Determine the loser
+  const isDraw = battleState.winnerId === null;
+  const loserIsMe = !isDraw && battleState.winnerId !== myUserId;
+
+  // Set death animation for the loser or both if it's a draw
+  if (!isDraw) {
+    if (loserIsMe) {
+      setMyAnimation("death");
+      setMyAnimationKey((k) => k + 1);
+    } else {
+      setOpponentAnimation("death");
+      setOpponentAnimationKey((k) => k + 1);
+    }
+  } else {
+    setMyAnimation("death");
+    setMyAnimationKey((k) => k + 1);
+    setOpponentAnimation("death");
+    setOpponentAnimationKey((k) => k + 1);
+  }
+  // Show results after 4 seconds
+  const timer = setTimeout(() => {
+    setShowResults(true);
+  }, 4000);
+
+  return () => clearTimeout(timer);
+}, [isGameOver, battleState, myUserId]);
 
 useEffect(() => {
   return () => {
@@ -255,7 +311,7 @@ useEffect(() => {
     );
   }
 
-if (isGameOver) {
+if (isGameOver && showResults) {
   const isDraw = battleState.winnerId === null;
   const youWon = !isDraw && battleState.winnerId === myUserId;
 
@@ -355,7 +411,7 @@ if (isGameOver) {
             wizardType={me.wizard}
             align="left"
             animation={myAnimation}
-            playOnce={myAnimation === "attack"}
+            playOnce={myAnimation === "attack" || myAnimation === "death"}
             animationKey={myAnimationKey}
             onAnimationComplete={handleMyAnimationComplete}
           />
@@ -375,7 +431,7 @@ if (isGameOver) {
             wizardType={opponent.wizard}
             align="right"
             animation={opponentAnimation}
-            playOnce={opponentAnimation === "attack"}
+            playOnce={opponentAnimation === "attack" || opponentAnimation === "death"}
             animationKey={opponentAnimationKey}
             onAnimationComplete={handleOpponentAnimationComplete}
           />
