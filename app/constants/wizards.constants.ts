@@ -7,10 +7,14 @@ export const WIZARDS = [
     spriteWidth: 64,
     spriteHeight: 64,
     animation_speed: 120,
-    selection_sheet: "/images/wizards/attack_selection.png",
+    selection_sheet: "/images/wizards/attack_attack.png", // Reusing attack sprite for selection
     selection_frames: 12,
     idle_sheet: "/images/wizards/attack_idle.png",
     idle_frames: 5,
+    attack_sheet: "/images/wizards/attack_attack.png",
+    attack_frames: 12,
+    death_sheet: "/images/wizards/attack_death.png",
+    death_frames: 13,
   },
   {
     id: "TANKWIZARD",
@@ -24,6 +28,10 @@ export const WIZARDS = [
     selection_frames: 10,
     idle_sheet: "/images/wizards/tank_idle.png",
     idle_frames: 5,
+    attack_sheet: "/images/wizards/tank_attack.png",
+    attack_frames: 12,
+    death_sheet: "/images/wizards/tank_death.png",
+    death_frames: 13,
   },
   {
     id: "BALANCEDWIZARD",
@@ -37,6 +45,10 @@ export const WIZARDS = [
     selection_frames: 5,
     idle_sheet: "/images/wizards/balanced_idle.png",
     idle_frames: 5,
+    attack_sheet: "/images/wizards/balanced_attack.png",
+    attack_frames: 12,
+    death_sheet: "/images/wizards/balanced_death.png",
+    death_frames: 13,
   },
   {
     id: "GAMBLERWIZARD",
@@ -50,6 +62,10 @@ export const WIZARDS = [
     selection_frames: 5,
     idle_sheet: "/images/wizards/gambler_idle.png",
     idle_frames: 5,
+    attack_sheet: "/images/wizards/gambler_attack.png",
+    attack_frames: 12,
+    death_sheet: "/images/wizards/gambler_death.png",
+    death_frames: 13,
   },
 ];
 ;
