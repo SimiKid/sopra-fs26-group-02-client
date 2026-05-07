@@ -74,7 +74,54 @@ export class WebSocketService {
     this.client = null;
   }
 
-  get connected(): boolean {
-    return this.client?.connected ?? false;
+  async connectBasic(): Promise<void> {
+    // 1. Falls wir schon verbunden sind, einfach aufhören
+    if (this.client?.connected) {
+      return;
+    }
+  
+    const url = `${getApiDomain()}/ws`;
+  
+    return new Promise((resolve, reject) => {
+      this.client = new Client({
+        webSocketFactory: () => new SockJS(url),
+        // Der Token für das Backend
+        connectHeaders: { 
+          Authorization: this.token 
+        },
+        // Automatische Versuche bei Verbindungsabbruch
+        reconnectDelay: 5000,
+        onConnect: () => {
+          console.log("[WS] Erfolgreich verbunden!");
+          resolve();
+        },
+        onStompError: (frame) => {
+          reject(new Error(frame.headers["message"]));
+        },
+        onWebSocketError: () => {
+          reject(new Error("WebSocket Fehler"));
+        },
+      });
+  
+      this.client.activate();
+    });
   }
+  
+    subscribeToMatchmaking(userId: number, onMatchFound: (gameCode: string) => void) {
+      if (!this.client?.connected) {
+          console.error("WS not connected!");
+          return;
+      }
+  
+      const subscription = this.client.subscribe(`/topic/match/${userId}`, (frame) => {
+        console.log("[WS] Match Found Event received!");
+        
+        const cleanGameCode = frame.body.replace(/"/g, "");
+        
+        onMatchFound(cleanGameCode);
+        subscription.unsubscribe();
+      });
+    
+      console.log(`[WS] Listening for matches on /topic/match/${userId}`);
+    }
 }

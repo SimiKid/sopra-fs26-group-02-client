@@ -4,6 +4,7 @@ import { Button, Spin, Input, Divider } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useLobby } from "@/hooks/useLobby";
 import styles from "./page.module.css";
+import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function Lobby() {
   const {
@@ -20,6 +21,8 @@ export default function Lobby() {
     handleJoinGame,
     formatTime,
   } = useLobby();
+
+  const { startMatchmaking, isSearching } = useMatchmaking();
 
   if (gameFullMessage) {
     return (
@@ -68,6 +71,16 @@ export default function Lobby() {
             loading={joinLoading}
           >
             Join Game
+          </Button>
+
+          <Divider className={styles.divider}>or</Divider>
+          <Button
+            block
+            className="button-secondary"
+            onClick={startMatchmaking}
+            loading={isSearching}
+          >
+            Start Matchmaking
           </Button>
         </div>
       </div>
