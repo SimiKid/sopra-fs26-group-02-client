@@ -9,12 +9,18 @@ interface WizardAvatarProps {
   wizardType: string;
   align?: "left" | "right";
   animation?: "idle" | "attack" | "damaged" | "death"; // todo: add more animations for battle screen (attack, damaged, death)
+  playOnce?: boolean; // whether to play the animation only once (instead of looping)
+  animationKey?: number;
+  onAnimationComplete?: () => void;
 }
 
 export default function WizardAvatar({
   wizardType,
   align = "left",
   animation = "idle",
+  playOnce = false,
+  animationKey = 0,
+  onAnimationComplete,
 }: WizardAvatarProps) {
   const wizard = WIZARDS.find((w) => w.id === wizardType) ?? WIZARDS[0];
 
@@ -30,12 +36,15 @@ export default function WizardAvatar({
     <div className={`${styles.container} ${styles[align]}`}>
       <div className={styles.frame} aria-label={wizard.title}>
         <SpriteAnimation
+          key={`${animation}-${animationKey}`}
           {...wizard}
           src={spriteSheet}
           frames={frames}
           className={styles.animatedSprite}
           scale={7}
           flipX={align === "right"}
+          playOnce={playOnce}
+          onComplete={onAnimationComplete}
         />
       </div>
       <span className={styles.label}>{wizard.title}</span>

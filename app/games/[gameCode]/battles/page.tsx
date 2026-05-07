@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { App, Button, Spin } from "antd";
 
@@ -54,6 +54,10 @@ export default function Battle() {
   const [player2DamageText, setPlayer2DamageText] = useState("");
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
+  const [myAnimation, setMyAnimation] = useState<"idle" | "attack">("idle");
+  const [opponentAnimation, setOpponentAnimation] = useState<"idle" | "attack">("idle");
+  const [myAnimationKey, setMyAnimationKey] = useState(0);
+  const [opponentAnimationKey, setOpponentAnimationKey] = useState(0);
 
   const [rematchWaiting, setRematchWaiting] = useState(false);
   const [rematchTimeLeft, setRematchTimeLeft] = useState(30);
@@ -139,8 +143,26 @@ export default function Battle() {
       setTimeout(() => setPlayer2DamageText(""), 1800);
     }
 
+    const turnAdvanced = previous.activePlayerId !== battleState.activePlayerId;
+    const hasResolvedAttack = battleState.attackUsed !== null;
+
+    if (turnAdvanced && hasResolvedAttack && myUserId !== null) {
+      const attackerUserId = previous.activePlayerId;
+
+      if (attackerUserId === myUserId) {
+        setMyAnimation("attack");
+        setMyAnimationKey((k) => k + 1);
+      } else {
+        setOpponentAnimation("attack");
+        setOpponentAnimationKey((k) => k + 1);
+      }
+    }
+
     previousStateRef.current = battleState;
-  }, [battleState]);
+  }, [battleState, myUserId]);
+
+  const handleMyAnimationComplete = useCallback(() => setMyAnimation("idle"), []);
+  const handleOpponentAnimationComplete = useCallback(() => setOpponentAnimation("idle"), []);
 
 
 
@@ -329,7 +351,14 @@ if (isGameOver) {
             maxHp={me.maxHp}
             damageText={me.damage}
           />
-          <WizardAvatar wizardType={me.wizard} align="left" animation="attack" />
+          <WizardAvatar
+            wizardType={me.wizard}
+            align="left"
+            animation={myAnimation}
+            playOnce={myAnimation === "attack"}
+            animationKey={myAnimationKey}
+            onAnimationComplete={handleMyAnimationComplete}
+          />
         </div>
 
         <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
@@ -342,7 +371,14 @@ if (isGameOver) {
             maxHp={opponent.maxHp}
             damageText={opponent.damage}
           />
-          <WizardAvatar wizardType={opponent.wizard} align="right" animation="idle" />
+          <WizardAvatar
+            wizardType={opponent.wizard}
+            align="right"
+            animation={opponentAnimation}
+            playOnce={opponentAnimation === "attack"}
+            animationKey={opponentAnimationKey}
+            onAnimationComplete={handleOpponentAnimationComplete}
+          />
         </div>
       </div>
 
