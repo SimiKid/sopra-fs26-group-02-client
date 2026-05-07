@@ -387,7 +387,7 @@ if (isGameOver) {
           <AttackInterface
             attacks={myAttacks}
             isMyTurn={isMyTurn}
-            disabled={!isConnected}
+            disabled={!isConnected || myAnimation !== "idle" || opponentAnimation !== "idle"}
             onAttackSelected={sendAttack}
             rain={battleState.rain}
             temperature={battleState.temperature}
