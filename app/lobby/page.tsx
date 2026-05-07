@@ -22,7 +22,13 @@ export default function Lobby() {
     formatTime,
   } = useLobby();
 
-  const { startMatchmaking, isSearching, matchFoundMessage } = useMatchmaking();
+  const { startMatchmaking, isSearching, matchFoundMessage, stopMatchmaking, timeLeft: matchmakingTimeLeft } = useMatchmaking();
+
+  const formatMatchmakingTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
 
   if (gameFullMessage || matchFoundMessage) {
     return (
@@ -33,6 +39,32 @@ export default function Lobby() {
           <div className={styles.spinnerWrapper}>
             <Spin size="large" />
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isSearching) {
+    return (
+      <div className="page">
+        <div className="container">
+          <h1 className="title">Search for an opponent</h1>
+          <p className="subtitle">Wait for an other player to join the game</p>
+          <div className={styles.spinnerWrapper}>
+            <Spin size="large" />
+            <p className={matchmakingTimeLeft <= 10 ? styles.timerWarning : styles.timerDefault}>
+              Matchmaking ends in: {formatMatchmakingTime(matchmakingTimeLeft)}
+            </p>
+          </div>
+          <Button
+            block
+            danger
+            type="text"
+            className={styles.cancelButton}
+            onClick={stopMatchmaking}
+          >
+            Cancel and return to menu
+          </Button>
         </div>
       </div>
     );
@@ -80,7 +112,7 @@ export default function Lobby() {
             onClick={startMatchmaking}
             loading={isSearching}
           >
-            Start Matchmaking
+            Quick Match
           </Button>
         </div>
       </div>
