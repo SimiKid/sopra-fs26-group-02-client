@@ -7,6 +7,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import { ApplicationError } from '@/types/error';
 import { App } from 'antd';
 import { useApi } from '@/hooks/useApi';
+import { useLobby } from './useLobby';
 
 export const useMatchmaking = () => {
   const { value: token } = useLocalStorage<string>("token", "");
@@ -16,6 +17,9 @@ export const useMatchmaking = () => {
   const ws= new WebSocketService(token);
   const { message } = App.useApp();
   const apiService = useApi(token);
+  const [matchFoundMessage, setMatchFoundMessage] = useState<string | null>(null);
+
+  
 
   const startMatchmaking = async () => {
     setIsSearching(true);
@@ -29,7 +33,7 @@ export const useMatchmaking = () => {
       ws.subscribeToMatchmaking(Number(userId), (gameCode) => {
         console.log("Match gefunden! Code:", gameCode);
         setIsSearching(false);
-        
+        setMatchFoundMessage("Game found! Redirecting to wizard selection screen...");
         // Navigation zum Spiel
         router.push(`/games/${gameCode}/wizards`);
       });
@@ -48,6 +52,7 @@ export const useMatchmaking = () => {
 
   return {
     startMatchmaking,
+    matchFoundMessage,
     isSearching
   };
 };

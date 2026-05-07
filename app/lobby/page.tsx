@@ -22,14 +22,14 @@ export default function Lobby() {
     formatTime,
   } = useLobby();
 
-  const { startMatchmaking, isSearching } = useMatchmaking();
+  const { startMatchmaking, isSearching, matchFoundMessage } = useMatchmaking();
 
-  if (gameFullMessage) {
+  if (gameFullMessage || matchFoundMessage) {
     return (
       <div className="page">
         <div className="container">
           <h1 className="title">Game Ready!</h1>
-          <p className="subtitle">{gameFullMessage}</p>
+          <p className="subtitle">{gameFullMessage || matchFoundMessage}</p>
           <div className={styles.spinnerWrapper}>
             <Spin size="large" />
           </div>
