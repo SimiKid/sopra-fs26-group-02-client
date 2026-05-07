@@ -329,7 +329,7 @@ if (isGameOver) {
             maxHp={me.maxHp}
             damageText={me.damage}
           />
-          <WizardAvatar wizardType={me.wizard} align="left" animation="idle" />
+          <WizardAvatar wizardType={me.wizard} align="left" animation="attack" />
         </div>
 
         <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
