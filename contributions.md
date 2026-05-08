@@ -151,8 +151,8 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **liv519**         | 06.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/c439e1c31e394fef89cc56cbece0945302d31aa3) | Created table, logic and websockets for players who search for quick gaames | Make it possible for players to connect with random opponents |
+|                    | 07.05.2026  | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/cbe329490f11a3d877e8ff994d37e9ea6583d8f1) | Button for quick match and waiting page with cancel option and timer | Make the option for a quick game visible |
 
 ---
 
