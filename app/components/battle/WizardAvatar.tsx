@@ -36,7 +36,7 @@ export default function WizardAvatar({
     <div className={`${styles.container} ${styles[align]}`}>
       <div className={styles.frame} aria-label={wizard.title}>
         <SpriteAnimation
-          key={`${animation}-${animationKey}`}
+          key={`${wizard.id}-${animationKey}`}
           {...wizard}
           src={spriteSheet}
           frames={frames}

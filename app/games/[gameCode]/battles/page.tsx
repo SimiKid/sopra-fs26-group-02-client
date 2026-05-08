@@ -18,6 +18,7 @@ import { BattleStateDTO } from "@/types/battle";
 import { AttackId } from "@/constants/attacks.constants";
 import { getElementModifier } from "@/utils/weatherModifiers";
 import { BattleResult } from "@/types/battleResult";
+import { WIZARDS } from "@/constants/wizards.constants";
 
 import styles from "./page.module.css";
 
@@ -170,15 +171,15 @@ export default function Battle() {
   }, [battleState, myUserId]);
 
   const handleMyAnimationComplete = useCallback(() => {
-    if (myAnimationRef.current !== "death") {
-      setMyAnimation("idle");
-    }
+    setMyAnimation((current) =>
+      current === "death" ? current : "idle"
+    );
   }, []);
-  
+
   const handleOpponentAnimationComplete = useCallback(() => {
-    if (opponentAnimationRef.current !== "death") {
-      setOpponentAnimation("idle");
-    }
+    setOpponentAnimation((current) =>
+      current === "death" ? current : "idle"
+    );
   }, []);
 
   // Keep refs in sync with state
@@ -227,6 +228,17 @@ useEffect(() => {
   // Determine the loser
   const isDraw = battleState.winnerId === null;
   const loserIsMe = !isDraw && battleState.winnerId !== myUserId;
+
+  // calculate attack duration determined by attack frames times animation speed
+  const attackDuration = (() => {
+    const wizard = WIZARDS.find((w) => w.id === (battleState?.player2WizardClass)); // Player 2 is always the last to attack (all wizards currently have the same animations, so not really necessary at the moment)
+    const frames = wizard?.attack_frames;
+    const animationSpeed = wizard?.animation_speed;
+    return frames && animationSpeed ? frames * animationSpeed : 1000; // default to 1000ms if any value is missing
+    // in the future, check if wizard or spell animation has more frames and use that for duration calculation
+  })();
+  // wait for attack animation to finish before starting death animation
+  setTimeout(() => {}, attackDuration);
 
   // Set death animation for the loser or both if it's a draw
   if (!isDraw) {

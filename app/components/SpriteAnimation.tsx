@@ -15,8 +15,7 @@ interface SpriteAnimationProps {
   displayHeight?: number; // height to display the sprite at
   flipX?: boolean; // whether to flip the sprite horizontally
   playOnce?: boolean; // whether to play the animation only once (instead of looping)
-  onComplete?: () => void; // called when a playOnce animation reaches its final frame
-}
+  onComplete?: (animationFinished: boolean) => void;}
 
 export default function SpriteAnimation({
   src, // URL of the sprite sheet
@@ -37,29 +36,28 @@ export default function SpriteAnimation({
   // Reset to frame 0 whenever animation source/profile changes.
   useEffect(() => {
     setFrameIndex(0);
-  }, [src, frames, playOnce]);
 
-  useEffect(() => {
+    let currentFrame = 0;
+
     const interval = setInterval(() => {
-      setFrameIndex((prev) => {
-        if (playOnce) {
-          const next = prev + 1;
+      currentFrame += 1;
 
-          if (next >= frames) {
-            clearInterval(interval);
-            onComplete?.();
-            return frames - 1;
-          }
-
-          return next;
+      if (playOnce) {
+        if (currentFrame >= frames) {
+          setFrameIndex(frames - 1);
+          clearInterval(interval);
+          onComplete?.(true);
+          return;
         }
 
-        return (prev + 1) % frames;
-      });
+        setFrameIndex(currentFrame);
+      } else {
+        setFrameIndex(currentFrame % frames);
+      }
     }, animationSpeed);
 
     return () => clearInterval(interval);
-  }, [frames, animationSpeed, playOnce, onComplete]);
+  }, [src, frames, animationSpeed, playOnce]);
 
   const col = frameIndex % frames;
 
