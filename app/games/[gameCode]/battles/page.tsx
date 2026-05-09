@@ -12,6 +12,7 @@ import AttackInterface from "@/components/battle/AttackInterface";
 import FighterPanel from "@/components/battle/FighterPanel";
 import TurnStatus from "@/components/battle/TurnStatus";
 import WizardAvatar from "@/components/battle/WizardAvatar";
+import EmoteButton from "@/components/battle/EmoteButton";
 
 import { Attack } from "@/types/attack";
 import { BattleStateDTO } from "@/types/battle";
@@ -42,7 +43,7 @@ export default function Battle() {
   // Services
   const { message } = App.useApp();
   const apiService = useApi(token);
-  const { battleState, isConnected, sendAttack } = useBattle(gameCode);
+  const { battleState, isConnected, sendAttack, sendEmote, latestEmote } = useBattle(gameCode);
 
   // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
@@ -344,6 +345,14 @@ if (isGameOver) {
           />
           <WizardAvatar wizardType={opponent.wizard} align="right" />
         </div>
+      </div>
+
+      <div className={styles.emoteButtonSlot}>
+        <EmoteButton
+          disabled={!isConnected}
+          receivedEmote={latestEmote}
+          onEmoteSelected={sendEmote}
+        />
       </div>
 
       <div className={styles.bottomBar}>

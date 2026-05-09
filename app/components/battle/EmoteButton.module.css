@@ -1,0 +1,138 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  width: 86px;
+  height: 72px;
+  border-radius: 18px;
+  border: 1px solid rgba(200, 176, 255, 0.5);
+  background: rgba(124, 58, 237, 0.28);
+  color: #f2f4ff;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(160, 100, 255, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.button:hover {
+  background: rgba(124, 58, 237, 0.42);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.emoteIcon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.emoteLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c8b0ff;
+}
+
+.emoteGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 90px);
+  gap: 14px;
+  padding: 10px;
+}
+
+.emoteOption {
+  width: 90px;
+  height: 90px;
+  border-radius: 18px;
+  border: 1px solid rgba(200, 176, 255, 0.28);
+  background: rgba(12, 14, 28, 0.92);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoteOption:hover {
+  background: rgba(124, 58, 237, 0.28);
+}
+
+.emoteImage {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+}
+
+.floatingEmote {
+  position: fixed;
+  left: 50%;
+  bottom: 240px;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  transform: translateX(-50%);
+  animation: emotePop 1.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.emotePopover :global(.ant-popover-content) {
+  background: transparent !important;
+}
+
+.emotePopover :global(.ant-popover-inner) {
+  background: rgba(24, 18, 42, 0.98) !important;
+  border: 1px solid rgba(200, 176, 255, 0.28) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 0 24px rgba(160, 100, 255, 0.28) !important;
+  padding: 0 !important;
+}
+
+.emotePopover :global(.ant-popover-inner-content) {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.emotePopover :global(.ant-popover-arrow::before) {
+  background: rgba(24, 18, 42, 0.98) !important;
+}
+
+.emotePopover :global(.ant-popover-content) {
+  background: rgba(24, 18, 42, 0.98) !important;
+  border-radius: 18px !important;
+}
+
+.emotePopover :global(.ant-popover-container) {
+  background: rgba(24, 18, 42, 0.98) !important;
+}
+
+@keyframes emotePop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 16px) scale(0.75);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.08);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -8px) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -28px) scale(0.95);
+  }
+}
