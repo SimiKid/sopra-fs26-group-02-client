@@ -147,8 +147,9 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **noelgehrig**     | 05.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/2d25dcf1a7a57a888c2decbeec117b9bec307b42) | Replaced numeric weather modifier values for the attacks with symbolic indicators (++, +, =, -, --). | Improves readability and usability during battles by making attacks and their modifiers easier and faster to understand. |
+|                    | 06.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/ef7085533b2069a8e27b468366e2b4767e037c9b) | Refined the leaderboard into a card/list UI and added a leaderboard preview section to the lobby page. | Improves the visuals of the player rankings while also making leaderboard information directly visible from the lobby. |
+|                    | 09.05.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/a09295506ec0fd8e9be62498e10e8c767af00a02) | Added an in-battle emote system with WebSocket communication, popup emote selection, and animated emote display. | Improves player interaction and engagement during battles by enabling realtime communication between opponents. |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **liv519**         | 06.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/c439e1c31e394fef89cc56cbece0945302d31aa3) | Created table, logic and websockets for players who search for quick gaames | Make it possible for players to connect with random opponents |
