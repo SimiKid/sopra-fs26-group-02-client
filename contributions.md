@@ -143,8 +143,8 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | | Joker |  |
-|                    | [date]   | | Joker | |
+| **SimiKid**        | 10.05.2026   | | Joker |  |
+|                    | 10.05.2026  | | Joker | |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | 05.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/2d25dcf1a7a57a888c2decbeec117b9bec307b42) | Replaced numeric weather modifier values for the attacks with symbolic indicators (++, +, =, -, --). | Improves readability and usability during battles by making attacks and their modifiers easier and faster to understand. |
