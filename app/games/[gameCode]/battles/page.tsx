@@ -225,42 +225,75 @@ useEffect(() => {
 useEffect(() => {
   if (!isGameOver || !battleState || !myUserId) return;
 
-  // Determine the loser
+  // Decide whether it's a draw and who lost
   const isDraw = battleState.winnerId === null;
   const loserIsMe = !isDraw && battleState.winnerId !== myUserId;
 
-  // calculate attack duration determined by attack frames times animation speed
+  // Determine attack duration from wizard animation data
   const attackDuration = (() => {
-    const wizard = WIZARDS.find((w) => w.id === (battleState?.player2WizardClass)); // Player 2 is always the last to attack (all wizards currently have the same animations, so not really necessary at the moment)
-    const frames = wizard?.attack_frames;
-    const animationSpeed = wizard?.animation_speed;
-    return frames && animationSpeed ? frames * animationSpeed : 1000; // default to 1000ms if any value is missing
-    // in the future, check if wizard or spell animation has more frames and use that for duration calculation
-  })();
-  // wait for attack animation to finish before starting death animation
-  setTimeout(() => {}, attackDuration);
+    // Try to find the wizard that performed the last attack.
+    // Use previousStateRef to infer attacker where possible.
+    const previous = previousStateRef.current;
+    const attackerUserId = previous?.activePlayerId ?? null;
 
-  // Set death animation for the loser or both if it's a draw
-  if (!isDraw) {
-    if (loserIsMe) {
-      setMyAnimation("death");
+    // Prefer using the attacker's wizard if we can find them,
+    // otherwise fall back to player2
+    const attackerWizardClass =
+      attackerUserId === battleState.player1UserId
+        ? battleState.player1WizardClass
+        : attackerUserId === battleState.player2UserId
+        ? battleState.player2WizardClass
+        : battleState.player2WizardClass;
+
+    const wizard = WIZARDS.find((w) => w.id === attackerWizardClass);
+    const frames = (wizard as any)?.attack_frames;
+    const animationSpeed = (wizard as any)?.animation_speed;
+    return frames && animationSpeed ? frames * animationSpeed : 1000;
+  })();
+
+  // First play the final attack animation (if an attack was resolved)
+  const previous = previousStateRef.current;
+  const attackerUserId = previous?.activePlayerId ?? null;
+  if (attackerUserId !== null) {
+    if (attackerUserId === myUserId) {
+      setMyAnimation("attack");
       setMyAnimationKey((k) => k + 1);
     } else {
+      setOpponentAnimation("attack");
+      setOpponentAnimationKey((k) => k + 1);
+    }
+  }
+
+  let deathTimer: ReturnType<typeof setTimeout> | null = null;
+  let resultsTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // After attack animation finishes, play deaths
+  deathTimer = setTimeout(() => {
+    if (!isDraw) {
+      if (loserIsMe) {
+        setMyAnimation("death");
+        setMyAnimationKey((k) => k + 1);
+      } else {
+        setOpponentAnimation("death");
+        setOpponentAnimationKey((k) => k + 1);
+      }
+    } else {
+      setMyAnimation("death");
+      setMyAnimationKey((k) => k + 1);
       setOpponentAnimation("death");
       setOpponentAnimationKey((k) => k + 1);
     }
-  } else {
-    setMyAnimation("death");
-    setMyAnimationKey((k) => k + 1);
-    setOpponentAnimation("death");
-    setOpponentAnimationKey((k) => k + 1);
-  }
-  // Show results after 4 seconds
-  const timer = setTimeout(() => {
-    setShowResults(true);
-  }, 4000);
 
-  return () => clearTimeout(timer);
+    // After death animations finish, reveal results
+    resultsTimer = setTimeout(() => {
+      setShowResults(true);
+    }, 2000); // 2s buffer after death
+  }, attackDuration);
+
+  return () => {
+    if (deathTimer) clearTimeout(deathTimer);
+    if (resultsTimer) clearTimeout(resultsTimer);
+  };
 }, [isGameOver, battleState, myUserId]);
 
 useEffect(() => {
