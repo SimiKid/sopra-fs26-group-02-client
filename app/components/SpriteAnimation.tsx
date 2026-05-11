@@ -59,7 +59,8 @@ export default function SpriteAnimation({
     return () => clearInterval(interval);
   }, [src, frames, animationSpeed, playOnce]);
 
-  const col = frameIndex % frames;
+  const safeFrame = Math.max(0, Math.min(frameIndex, frames - 1));
+  const col = safeFrame;
 
   const offsetX = col * spriteWidth;
   const totalWidth = frames * spriteWidth;
@@ -79,7 +80,9 @@ export default function SpriteAnimation({
         width: `${width}px`,
         height: `${height}px`,
         backgroundSize: `${scaledTotalWidth}px ${scaledTotalHeight}px`,
-        transform: flipX ? "translateX(-60px) scaleX(-1)" : undefined, // flip horizontally if flipX is true (for opponent in the battle screen)
+        transform: flipX ? "scaleX(-1)" : undefined, // flip horizontally if flipX is true (for opponent in the battle screen)
+        transformOrigin: "center",
+        backgroundRepeat: "no-repeat",
       }}
     />
   );
