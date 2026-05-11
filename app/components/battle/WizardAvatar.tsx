@@ -1,6 +1,7 @@
 "use client";
 
 import { WIZARDS } from "@/constants/wizards.constants";
+import { useEffect } from "react";
 
 import styles from "./WizardAvatar.module.css";
 import SpriteAnimation from "../SpriteAnimation";
@@ -22,6 +23,18 @@ export default function WizardAvatar({
   onAnimationComplete,
 }: WizardAvatarProps) {
   const wizard = WIZARDS.find((w) => w.id === wizardType) ?? WIZARDS[0];
+
+  // preload all sprite sheets for the wizard to ensure animations render without delay when switching states
+  useEffect(() => {
+    [
+      wizard.idle_sheet,
+      wizard.attack_sheet,
+      wizard.death_sheet,
+    ].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [wizard]);
 
   const spriteKey = `${animation}_sheet` as const;
   const frameKey = `${animation}_frames` as const;
