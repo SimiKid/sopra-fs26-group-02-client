@@ -12,13 +12,7 @@
   align-items: flex-start;
 }
 
-.leaderboardSide {
-  position: absolute;
-  left: calc(50% + 260px);
-  top: 0;
-  width: 360px;
-}
-
+.battleCounterTitle,
 .leaderboardTitle {
   margin: 0 0 14px;
   text-align: center;
@@ -26,6 +20,43 @@
   color: #c8b0ff;
   font-size: 1.1rem;
   text-shadow: 0 0 12px rgba(160, 100, 255, 0.35);
+}
+
+.battleCounterSide {
+  position: absolute;
+  right: calc(50% + 260px);
+  top: 0;
+  width: 260px;
+}
+
+.battleCounterCard {
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(22, 24, 29, 0.85);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  box-shadow: 0 0 24px rgba(160, 100, 255, 0.15);
+  text-align: center;
+}
+
+.battleCounterNumber {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #c8b0ff;
+  text-shadow: 0 0 18px rgba(160, 100, 255, 0.45);
+}
+
+.battleCounterLabel {
+  margin: 6px 0 0;
+  color: #7a6f99;
+  font-size: 0.9rem;
+}
+
+.leaderboardSide {
+  position: absolute;
+  left: calc(50% + 260px);
+  top: 0;
+  width: 360px;
 }
 
 .gameCode {
@@ -86,6 +117,7 @@
 }
 
 @media (max-width: 768px) {
+  .battleCounterSide,
   .leaderboardSide {
     position: static;
     width: 100%;

@@ -3,10 +3,13 @@
 import { Button, Spin, Input, Divider } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useLobby } from "@/hooks/useLobby";
+import { useBattleCounter } from "@/hooks/useBattleCounter";
 import Leaderboard from "@/components/profile/Leaderboard/Leaderboard";
 import styles from "./page.module.css";
 
 export default function Lobby() {
+  const battleCount = useBattleCounter();
+
   const {
     gameCode,
     loading,
@@ -40,6 +43,22 @@ export default function Lobby() {
     return (
       <div className={`page ${styles.pageOverride}`}>
         <div className={styles.lobbyWrapper}>
+        <aside className={styles.battleCounterSide}>
+          <h2 className={styles.battleCounterTitle}>
+            Battles Played
+          </h2>
+
+          <div className={styles.battleCounterCard}>
+            <div className={styles.battleCounterNumber}>
+              {battleCount ?? "—"}
+            </div>
+
+            <p className={styles.battleCounterLabel}>
+              total battles
+            </p>
+          </div>
+        </aside>
+
         <div className="container">
           <h1 className="title">Weather Wizards</h1>
           <p className="subtitle">Start a new battle</p>
