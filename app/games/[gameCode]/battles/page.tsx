@@ -22,6 +22,24 @@ import { WIZARDS } from "@/constants/wizards.constants";
 
 import styles from "./page.module.css";
 
+interface Wizard {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  spriteWidth: number;
+  spriteHeight: number;
+  animation_speed: number;
+  selection_sheet: string;
+  selection_frames: number;
+  idle_sheet: string;
+  idle_frames: number;
+  attack_sheet: string;
+  attack_frames: number;
+  death_sheet: string;
+  death_frames: number;
+}
+
 interface PlayerGetDTO {
   id: number;
   userId: number;
@@ -246,8 +264,8 @@ useEffect(() => {
         : battleState.player2WizardClass;
 
     const wizard = WIZARDS.find((w) => w.id === attackerWizardClass);
-    const frames = (wizard as any)?.attack_frames;
-    const animationSpeed = (wizard as any)?.animation_speed;
+    const frames = (wizard as Wizard)?.attack_frames;
+    const animationSpeed = (wizard as Wizard)?.animation_speed;
     return frames && animationSpeed ? frames * animationSpeed : 1000;
   })();
 
