@@ -5,6 +5,7 @@ import { useApi } from "@/hooks/useApi";
 import { WebSocketService } from "@/api/websocketService";
 import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
+import type { EmoteKey, ReceivedEmote } from "@/types/emote";
 
 export function useBattle(gameCode: string) {
   const { value: token, hydrated } = useLocalStorage<string>("token", "");
@@ -12,6 +13,7 @@ export function useBattle(gameCode: string) {
   const { message } = App.useApp();
 
   const [battleState, setBattleState] = useState<BattleStateDTO | null>(null);
+  const [latestEmote, setLatestEmote] = useState<ReceivedEmote | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const serviceRef = useRef<WebSocketService | null>(null);
@@ -36,6 +38,14 @@ export function useBattle(gameCode: string) {
           },
           (message) => {
             if (!cancelled) setError(message);
+          },
+          (emoteKey) => {
+            if (!cancelled) {
+              setLatestEmote({
+                key: emoteKey,
+                id: Date.now(),
+              });
+            }
           },
         )
         .then(() => {
@@ -66,6 +76,7 @@ export function useBattle(gameCode: string) {
       serviceRef.current = null;
       setIsConnected(false);
       setBattleState(null);
+      setLatestEmote(null);
     };
   }, [apiService, gameCode, hydrated, token]);
 
@@ -80,5 +91,16 @@ export function useBattle(gameCode: string) {
     [gameCode],
   );
 
-  return { battleState, isConnected, sendAttack };
+  const sendEmote = useCallback(
+    (emoteKey: EmoteKey) => {
+      try {
+        serviceRef.current?.sendEmote(gameCode, emoteKey);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      }
+    },
+    [gameCode],
+  );
+
+  return { battleState, isConnected, sendAttack, sendEmote, latestEmote };
 }

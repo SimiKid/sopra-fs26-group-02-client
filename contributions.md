@@ -128,8 +128,8 @@ reason).
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
 | **SimiKid**        | 21.04.2026 | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/4b2cc3fd893209a739f480e532dc243b2a480b5d) | Add GET /users/me/games endpoint for game history| Implements US-20 (View My Game History). Returns the authenticated user's finished games sorted most recent first, with date, location, weather, wizard classes, and win/loss/draw result. Data the profile page needs to show for past battles.|
 |                    | 21.04.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/82cbda98e9fe212abc62ec676f0c69b2330d7c83) | Add profile page with battle history, auth-gated header nav, and login redirect for protected routes| Users can track past battles. Also introduces the shared AppHeader nav and a reusable route guard that future authenticated pages can rely on. |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **swimch**         |    |  | Joker |  |
+|                    |    |  | Joker |  |
 | **noelgehrig**     | 02.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/c2ccb582172c10b44565f4fb61fff0b79a6b64cf) | Redesigned attack section in the Battle UI by replacing the old attack bar with simplified circular spell buttons and hover tooltips | Improves usability and clarity during gameplay by making attack selection more intuitive. |
 |                    | 03.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/288c9fd8326a2544990807345d522d90272b0217) | Fixed HP reset issue on page refresh by introducing maxHp in backend and including it in BattleStateDTO. | Ensures game state consistency across refreshes, preventing incorrect HP display and improving overall game reliability |
 | **OHaas61**        | 01.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/7ba012d3a28eccaea49bb80271580b1fdfa332d6) | To make joining a battle faster we now use websockets to send a start message when the second player joins | This is relevant because the game is now faster to start which makes it more fun |
@@ -143,16 +143,17 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 10.05.2026   | | Joker |  |
+|                    | 10.05.2026  | | Joker | |
+| **swimch**         | 05.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/11bf52f84def7ecf346dc198be3d2fb14ec1fd6a) | Added animations to the wizard selection | Makes the app visually more appealing by replacing the placeholder wizards |
+|                    | 07.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/55fc861f4c73153edcbd5fc37689e60383d787db) | Added idle animations to the battle screen | Makes the UI more coherent with the wizard selection and more appealing |
+| **noelgehrig**     | 05.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/2d25dcf1a7a57a888c2decbeec117b9bec307b42) | Replaced numeric weather modifier values for the attacks with symbolic indicators (++, +, =, -, --). | Improves readability and usability during battles by making attacks and their modifiers easier and faster to understand. |
+|                    | 06.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/ef7085533b2069a8e27b468366e2b4767e037c9b) | Refined the leaderboard into a card/list UI and added a leaderboard preview section to the lobby page. | Improves the visuals of the player rankings while also making leaderboard information directly visible from the lobby. |
+|                    | 09.05.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/a09295506ec0fd8e9be62498e10e8c767af00a02) | Added an in-battle emote system with WebSocket communication, popup emote selection, and animated emote display. | Improves player interaction and engagement during battles by enabling realtime communication between opponents. |
+| **OHaas61**        | 05.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/fd14cd33f9e542c0db402dadfed012a36c07436c) | The task was to create a cloud database, so that we have persistent data | we need this to accurately display our leaderboard, gamestats and keep the login data of users. |
+|                    | 07.05.2026  | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/25c02ba293aeefdcb6ce19bf29057c8720a61682) | Added WebSocket message mapping /app/game/{gameCode}/emote with rate limiting and broadcast to /topic/game/{gameCode}/emotes | we use these to send emotes for an ingame emote chat |
+| **liv519**         | 06.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/c439e1c31e394fef89cc56cbece0945302d31aa3) | Created table, logic and websockets for players who search for quick gaames | Make it possible for players to connect with random opponents | 
+|                    | 07.05.2026  | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/cbe329490f11a3d877e8ff994d37e9ea6583d8f1) | Button for quick match and waiting page with cancel option and timer | Make the option for a quick game visible |
 
 ---
 

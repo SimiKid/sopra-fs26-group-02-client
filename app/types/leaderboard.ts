@@ -7,4 +7,5 @@ export interface Leaderboard {
   wins: number;
   losses: number;
   winRate: number;
+  userId: number;
 }

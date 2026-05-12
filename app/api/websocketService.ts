@@ -2,6 +2,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
+import type { EmoteKey } from "@/types/emote";
 import { getApiDomain } from "@/utils/domain";
 
 export class WebSocketService {
@@ -13,6 +14,7 @@ export class WebSocketService {
     gameCode: string,
     onState: (state: BattleStateDTO) => void,
     onError?: (message: string) => void,
+    onEmote?: (emoteKey: EmoteKey) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const url = `${getApiDomain()}/ws`;
@@ -35,7 +37,14 @@ export class WebSocketService {
               onError?.(`Invalid broadcast payload: ${String(e)}`);
             }
           });
+
+          client.subscribe(`/topic/game/${gameCode}/emotes`, (frame) => {
+            console.log("[WebSocketService] EMOTE RECEIVED:", frame.body);
+            const emoteKey = frame.body.replaceAll('"', "") as EmoteKey;
+            onEmote?.(emoteKey);
+          });
           console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}`);
+          console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}/emotes`);
           resolve();
         },
         onStompError: (frame) => {
@@ -65,6 +74,20 @@ export class WebSocketService {
       destination: `/app/game/${gameCode}/attack`,
       headers: { Authorization: this.token },
       body: attackName,
+    });
+  }
+
+  sendEmote(gameCode: string, emoteKey: EmoteKey): void {
+    if (!this.client?.connected) {
+      throw new Error("WebSocket not connected");
+    }
+
+    console.log("[WebSocketService] sending emote", emoteKey, "to game", gameCode);
+
+    this.client.publish({
+      destination: `/app/game/${gameCode}/emote`,
+      headers: { Authorization: this.token },
+      body: JSON.stringify({ emoteKey }),
     });
   }
 

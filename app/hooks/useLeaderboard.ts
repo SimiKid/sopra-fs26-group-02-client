@@ -3,7 +3,7 @@ import { App } from "antd";
 import { useApi } from "@/hooks/useApi";
 import type { Leaderboard } from "@/types/leaderboard";
 
-export function useLeaderboard() {
+export function useLeaderboard(limit: 5 | 50 = 50) {
   const { message } = App.useApp();
   const apiService = useApi();
 
@@ -14,8 +14,10 @@ export function useLeaderboard() {
     let cancelled = false;
     setLoading(true);
 
+    const endpoint = limit === 5 ? "/leaderboard5" : "/leaderboard";
+
     apiService
-      .get<Leaderboard[]>("/leaderboard")
+      .get<Leaderboard[]>(endpoint)
       .then((response) => {
         if (cancelled) return;
         setLeaderboard(response);
@@ -31,7 +33,7 @@ export function useLeaderboard() {
     return () => {
       cancelled = true;
     };
-  }, [apiService, message]);
+  }, [apiService, message, limit]);
 
   return { leaderboard, loading };
 }
