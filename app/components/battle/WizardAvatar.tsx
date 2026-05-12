@@ -11,7 +11,6 @@ interface WizardAvatarProps {
   align?: "left" | "right";
   animation?: "idle" | "attack" | "damaged" | "death";
   playOnce?: boolean; // whether to play the animation only once (instead of looping)
-  animationKey?: number;
   onAnimationComplete?: () => void;
 }
 
@@ -45,13 +44,14 @@ export default function WizardAvatar({
   const frames = typeof frameValue === "number" ? frameValue : wizard.idle_frames;
 
   return (
-    <div className={`${styles.container} ${styles[align]}`}>
+    <div className={`${styles.container}`}>
       <div className={styles.frame} aria-label={wizard.title}>
         <SpriteAnimation
           {...wizard}
           src={spriteSheet}
           frames={frames}
           className={styles.animatedSprite}
+          animationSpeed={wizard.animation_speed}
           scale={7}
           flipX={align === "right"}
           playOnce={playOnce}

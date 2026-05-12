@@ -68,4 +68,3 @@ export const WIZARDS = [
     death_frames: 13,
   },
 ];
-;

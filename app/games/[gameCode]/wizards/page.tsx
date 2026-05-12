@@ -83,6 +83,7 @@ export default function Wizard() {
                 frames={wizard.selection_frames}
                 scale={4}
                 className={styles.animatedSprite}
+                animationSpeed={wizard.animation_speed}
               />
             </Button>
 

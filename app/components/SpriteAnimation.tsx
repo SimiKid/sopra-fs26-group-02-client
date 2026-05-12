@@ -57,7 +57,7 @@ export default function SpriteAnimation({
     }, animationSpeed);
 
     return () => clearInterval(interval);
-  }, [src, frames, animationSpeed, playOnce]);
+  }, [src, frames, animationSpeed, playOnce, onComplete]);
 
   const safeFrame = Math.max(0, Math.min(frameIndex, frames - 1));
   const col = safeFrame;

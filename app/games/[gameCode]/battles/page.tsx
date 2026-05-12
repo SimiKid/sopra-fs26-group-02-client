@@ -78,8 +78,6 @@ export default function Battle() {
   const previousStateRef = useRef<BattleStateDTO | null>(null);
   const [myAnimation, setMyAnimation] = useState<"idle" | "attack" | "death">("idle");
   const [opponentAnimation, setOpponentAnimation] = useState<"idle" | "attack" | "death">("idle");
-  const [myAnimationKey, setMyAnimationKey] = useState(0);
-  const [opponentAnimationKey, setOpponentAnimationKey] = useState(0);
   const [currentAttackId, setCurrentAttackId] = useState<AttackId | null>(null);
   const [attackerUserId, setAttackerUserId] = useState<number | null>(null);
 
@@ -209,10 +207,8 @@ export default function Battle() {
 
       if (attackUsedId === myUserId) {
         setMyAnimation("attack");
-        setMyAnimationKey((k) => k + 1);
       } else {
         setOpponentAnimation("attack");
-        setOpponentAnimationKey((k) => k + 1);
       }
     }
 
@@ -324,10 +320,8 @@ useEffect(() => {
   if (attackerUserId !== null) {
     if (attackerUserId === myUserId) {
       setMyAnimation("attack");
-      setMyAnimationKey((k) => k + 1);
     } else {
       setOpponentAnimation("attack");
-      setOpponentAnimationKey((k) => k + 1);
     }
   }
 
@@ -339,16 +333,12 @@ useEffect(() => {
     if (!isDraw) {
       if (loserIsMe) {
         setMyAnimation("death");
-        setMyAnimationKey((k) => k + 1);
       } else {
         setOpponentAnimation("death");
-        setOpponentAnimationKey((k) => k + 1);
       }
     } else {
       setMyAnimation("death");
-      setMyAnimationKey((k) => k + 1);
       setOpponentAnimation("death");
-      setOpponentAnimationKey((k) => k + 1);
     }
 
     // After death animations finish, reveal results
@@ -525,7 +515,6 @@ if (isGameOver && showResults) {
               align="left"
               animation={myAnimation}
               playOnce={myAnimation === "attack" || myAnimation === "death"}
-              animationKey={myAnimationKey}
               onAnimationComplete={handleMyAnimationComplete}
             />
             {/* Attack renders here only if opponent attacked me */}
@@ -557,7 +546,6 @@ if (isGameOver && showResults) {
               align="right"
               animation={opponentAnimation}
               playOnce={opponentAnimation === "attack" || opponentAnimation === "death"}
-              animationKey={opponentAnimationKey}
               onAnimationComplete={handleOpponentAnimationComplete}
             />
             {/* Attack renders here only if I attacked opponent */}
