@@ -28,15 +28,15 @@ interface AttackInterfaceProps {
 }
 
 function getModifierSymbol(modifier: number) {
-  if (modifier <= 0.65) return "--";
+  if (modifier <= 0.65) return "- -";
   if (modifier <= 0.85) return "-";
   if (modifier <= 1.0) return "=";
   if (modifier <= 1.3) return "+";
-  return "++";
+  return "+ +";
 }
 
 function getModifierClass(symbol: string) {
-  if (symbol === "--") return styles.minusMinus;
+  if (symbol === "- -") return styles.minusMinus;
   if (symbol === "-") return styles.minus;
   if (symbol === "=") return styles.neutralModifier;
   if (symbol === "+") return styles.plus;
