@@ -12,6 +12,7 @@ import AttackInterface from "@/components/battle/AttackInterface";
 import FighterPanel from "@/components/battle/FighterPanel";
 import TurnStatus from "@/components/battle/TurnStatus";
 import WizardAvatar from "@/components/battle/WizardAvatar";
+import EmoteButton from "@/components/battle/EmoteButton";
 
 import { Attack } from "@/types/attack";
 import { BattleStateDTO } from "@/types/battle";
@@ -42,13 +43,14 @@ export default function Battle() {
   // Services
   const { message } = App.useApp();
   const apiService = useApi(token);
-  const { battleState, isConnected, sendAttack } = useBattle(gameCode);
+  const { battleState, isConnected, sendAttack, sendEmote, latestEmote } = useBattle(gameCode);
 
   // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
 
   // Transient UI state
-  const [timeLeft, setTimeLeft] = useState<number>(30);
+  const [targetTime, setTargetTime] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [player1DamageText, setPlayer1DamageText] = useState("");
   const [player2DamageText, setPlayer2DamageText] = useState("");
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
@@ -150,7 +152,7 @@ export default function Battle() {
     return {
       FIRE: getElementModifier("FIRE", temperature, rain),
       ICE: getElementModifier("ICE", temperature, rain),
-      LIGHTNING: getElementModifier("LIGHTNING", temperature, rain),
+      STORM: getElementModifier("STORM", temperature, rain),
       NEUTRAL: getElementModifier("NEUTRAL", temperature, rain),
     };
   }, [battleState?.temperature, battleState?.rain]);
@@ -180,23 +182,42 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (!isMyTurn) {
-    setTimeLeft(30);
-    return;
+  const fetchTimer = async () => {
+    setTimeLeft(null);
+    setTargetTime(null);
+    try {
+      const response = await apiService.get<string>(`/timer/${gameCode}`);
+      setTargetTime(response); 
+      
+    } catch (error) {
+      console.error("Error loading timer", error);
+    }
+  };
+
+  if (isMyTurn) {
+    fetchTimer();
   }
+}, [isMyTurn, gameCode]);
+
+useEffect(() => {
+  if (!targetTime || !isMyTurn) return;
 
   const timer = setInterval(() => {
-    setTimeLeft((prev) => {
-      if (prev <= 1) {
-        clearInterval(timer);
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
+    const now = new Date(); 
+    const end = new Date(targetTime); 
+    const diffInMs = end.getTime() - now.getTime();
+    const seconds = Math.floor(diffInMs / 1000);
 
+    if (seconds <= 0) {
+      setTimeLeft(0);
+      clearInterval(timer); 
+    } else {
+      setTimeLeft(seconds); 
+    }
+  }, 1000);
   return () => clearInterval(timer);
-}, [isMyTurn]);
+}, [targetTime, isMyTurn]); 
+
 
   if (!isConnected || battleState === null) {
     const statusText = isConnected
@@ -267,8 +288,26 @@ if (isGameOver) {
   );
 }
 
-  const playerWizardType = battleState.player1WizardClass;
-  const opponentWizardType = battleState.player2WizardClass;
+  const amIPlayer1 = battleState.player1UserId === myUserId;
+
+  const p1 = {
+    wizard: battleState.player1WizardClass,
+    username: battleState.player1Username ?? "You",
+    hp: battleState.player1Hp,
+    maxHp: battleState.player1MaxHp,
+    damage: player1DamageText,
+  };
+
+  const p2 = {
+    wizard: battleState.player2WizardClass,
+    username: battleState.player2Username ?? "Opponent",
+    hp: battleState.player2Hp,
+    maxHp: battleState.player2MaxHp,
+    damage: player2DamageText,
+  };
+
+  const me = amIPlayer1 ? p1 : p2;
+  const opponent = amIPlayer1 ? p2 : p1;
 
   const temperatureClass =
     battleState.temperature === "HOT"
@@ -285,27 +324,35 @@ if (isGameOver) {
       <div className={styles.battleRow}>
         <div className={styles.fighterColumn}>
           <FighterPanel
-            username={battleState.player1Username ?? "You"}
-            wizardClass={playerWizardType}
-            currentHp={battleState.player1Hp}
-            maxHp={battleState.player1MaxHp}
-            damageText={player1DamageText}
+            username={me.username}
+            wizardClass={me.wizard}
+            currentHp={me.hp}
+            maxHp={me.maxHp}
+            damageText={me.damage}
           />
-          <WizardAvatar wizardType={playerWizardType} align="left" />
+          <WizardAvatar wizardType={me.wizard} align="left" />
         </div>
 
         <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
 
         <div className={styles.fighterColumn}>
           <FighterPanel
-            username={battleState.player2Username ?? "Opponent"}
-            wizardClass={opponentWizardType}
-            currentHp={battleState.player2Hp}
-            maxHp={battleState.player2MaxHp}
-            damageText={player2DamageText}
+            username={opponent.username}
+            wizardClass={opponent.wizard}
+            currentHp={opponent.hp}
+            maxHp={opponent.maxHp}
+            damageText={opponent.damage}
           />
-          <WizardAvatar wizardType={opponentWizardType} align="right" />
+          <WizardAvatar wizardType={opponent.wizard} align="right" />
         </div>
+      </div>
+
+      <div className={styles.emoteButtonSlot}>
+        <EmoteButton
+          disabled={!isConnected}
+          receivedEmote={latestEmote}
+          onEmoteSelected={sendEmote}
+        />
       </div>
 
       <div className={styles.bottomBar}>
@@ -317,6 +364,7 @@ if (isGameOver) {
             onAttackSelected={sendAttack}
             rain={battleState.rain}
             temperature={battleState.temperature}
+            wizardClass={me.wizard}
           />
         </div>
       </div>

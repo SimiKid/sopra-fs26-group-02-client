@@ -78,44 +78,78 @@
   gap: 12px;
 }
 
-.damage {
+.element {
   padding: 4px 10px;
   border-radius: 8px;
-  background: rgba(255, 159, 67, 0.15);
-  border: 1px solid rgba(255, 159, 67, 0.5);
-  color: #ff9f43;
   font-size: 0.85rem;
   font-weight: 800;
+  border: 1px solid;
 }
 
 .modifier {
+  min-width: 34px;
   padding: 4px 10px;
   border-radius: 8px;
-  background: rgba(98, 217, 255, 0.12);
-  border: 1px solid rgba(98, 217, 255, 0.5);
-  color: #62d9ff;
   font-size: 0.85rem;
   font-weight: 800;
-}
-
-.tooltip small {
-  color: #aab0c4;
+  border: 1px solid;
 }
 
 .fire {
   border-color: #ff5c2a;
+  background: rgba(255, 92, 42, 0.15);
+  color: #ff7a4a;
 }
 
 .ice {
   border-color: #62d9ff;
+  background: rgba(98, 217, 255, 0.15);
+  color: #62d9ff;
 }
 
-.lightning {
+.storm {
   border-color: #ca8cff;
+  background: rgba(202, 140, 255, 0.15);
+  color: #ca8cff;
 }
 
 .neutral {
   border-color: #e6dcbe;
+  background: rgba(230, 220, 190, 0.15);
+  color: #e6dcbe;
+}
+
+.minus, .minusMinus {
+  background: rgba(255, 105, 120, 0.15);
+  border-color: rgba(255, 105, 120, 0.5);
+  color: #ff6978;
+}
+
+.neutralModifier {
+  background: rgba(170, 176, 196, 0.15);
+  border-color: rgba(170, 176, 196, 0.5);
+  color: #aab0c4;
+}
+
+.plus, .plusPlus {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.5);
+  color: #4ade80;
+}
+
+.gamble {
+  background: rgba(202, 140, 255, 0.14);
+  border-color: rgba(202, 140, 255, 0.5);
+  color: #ca8cff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  border: 1px solid;
+}
+
+.tooltip small {
+  color: #aab0c4;
 }
 
 .pending {

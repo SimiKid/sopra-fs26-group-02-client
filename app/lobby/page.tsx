@@ -3,9 +3,14 @@
 import { Button, Spin, Input, Divider } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useLobby } from "@/hooks/useLobby";
+import { useBattleCounter } from "@/hooks/useBattleCounter";
+import Leaderboard from "@/components/profile/Leaderboard/Leaderboard";
 import styles from "./page.module.css";
+import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function Lobby() {
+  const battleCount = useBattleCounter();
+
   const {
     gameCode,
     loading,
@@ -21,12 +26,20 @@ export default function Lobby() {
     formatTime,
   } = useLobby();
 
-  if (gameFullMessage) {
+  const { startMatchmaking, isSearching, matchFoundMessage, stopMatchmaking, timeLeft: matchmakingTimeLeft } = useMatchmaking();
+
+  const formatMatchmakingTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
+
+  if (gameFullMessage || matchFoundMessage) {
     return (
       <div className="page">
         <div className="container">
           <h1 className="title">Game Ready!</h1>
-          <p className="subtitle">{gameFullMessage}</p>
+          <p className="subtitle">{gameFullMessage || matchFoundMessage}</p>
           <div className={styles.spinnerWrapper}>
             <Spin size="large" />
           </div>
@@ -35,9 +48,52 @@ export default function Lobby() {
     );
   }
 
-  if (!gameCode) {
+  if (isSearching) {
     return (
       <div className="page">
+        <div className="container">
+          <h1 className="title">Search for an opponent</h1>
+          <p className="subtitle">Wait for an other player to join the game</p>
+          <div className={styles.spinnerWrapper}>
+            <Spin size="large" />
+            <p className={matchmakingTimeLeft <= 10 ? styles.timerWarning : styles.timerDefault}>
+              Matchmaking ends in: {formatMatchmakingTime(matchmakingTimeLeft)}
+            </p>
+          </div>
+          <Button
+            block
+            danger
+            type="text"
+            className={styles.cancelButton}
+            onClick={stopMatchmaking}
+          >
+            Cancel and return to menu
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!gameCode) {
+    return (
+      <div className={`page ${styles.pageOverride}`}>
+        <div className={styles.lobbyWrapper}>
+        <aside className={styles.battleCounterSide}>
+          <h2 className={styles.battleCounterTitle}>
+            Battles Played
+          </h2>
+
+          <div className={styles.battleCounterCard}>
+            <div className={styles.battleCounterNumber}>
+              {battleCount ?? "—"}
+            </div>
+
+            <p className={styles.battleCounterLabel}>
+              total battles
+            </p>
+          </div>
+        </aside>
+
         <div className="container">
           <h1 className="title">Weather Wizards</h1>
           <p className="subtitle">Start a new battle</p>
@@ -69,6 +125,22 @@ export default function Lobby() {
           >
             Join Game
           </Button>
+
+          <Divider className={styles.divider}>or</Divider>
+          <Button
+            block
+            className="button-secondary"
+            onClick={startMatchmaking}
+            loading={isSearching}
+          >
+            Quick Match
+          </Button>
+        </div>
+
+        <aside className={styles.leaderboardSide}>
+          <h2 className={styles.leaderboardTitle}>Leaderboard</h2>
+          <Leaderboard limit={5} compact />
+        </aside>
         </div>
       </div>
     );

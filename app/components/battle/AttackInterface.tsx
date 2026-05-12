@@ -24,6 +24,23 @@ interface AttackInterfaceProps {
   onAttackSelected: (attackId: AttackId) => void;
   rain: BattleRain;
   temperature: BattleTemperature;
+  wizardClass: string;
+}
+
+function getModifierSymbol(modifier: number) {
+  if (modifier <= 0.65) return "- -";
+  if (modifier <= 0.85) return "-";
+  if (modifier <= 1.0) return "=";
+  if (modifier <= 1.3) return "+";
+  return "+ +";
+}
+
+function getModifierClass(symbol: string) {
+  if (symbol === "- -") return styles.minusMinus;
+  if (symbol === "-") return styles.minus;
+  if (symbol === "=") return styles.neutralModifier;
+  if (symbol === "+") return styles.plus;
+  return styles.plusPlus;
 }
 
 export default function AttackInterface({
@@ -33,9 +50,11 @@ export default function AttackInterface({
   onAttackSelected,
   rain,
   temperature,
+  wizardClass,
 }: AttackInterfaceProps) {
   const [pendingId, setPendingId] = useState<AttackId | null>(null);
   const locked = !isMyTurn || disabled;
+  const isGambleWizard = wizardClass === "GAMBLERWIZARD";
 
   useEffect(() => {
     if (!isMyTurn) setPendingId(null);
@@ -59,13 +78,16 @@ export default function AttackInterface({
             rain,
           );
 
+          const symbol = getModifierSymbol(modifier);
+          const elementClass = styles[attack.element.toLowerCase()];
+
           return (
             <button
               key={attack.id}
               type="button"
-              className={`${styles.spellButton} ${
-                styles[attack.element.toLowerCase()]
-              } ${isPending ? styles.pending : ""}`}
+              className={`${styles.spellButton} ${elementClass} ${
+                isPending ? styles.pending : ""
+              }`}
               disabled={locked || pendingId !== null}
               onClick={() => handleClick(attack.id)}
             >
@@ -79,13 +101,19 @@ export default function AttackInterface({
                 <strong>{attack.name}</strong>
 
                 <div className={styles.statsRow}>
-                  <span className={styles.damage}>
-                    {attack.baseDamage} DMG
+                  <span className={`${styles.element} ${elementClass}`}>
+                    {attack.element}
                   </span>
 
-                  <span className={styles.modifier}>
-                    x{modifier.toFixed(2)}
+                  <span className={`${styles.modifier} ${getModifierClass(symbol)}`}>
+                    {symbol}
                   </span>
+
+                  {isGambleWizard && (
+                    <span className={styles.gamble}>
+                      🎲
+                    </span>
+                  )}
                 </div>
 
                 <small>{attack.description}</small>

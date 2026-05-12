@@ -116,9 +116,6 @@ export default function Attacks() {
             <div className={styles.attackInfo}>
               <h2 className={styles.attackTitle}>{attack.name}</h2>
               <p className={styles.attackDescription}>
-                Base Damage: {attack.baseDamage}
-              </p>
-              <p className={styles.attackDescription}>
                 Element Type: {formatElement(attack.element)}
               </p>
               <p className={styles.attackDescription}>

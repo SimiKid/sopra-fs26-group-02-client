@@ -2,6 +2,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
+import type { EmoteKey } from "@/types/emote";
 import { getApiDomain } from "@/utils/domain";
 
 export class WebSocketService {
@@ -13,6 +14,7 @@ export class WebSocketService {
     gameCode: string,
     onState: (state: BattleStateDTO) => void,
     onError?: (message: string) => void,
+    onEmote?: (emoteKey: EmoteKey) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const url = `${getApiDomain()}/ws`;
@@ -35,7 +37,14 @@ export class WebSocketService {
               onError?.(`Invalid broadcast payload: ${String(e)}`);
             }
           });
+
+          client.subscribe(`/topic/game/${gameCode}/emotes`, (frame) => {
+            console.log("[WebSocketService] EMOTE RECEIVED:", frame.body);
+            const emoteKey = frame.body.replaceAll('"', "") as EmoteKey;
+            onEmote?.(emoteKey);
+          });
           console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}`);
+          console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}/emotes`);
           resolve();
         },
         onStompError: (frame) => {
@@ -68,13 +77,74 @@ export class WebSocketService {
     });
   }
 
+  sendEmote(gameCode: string, emoteKey: EmoteKey): void {
+    if (!this.client?.connected) {
+      throw new Error("WebSocket not connected");
+    }
+
+    console.log("[WebSocketService] sending emote", emoteKey, "to game", gameCode);
+
+    this.client.publish({
+      destination: `/app/game/${gameCode}/emote`,
+      headers: { Authorization: this.token },
+      body: JSON.stringify({ emoteKey }),
+    });
+  }
+
   disconnect(): void {
     console.log("[WebSocketService] disconnecting");
     this.client?.deactivate();
     this.client = null;
   }
 
-  get connected(): boolean {
-    return this.client?.connected ?? false;
+  async connectBasic(): Promise<void> {
+    // 1. Falls wir schon verbunden sind, einfach aufhören
+    if (this.client?.connected) {
+      return;
+    }
+  
+    const url = `${getApiDomain()}/ws`;
+  
+    return new Promise((resolve, reject) => {
+      this.client = new Client({
+        webSocketFactory: () => new SockJS(url),
+        // Der Token für das Backend
+        connectHeaders: { 
+          Authorization: this.token 
+        },
+        // Automatische Versuche bei Verbindungsabbruch
+        reconnectDelay: 5000,
+        onConnect: () => {
+          console.log("[WS] Erfolgreich verbunden!");
+          resolve();
+        },
+        onStompError: (frame) => {
+          reject(new Error(frame.headers["message"]));
+        },
+        onWebSocketError: () => {
+          reject(new Error("WebSocket Fehler"));
+        },
+      });
+  
+      this.client.activate();
+    });
   }
+  
+    subscribeToMatchmaking(userId: number, onMatchFound: (gameCode: string) => void) {
+      if (!this.client?.connected) {
+          console.error("WS not connected!");
+          return;
+      }
+  
+      const subscription = this.client.subscribe(`/topic/match/${userId}`, (frame) => {
+        console.log("[WS] Match Found Event received!");
+        
+        const cleanGameCode = frame.body.replace(/"/g, "");
+        
+        onMatchFound(cleanGameCode);
+        subscription.unsubscribe();
+      });
+    
+      console.log(`[WS] Listening for matches on /topic/match/${userId}`);
+    }
 }
