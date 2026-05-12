@@ -152,6 +152,33 @@
   color: #aab0c4;
 }
 
+.blocked {
+  opacity: 0.5;
+  filter: grayscale(0.85);
+  border-color: rgba(255, 105, 120, 0.75);
+  box-shadow: 0 0 18px rgba(255, 105, 120, 0.25);
+}
+
+.lockIcon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(23, 22, 34, 0.92);
+  border: 1px solid rgba(255, 105, 120, 0.7);
+  font-size: 0.9rem;
+}
+
+.blockedText {
+  color: #ff6978 !important;
+  font-weight: 800;
+}
+
 .pending {
   border-color: #40e0ff;
   filter: brightness(1.2);
