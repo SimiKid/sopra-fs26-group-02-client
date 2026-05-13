@@ -7,8 +7,10 @@ import { useBattleCounter } from "@/hooks/useBattleCounter";
 import Leaderboard from "@/components/profile/Leaderboard/Leaderboard";
 import styles from "./page.module.css";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 export default function Lobby() {
+  const { ready } = useRequireAuth("/");
   const battleCount = useBattleCounter();
 
   const {
@@ -33,6 +35,16 @@ export default function Lobby() {
     const secs = seconds % 60;
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
+
+  if (!ready) {
+    return (
+      <div className="page">
+        <div className={styles.spinnerWrapper}>
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
 
   if (gameFullMessage || matchFoundMessage) {
     return (
