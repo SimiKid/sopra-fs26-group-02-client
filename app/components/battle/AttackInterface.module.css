@@ -152,13 +152,6 @@
   color: #aab0c4;
 }
 
-.blocked {
-  opacity: 0.5;
-  filter: grayscale(0.85);
-  border-color: rgba(255, 105, 120, 0.75);
-  box-shadow: 0 0 18px rgba(255, 105, 120, 0.25);
-}
-
 .spellButton.blocked:disabled {
   opacity: 0.5;
   filter: grayscale(0.85);
