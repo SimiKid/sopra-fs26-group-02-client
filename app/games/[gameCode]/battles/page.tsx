@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { App, Button, Spin } from "antd";
 
@@ -12,6 +12,7 @@ import AttackInterface from "@/components/battle/AttackInterface";
 import FighterPanel from "@/components/battle/FighterPanel";
 import TurnStatus from "@/components/battle/TurnStatus";
 import WizardAvatar from "@/components/battle/WizardAvatar";
+import AttackSprite from "@/components/battle/AttackSprite";
 import EmoteButton from "@/components/battle/EmoteButton";
 
 import { Attack } from "@/types/attack";
@@ -19,8 +20,28 @@ import { BattleStateDTO } from "@/types/battle";
 import { AttackId } from "@/constants/attacks.constants";
 import { getElementModifier } from "@/utils/weatherModifiers";
 import { BattleResult } from "@/types/battleResult";
+import { WIZARDS } from "@/constants/wizards.constants";
+import { ATTACK_SPRITES } from "@/constants/attackSprites.constants";
 
 import styles from "./page.module.css";
+
+interface Wizard {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  spriteWidth: number;
+  spriteHeight: number;
+  animation_speed: number;
+  selection_sheet: string;
+  selection_frames: number;
+  idle_sheet: string;
+  idle_frames: number;
+  attack_sheet: string;
+  attack_frames: number;
+  death_sheet: string;
+  death_frames: number;
+}
 
 interface PlayerGetDTO {
   id: number;
@@ -55,6 +76,15 @@ export default function Battle() {
   const [player2DamageText, setPlayer2DamageText] = useState("");
   const [resultStats, setResultStats] = useState<BattleResult | null>(null);
   const previousStateRef = useRef<BattleStateDTO | null>(null);
+  const [myAnimation, setMyAnimation] = useState<"idle" | "attack" | "death">("idle");
+  const [opponentAnimation, setOpponentAnimation] = useState<"idle" | "attack" | "death">("idle");
+  const [currentAttackId, setCurrentAttackId] = useState<AttackId | null>(null);
+  const [attackerUserId, setAttackerUserId] = useState<number | null>(null);
+
+  const myAnimationRef = useRef<"idle" | "attack" | "death">("idle");
+  const opponentAnimationRef = useRef<"idle" | "attack" | "death">("idle");
+
+  const [showResults, setShowResults] = useState(false);
 
   const [rematchWaiting, setRematchWaiting] = useState(false);
   const [rematchTimeLeft, setRematchTimeLeft] = useState(30);
@@ -117,6 +147,19 @@ export default function Battle() {
     };
   }, [apiService, gameCode, tokenHydrated, token, message]);
 
+  // Preload all attack sprites
+  useEffect(() => {
+    const attackIds = Object.values(AttackId);
+    
+    attackIds.forEach((attackId) => {
+      const sprite = ATTACK_SPRITES[attackId];
+      if (sprite) {
+        const img = new Image();
+        img.src = sprite.spriteSheet;
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (!battleState) return;
 
@@ -140,8 +183,64 @@ export default function Battle() {
       setTimeout(() => setPlayer2DamageText(""), 1800);
     }
 
+    const turnAdvanced = previous.activePlayerId !== battleState.activePlayerId;
+    const hasResolvedAttack = battleState.attackUsed !== null;
+
+    if (turnAdvanced && hasResolvedAttack && myUserId !== null) {
+      const attackUsedId = previous.activePlayerId;
+      const attackUsed = battleState.attackUsed;
+
+      if (attackUsed) {
+        setCurrentAttackId(attackUsed as AttackId);
+        setAttackerUserId(attackUsedId);
+        
+        // Calculate duration based on sprite animation
+        const sprite = ATTACK_SPRITES[attackUsed as AttackId];
+        const duration = sprite.frames * sprite.animation_speed + 200; // 200ms buffer
+        
+        // Reset after animation completes
+        setTimeout(() => {
+          setCurrentAttackId(null);
+          setAttackerUserId(null);
+        }, duration);
+      }
+
+      if (attackUsedId === myUserId) {
+        setMyAnimation("attack");
+      } else {
+        setOpponentAnimation("attack");
+      }
+    }
+
+    // NOW check if game is finished (after processing final attack)
+    if (battleState.gameStatus === "FINISHED") {
+      previousStateRef.current = battleState;
+      return;
+    }
+
     previousStateRef.current = battleState;
-  }, [battleState]);
+  }, [battleState, myUserId]);
+
+  const handleMyAnimationComplete = useCallback(() => {
+    setMyAnimation((current) =>
+      current === "death" ? current : "idle"
+    );
+  }, []);
+
+  const handleOpponentAnimationComplete = useCallback(() => {
+    setOpponentAnimation((current) =>
+      current === "death" ? current : "idle"
+    );
+  }, []);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    myAnimationRef.current = myAnimation;
+  }, [myAnimation]);
+
+  useEffect(() => {
+    opponentAnimationRef.current = opponentAnimation;
+  }, [opponentAnimation]);
 
 
 
@@ -173,6 +272,86 @@ useEffect(() => {
     .then((data) => setResultStats(data))
     .catch((err) => message.error(err?.message ?? "Failed to load battle results."));
 }, [isGameOver, apiService, gameCode, message, tokenHydrated, token]);
+
+useEffect(() => {
+  if (!isGameOver || !battleState || !myUserId) return;
+
+  // Decide whether it's a draw and who lost
+  const isDraw = battleState.winnerId === null;
+  const loserIsMe = !isDraw && battleState.winnerId !== myUserId;
+
+  // Determine attack duration to know when to play death animations
+  // Either the wizard's attack animation or the attack sprite animation, whichever is longer
+  const attackDuration = (() => {
+    // Calculate wizard attack animation duration
+    const previous = previousStateRef.current;
+    const attackerUserId = previous?.activePlayerId ?? null;
+
+    const attackerWizardClass =
+      attackerUserId === battleState.player1UserId
+        ? battleState.player1WizardClass
+        : attackerUserId === battleState.player2UserId
+        ? battleState.player2WizardClass
+        : battleState.player2WizardClass;
+
+    const wizard = WIZARDS.find((w) => w.id === attackerWizardClass);
+    const wizardFrames = (wizard as Wizard)?.attack_frames;
+    const wizardAnimationSpeed = (wizard as Wizard)?.animation_speed;
+    const wizardDuration = wizardFrames && wizardAnimationSpeed ? wizardFrames * wizardAnimationSpeed : 1000;
+
+    // Calculate attack sprite animation duration
+    const attackSprite = ATTACK_SPRITES[battleState.attackUsed as AttackId];
+    const attackSpriteDuration = attackSprite 
+      ? attackSprite.frames * attackSprite.animation_speed 
+      : 0;
+
+    // Use the longer of the two durations to ensure death animation waits for both
+    return Math.max(wizardDuration, attackSpriteDuration);
+  })();
+
+  // First play the final attack animation (if an attack was resolved)
+  const previous = previousStateRef.current;
+  const attackerUserId = previous?.activePlayerId ?? null;
+  const attackUsed = battleState.attackUsed;
+
+  setCurrentAttackId(attackUsed as AttackId);
+  setAttackerUserId(attackerUserId);
+  
+  if (attackerUserId !== null) {
+    if (attackerUserId === myUserId) {
+      setMyAnimation("attack");
+    } else {
+      setOpponentAnimation("attack");
+    }
+  }
+
+  let deathTimer: ReturnType<typeof setTimeout> | null = null;
+  let resultsTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // After attack animation finishes, play deaths
+  deathTimer = setTimeout(() => {
+    if (!isDraw) {
+      if (loserIsMe) {
+        setMyAnimation("death");
+      } else {
+        setOpponentAnimation("death");
+      }
+    } else {
+      setMyAnimation("death");
+      setOpponentAnimation("death");
+    }
+
+    // After death animations finish, reveal results
+    resultsTimer = setTimeout(() => {
+      setShowResults(true);
+    }, 2000); // 2s buffer after death
+  }, attackDuration);
+
+  return () => {
+    if (deathTimer) clearTimeout(deathTimer);
+    if (resultsTimer) clearTimeout(resultsTimer);
+  };
+}, [isGameOver, battleState, myUserId]);
 
 useEffect(() => {
   return () => {
@@ -234,7 +413,7 @@ useEffect(() => {
     );
   }
 
-if (isGameOver) {
+if (isGameOver && showResults) {
   const isDraw = battleState.winnerId === null;
   const youWon = !isDraw && battleState.winnerId === myUserId;
 
@@ -332,7 +511,25 @@ if (isGameOver) {
             maxHp={me.maxHp}
             damageText={me.damage}
           />
-          <WizardAvatar wizardType={me.wizard} align="left" />
+          <div className={styles.animationContainer}>
+            <WizardAvatar
+              wizardType={me.wizard}
+              align="left"
+              animation={myAnimation}
+              playOnce={myAnimation === "attack" || myAnimation === "death"}
+              onAnimationComplete={handleMyAnimationComplete}
+            />
+            {/* Attack renders here only if opponent attacked me */}
+            {currentAttackId && attackerUserId !== myUserId && (
+              <div className={styles.attackOverlay}>
+                <AttackSprite
+                  attackId={currentAttackId}
+                  align="left"
+                  playOnce={true}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
@@ -345,7 +542,25 @@ if (isGameOver) {
             maxHp={opponent.maxHp}
             damageText={opponent.damage}
           />
-          <WizardAvatar wizardType={opponent.wizard} align="right" />
+          <div className={styles.animationContainer}>
+            <WizardAvatar
+              wizardType={opponent.wizard}
+              align="right"
+              animation={opponentAnimation}
+              playOnce={opponentAnimation === "attack" || opponentAnimation === "death"}
+              onAnimationComplete={handleOpponentAnimationComplete}
+            />
+            {/* Attack renders here only if I attacked opponent */}
+            {currentAttackId && attackerUserId === myUserId && (
+              <div className={styles.attackOverlay}>
+                <AttackSprite
+                  attackId={currentAttackId}
+                  align="right"
+                  playOnce={true}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -362,7 +577,7 @@ if (isGameOver) {
           <AttackInterface
             attacks={myAttacks}
             isMyTurn={isMyTurn}
-            disabled={!isConnected}
+            disabled={!isConnected || myAnimation !== "idle" || opponentAnimation !== "idle" || currentAttackId !== null}
             onAttackSelected={sendAttack}
             rain={battleState.rain}
             temperature={battleState.temperature}

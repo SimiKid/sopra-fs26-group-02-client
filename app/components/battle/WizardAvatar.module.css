@@ -1,4 +1,6 @@
-.container {
+.container
+  .animatedSprite {
+    transform: translate(0,2px); /* Change value to align sprite with bottom border & center */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,13 +9,11 @@
 
 .frame {
   position: relative;
-  width: 300px;
+  width: 450px;
   height: 450px;
   overflow: hidden;
   border-radius: 6px;
-  background: rgba(12, 14, 28, 0.6);
   border: none;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
 }
 
 .image {
