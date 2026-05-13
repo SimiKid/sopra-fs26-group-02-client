@@ -163,7 +163,7 @@ reason).
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
 | **SimiKid**        | [date]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/5bc2c73c646dbc5166f4324e270cc8e69c86c98c) | Fixed production 500 on POST /matchmaking/join: patched Cloud SQL schema drift, added catch-all exception handler, fixed matchmaking opponent query (LIMIT 1), isolated WebSocket failures, and switched ddl-auto to validate. | Restored the matchmaking endpoint in production and made future schema drift fail at deploy time instead of producing silent 500s at runtime. |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
+| **swimch**         | 12.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/88fe63f487d4f62da1145930f5ec83adeddab9d2) | Added attack animations to the battle screen | This was a goal that we defined is a "should" for our application to make the battle more responsive and give both players more information |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
