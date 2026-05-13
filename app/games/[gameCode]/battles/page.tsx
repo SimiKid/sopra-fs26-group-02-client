@@ -296,6 +296,7 @@ if (isGameOver) {
     hp: battleState.player1Hp,
     maxHp: battleState.player1MaxHp,
     damage: player1DamageText,
+    disabledSpell: battleState.player1DisabledSpell,
   };
 
   const p2 = {
@@ -304,6 +305,7 @@ if (isGameOver) {
     hp: battleState.player2Hp,
     maxHp: battleState.player2MaxHp,
     damage: player2DamageText,
+    disabledSpell: battleState.player2DisabledSpell,
   };
 
   const me = amIPlayer1 ? p1 : p2;
@@ -365,6 +367,7 @@ if (isGameOver) {
             rain={battleState.rain}
             temperature={battleState.temperature}
             wizardClass={me.wizard}
+            disabledSpell={me.disabledSpell}
           />
         </div>
       </div>

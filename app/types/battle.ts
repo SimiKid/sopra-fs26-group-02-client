@@ -39,6 +39,8 @@ export interface BattleStateDTO {
   player2Username: string;
   player1WizardClass: string;
   player2WizardClass: string;
+  player1DisabledSpell: AttackId | null;
+  player2DisabledSpell: AttackId | null;
 
   location: string;
   rain: "CLEAR" | "RAINING" | null;
