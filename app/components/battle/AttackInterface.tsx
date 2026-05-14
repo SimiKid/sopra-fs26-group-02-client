@@ -25,6 +25,7 @@ interface AttackInterfaceProps {
   rain: BattleRain;
   temperature: BattleTemperature;
   wizardClass: string;
+  disabledSpell?: AttackId | null;
 }
 
 function getModifierSymbol(modifier: number) {
@@ -51,6 +52,7 @@ export default function AttackInterface({
   rain,
   temperature,
   wizardClass,
+  disabledSpell,
 }: AttackInterfaceProps) {
   const [pendingId, setPendingId] = useState<AttackId | null>(null);
   const locked = !isMyTurn || disabled;
@@ -61,7 +63,7 @@ export default function AttackInterface({
   }, [isMyTurn]);
 
   const handleClick = (id: AttackId) => {
-    if (locked || pendingId) return;
+    if (locked || pendingId || disabledSpell === id) return;
     setPendingId(id);
     onAttackSelected(id);
   };
@@ -71,6 +73,7 @@ export default function AttackInterface({
       <div className={styles.spellList}>
         {attacks.map((attack) => {
           const isPending = pendingId === attack.id;
+          const isBlocked = disabledSpell === attack.id;
 
           const modifier = getElementModifier(
             attack.element as BattleElement,
@@ -87,10 +90,16 @@ export default function AttackInterface({
               type="button"
               className={`${styles.spellButton} ${elementClass} ${
                 isPending ? styles.pending : ""
-              }`}
-              disabled={locked || pendingId !== null}
+              } ${isBlocked ? styles.blocked : ""}`}
+              disabled={locked || pendingId !== null || isBlocked}
               onClick={() => handleClick(attack.id)}
             >
+              {isBlocked && (
+                <span className={styles.lockIcon}>
+                  🔒
+                </span>
+              )}
+
               <span
                 className={styles.spellIcon}
                 style={{
@@ -115,6 +124,12 @@ export default function AttackInterface({
                     </span>
                   )}
                 </div>
+
+                {isBlocked && (
+                  <small className={styles.blockedText}>
+                    USED LAST TURN
+                  </small>
+                )}
 
                 <small>{attack.description}</small>
               </span>

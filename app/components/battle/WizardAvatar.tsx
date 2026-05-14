@@ -1,33 +1,61 @@
 "use client";
 
-import Image from "next/image";
-
 import { WIZARDS } from "@/constants/wizards.constants";
+import { useEffect } from "react";
 
 import styles from "./WizardAvatar.module.css";
+import SpriteAnimation from "../SpriteAnimation";
 
 interface WizardAvatarProps {
   wizardType: string;
   align?: "left" | "right";
+  animation?: "idle" | "attack" | "damaged" | "death";
+  playOnce?: boolean; // whether to play the animation only once (instead of looping)
+  onAnimationComplete?: () => void;
 }
 
 export default function WizardAvatar({
   wizardType,
   align = "left",
+  animation = "idle",
+  playOnce = false,
+  onAnimationComplete,
 }: WizardAvatarProps) {
-  const wizard =
-    WIZARDS.find((w) => w.id === wizardType) ?? WIZARDS[0];
+  const wizard = WIZARDS.find((w) => w.id === wizardType) ?? WIZARDS[0];
+
+  // preload all sprite sheets for the wizard to ensure animations render without delay when switching states
+  useEffect(() => {
+    [
+      wizard.idle_sheet,
+      wizard.attack_sheet,
+      wizard.death_sheet,
+    ].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [wizard]);
+
+  const spriteKey = `${animation}_sheet` as const;
+  const frameKey = `${animation}_frames` as const;
+  const wizardRecord = wizard as Record<string, string | number>;
+  const spriteSheetValue = wizardRecord[spriteKey];
+  const frameValue = wizardRecord[frameKey];
+  const spriteSheet = typeof spriteSheetValue === "string" ? spriteSheetValue : wizard.idle_sheet;
+  const frames = typeof frameValue === "number" ? frameValue : wizard.idle_frames;
 
   return (
-    <div className={`${styles.container} ${styles[align]}`}>
+    <div className={`${styles.container}`}>
       <div className={styles.frame} aria-label={wizard.title}>
-        <Image
-          src={wizard.image}
-          alt={wizard.title}
-          fill
-          sizes="200px"
-          className={styles.image}
-          priority
+        <SpriteAnimation
+          {...wizard}
+          src={spriteSheet}
+          frames={frames}
+          className={styles.animatedSprite}
+          animationSpeed={wizard.animation_speed}
+          scale={7}
+          flipX={align === "right"}
+          playOnce={playOnce}
+          onComplete={onAnimationComplete}
         />
       </div>
       <span className={styles.label}>{wizard.title}</span>

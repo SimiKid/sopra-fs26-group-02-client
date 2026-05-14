@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.container.left {
+  justify-content: flex-end;
+}
+
+.container.right {
+  justify-content: flex-start;
+}
+
+.container.center {
+  justify-content: center;
+}
+
+.animatedSprite {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
