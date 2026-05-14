@@ -8,6 +8,7 @@ import { useAttackSelection } from "@/hooks/useAttackSelection";
 import { useApi } from "@/hooks/useApi";
 import { useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
 
 
 export default function Attacks() {
@@ -16,6 +17,7 @@ export default function Attacks() {
   const params = useParams();
   const gameCode = params.gameCode as string;
   const { message } = App.useApp();
+  const {timeLeft,stopTimer} = useRemainingSelectionTime(gameCode);
 
   const [location, setLocation] = useState<string>("Loading...", );
 
@@ -76,6 +78,8 @@ export default function Attacks() {
             <br />
             Select 3 attacks for the battle.
           </p>
+          <p className={styles.timeLeft}>Time left: {timeLeft} seconds</p>
+
         </div>
 
         <div className={styles.confirmArea}>
@@ -87,7 +91,7 @@ export default function Attacks() {
                   : styles.buttonDisabled
               }
               disabled={selectedAttacks.length !== 3}
-              onClick={handleChooseAttacks}
+              onClick={() => {handleChooseAttacks(); stopTimer();}}
             >
               Confirm
             </Button>

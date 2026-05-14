@@ -8,6 +8,7 @@ import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { WIZARDS } from "@/constants/wizards.constants";
 import SpriteAnimation from "@/components/SpriteAnimation";
+import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
 
 type WizardSelectionState = {
   selectedWizardId: string | null;
@@ -25,6 +26,7 @@ export default function Wizard() {
 
   const params = useParams();
   const gameCode = params.gameCode as string;
+  const {timeLeft} = useRemainingSelectionTime(gameCode);
 
   const handleChooseWizard = async (
     selectedWizardId: string
@@ -66,13 +68,13 @@ export default function Wizard() {
     <div className={styles.page}>
       <div className={styles.container}>
         <h1 className={styles.title}>Choose your Wizard!</h1>
+
       </div>
 
       <div className={styles.wizardList}>
         {WIZARDS.map((wizard) => (
           <div key={wizard.id} className={styles.wizard}>
             <h2 className={styles.wizardTitle}>{wizard.title}</h2>
-
             <Button
               className={`${styles.buttonWizard} ${determineBorder(wizard.id)}`}
               onClick={() => handleWizardSelect(wizard.id)}
@@ -94,6 +96,7 @@ export default function Wizard() {
       
       {/* buttonContainer matches wizardList size to align the confirm button at the bottom of the page */}
       <div className={styles.buttonContainer}>
+        <p className={styles.timeLeft}>Time left: {timeLeft} seconds</p>
         <Button
           className={
             selection.selectedWizardId

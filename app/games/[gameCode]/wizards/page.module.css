@@ -89,6 +89,12 @@
   text-align: right;
 }
 
+.timeLeft {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .page {
     padding: 24px;
