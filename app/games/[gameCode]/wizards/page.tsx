@@ -9,6 +9,8 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { WIZARDS } from "@/constants/wizards.constants";
 import SpriteAnimation from "@/components/SpriteAnimation";
 import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
+import { useBattle } from "@/hooks/useBattle";
+import { useEffect } from "react";
 
 type WizardSelectionState = {
   selectedWizardId: string | null;
@@ -26,7 +28,16 @@ export default function Wizard() {
 
   const params = useParams();
   const gameCode = params.gameCode as string;
-  const {timeLeft} = useRemainingSelectionTime(gameCode);
+  const {timeLeft,stopTimer} = useRemainingSelectionTime(gameCode);
+  const { handleLeave, isOpponentGone } = useBattle(gameCode);
+
+  useEffect(() => {
+    if (isOpponentGone) {
+      message.info("Your opponent has left the game.");
+      router.push("/lobby");
+    }
+  }, [isOpponentGone]);
+
 
   const handleChooseWizard = async (
     selectedWizardId: string
@@ -92,11 +103,15 @@ export default function Wizard() {
             <p className={styles.wizardDescription}>{wizard.description}</p>
           </div>
         ))}
+
       </div>
       
       {/* buttonContainer matches wizardList size to align the confirm button at the bottom of the page */}
       <div className={styles.buttonContainer}>
+      <Button className={styles.leaveButton} onClick={handleLeave}>Leave</Button>
+
         <p className={styles.timeLeft}>Time left: {timeLeft} seconds</p>
+
         <Button
           className={
             selection.selectedWizardId

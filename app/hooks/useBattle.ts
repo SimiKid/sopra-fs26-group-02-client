@@ -6,17 +6,24 @@ import { WebSocketService } from "@/api/websocketService";
 import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
 import type { EmoteKey, ReceivedEmote } from "@/types/emote";
+import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
+import { useRouter } from "next/navigation";
+
+
 
 export function useBattle(gameCode: string) {
   const { value: token, hydrated } = useLocalStorage<string>("token", "");
   const apiService = useApi(token);
   const { message } = App.useApp();
-
+  const { stopTimer } = useRemainingSelectionTime(gameCode);
+  const router = useRouter();
   const [battleState, setBattleState] = useState<BattleStateDTO | null>(null);
   const [latestEmote, setLatestEmote] = useState<ReceivedEmote | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isOpponentGone, setIsOpponentGone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const serviceRef = useRef<WebSocketService | null>(null);
+  const leftVoluntarilyRef = useRef(false);
 
   useEffect(() => {
     if (error) message.error(error);
@@ -30,6 +37,8 @@ export function useBattle(gameCode: string) {
     serviceRef.current = service;
 
     const init = async () => {
+      setIsOpponentGone(false);
+      leftVoluntarilyRef.current = false;
       service
         .connect(
           gameCode,
@@ -47,6 +56,12 @@ export function useBattle(gameCode: string) {
               });
             }
           },
+            () => { 
+              if (!cancelled && !leftVoluntarilyRef.current) {
+                setIsOpponentGone(true); 
+              }
+            }
+          
         )
         .then(() => {
           if (!cancelled) setIsConnected(true);
@@ -80,6 +95,7 @@ export function useBattle(gameCode: string) {
     };
   }, [apiService, gameCode, hydrated, token]);
 
+
   const sendAttack = useCallback(
     (attackName: AttackId) => {
       try {
@@ -102,5 +118,19 @@ export function useBattle(gameCode: string) {
     [gameCode],
   );
 
-  return { battleState, isConnected, sendAttack, sendEmote, latestEmote };
+
+  const handleLeave = async () => {
+    leftVoluntarilyRef.current = true;
+    stopTimer();
+    sessionStorage.removeItem(`targetTime_${gameCode}`);
+    try {
+      await apiService.post(`/games/${gameCode}/leave`, {});
+      router.push("/lobby");
+    } catch (err) {
+      console.error("Error leaving game:", err);
+      router.push("/lobby");
+    }
+  };
+
+  return { battleState, isConnected, sendAttack, sendEmote, latestEmote, handleLeave, isOpponentGone };
 }

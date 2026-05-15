@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button, Spin, App } from "antd";
 import { ATTACK_IMAGES } from "@/constants/attacks.constants";
 import { useAttackSelection } from "@/hooks/useAttackSelection";
@@ -9,6 +9,7 @@ import { useApi } from "@/hooks/useApi";
 import { useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
+import { useBattle } from "@/hooks/useBattle";
 
 
 export default function Attacks() {
@@ -18,7 +19,8 @@ export default function Attacks() {
   const gameCode = params.gameCode as string;
   const { message } = App.useApp();
   const {timeLeft,stopTimer} = useRemainingSelectionTime(gameCode);
-
+  const { handleLeave, isOpponentGone } = useBattle(gameCode);
+  const router = useRouter();
   const [location, setLocation] = useState<string>("Loading...", );
 
   useEffect(() => {
@@ -43,6 +45,13 @@ export default function Attacks() {
     };
   }, [apiService, gameCode, hydrated, token, message]);
 
+  useEffect(() => {
+    if (isOpponentGone) {
+      router.push("/lobby");
+      message.info("Your opponent has left the game.");
+    }
+  }, [isOpponentGone]);
+  
   const {
     selectedAttacks,
     attacks,
@@ -84,6 +93,7 @@ export default function Attacks() {
 
         <div className={styles.confirmArea}>
           <div className={styles.confirmRow}>
+            <Button className={styles.leaveButton} onClick={handleLeave}>Leave</Button>
             <Button
               className={
                 selectedAttacks.length === 3

@@ -15,6 +15,7 @@ export class WebSocketService {
     onState: (state: BattleStateDTO) => void,
     onError?: (message: string) => void,
     onEmote?: (emoteKey: EmoteKey) => void,
+    handlePlayerLeft?: () => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const url = `${getApiDomain()}/ws`;
@@ -36,6 +37,11 @@ export class WebSocketService {
               console.error("[WebSocketService] invalid payload", e);
               onError?.(`Invalid broadcast payload: ${String(e)}`);
             }
+          });
+
+          client.subscribe(`/topic/game/${gameCode}/player-left`, (frame) => {
+            console.log("[WebSocketService] PLAYER LEFT:", frame.body);
+            handlePlayerLeft?.(); 
           });
 
           client.subscribe(`/topic/game/${gameCode}/emotes`, (frame) => {
@@ -63,6 +69,8 @@ export class WebSocketService {
       client.activate();
     });
   }
+
+
 
   sendAttack(gameCode: string, attackName: AttackId): void {
     if (!this.client?.connected) {
@@ -108,21 +116,21 @@ export class WebSocketService {
     return new Promise((resolve, reject) => {
       this.client = new Client({
         webSocketFactory: () => new SockJS(url),
-        // Der Token für das Backend
         connectHeaders: { 
           Authorization: this.token 
         },
         // Automatische Versuche bei Verbindungsabbruch
         reconnectDelay: 5000,
         onConnect: () => {
-          console.log("[WS] Erfolgreich verbunden!");
+          console.log("[WS] Successfully connected!");
+          
           resolve();
         },
         onStompError: (frame) => {
           reject(new Error(frame.headers["message"]));
         },
         onWebSocketError: () => {
-          reject(new Error("WebSocket Fehler"));
+          reject(new Error("WebSocket Error"));
         },
       });
   
