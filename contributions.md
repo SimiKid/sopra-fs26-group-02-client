@@ -179,8 +179,8 @@ reason).
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
-| **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **SimiKid**        | 16.05.2026  | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/e100fd5756783446e5ca309e2a5368e228f7b6e4) | Add password length limit to user registration in the backend | Password can now not be longer than 50 |
+|                    | 16.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/776d3fd498e1cec4ce87d128f077a2a44faa0d31) [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/e1e6b4f723e3dfbedf7155245c267e2678f8fb72) | Add 50-character max rule to password field and route backend validation errors | Hard caps password input and shows specific backend errors inline on the right field instead of a generic fallback |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
