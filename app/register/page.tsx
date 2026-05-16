@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation"; 
 import { useApi } from "@/hooks/useApi";
-import { App, Button, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { AuthCredentials, AuthToken } from "@/types/user";
 import { ApplicationError } from "@/types/error"; 
@@ -12,7 +12,6 @@ const Register: React.FC = () => {
   const router = useRouter();
   const apiService = useApi(); 
   const [form] = Form.useForm();
-  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
 
   const { set: setToken } = useLocalStorage<string>("token", "");
@@ -28,7 +27,17 @@ const Register: React.FC = () => {
       window.location.href = "/lobby";
     } catch (error) {
       const err = error as ApplicationError;
-      message.error(err.message ?? "Registration failed");
+      // An API error response carries the backend's `message` (e.g. duplicate
+      // username, 21-char username) — show it inline verbatim. A network
+      // failure has no server message, so fall back to a generic notice.
+      form.setFields([
+        {
+          name: "username",
+          errors: [
+            err?.serverMessage ?? "Something went wrong, please try again",
+          ],
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -41,7 +50,16 @@ const Register: React.FC = () => {
         <p className="subtitle">Choose your credentials</p>
 
         <Form form={form} onFinish={handleRegister} layout="vertical">
-          <Form.Item name="username" label="Username" rules={[{ required: true, message: "Please enter your username" }]}>
+          <Form.Item
+            name="username"
+            label="Username"
+            validateFirst
+            rules={[
+              { required: true, message: "Username is required" },
+              { pattern: /^\S+$/, message: "Username cannot contain spaces" },
+              { max: 20, message: "Username must be at most 20 characters" },
+            ]}
+          >
             <Input className="input" placeholder="Username"/>
           </Form.Item>
           
