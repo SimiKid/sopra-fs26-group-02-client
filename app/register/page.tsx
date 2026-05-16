@@ -28,14 +28,17 @@ const Register: React.FC = () => {
     } catch (error) {
       const err = error as ApplicationError;
       // An API error response carries the backend's `message` (e.g. duplicate
-      // username, 21-char username) — show it inline verbatim. A network
-      // failure has no server message, so fall back to a generic notice.
+      // username, 21-char username, 51-char password) — show it inline
+      // verbatim on the field it concerns. A network failure has no server
+      // message, so fall back to a generic notice on the username field.
+      const serverMessage = err?.serverMessage;
+      const field = serverMessage?.toLowerCase().includes("password")
+        ? "password"
+        : "username";
       form.setFields([
         {
-          name: "username",
-          errors: [
-            err?.serverMessage ?? "Something went wrong, please try again",
-          ],
+          name: field,
+          errors: [serverMessage ?? "Something went wrong, please try again"],
         },
       ]);
     } finally {
@@ -64,7 +67,7 @@ const Register: React.FC = () => {
           </Form.Item>
           
           <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please enter your password" }]}>
-            <Input.Password className="input" placeholder="Password"/>
+            <Input.Password className="input" placeholder="Password" maxLength={50}/>
           </Form.Item>
           
           <Form.Item>
