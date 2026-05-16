@@ -28,7 +28,7 @@ export default function Wizard() {
 
   const params = useParams();
   const gameCode = params.gameCode as string;
-  const {timeLeft,stopTimer} = useRemainingSelectionTime(gameCode);
+  const { timeLeft } = useRemainingSelectionTime(gameCode);
   const { handleLeave, isOpponentGone } = useBattle(gameCode);
 
   useEffect(() => {

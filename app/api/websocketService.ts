@@ -16,6 +16,7 @@ export class WebSocketService {
     onError?: (message: string) => void,
     onEmote?: (emoteKey: EmoteKey) => void,
     handlePlayerLeft?: () => void,
+    onPlayerStatus?: (status: string) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const url = `${getApiDomain()}/ws`;
@@ -44,6 +45,12 @@ export class WebSocketService {
             handlePlayerLeft?.(); 
           });
 
+          client.subscribe(`/topic/game/${gameCode}/player-status`, (frame) => {
+            console.log("[WebSocketService] PLAYER STATUS:", frame.body);
+            const status = frame.body.replaceAll('"', "");
+            onPlayerStatus?.(status);
+          });
+
           client.subscribe(`/topic/game/${gameCode}/emotes`, (frame) => {
             console.log("[WebSocketService] EMOTE RECEIVED:", frame.body);
             const emoteKey = frame.body.replaceAll('"', "") as EmoteKey;
@@ -69,8 +76,6 @@ export class WebSocketService {
       client.activate();
     });
   }
-
-
 
   sendAttack(gameCode: string, attackName: AttackId): void {
     if (!this.client?.connected) {

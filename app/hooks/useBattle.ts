@@ -6,7 +6,11 @@ import { WebSocketService } from "@/api/websocketService";
 import type { AttackId } from "@/constants/attacks.constants";
 import type { BattleStateDTO } from "@/types/battle";
 import type { EmoteKey, ReceivedEmote } from "@/types/emote";
-import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
+import {
+  SELECTION_EXPIRED_EVENT,
+  selectionExpiredKey,
+  useRemainingSelectionTime,
+} from "@/hooks/useRemainingSelectionTime";
 import { useRouter } from "next/navigation";
 
 
@@ -24,6 +28,38 @@ export function useBattle(gameCode: string) {
   const [error, setError] = useState<string | null>(null);
   const serviceRef = useRef<WebSocketService | null>(null);
   const leftVoluntarilyRef = useRef(false);
+
+  const handleSelectionExpired = useCallback(async () => {
+    if (leftVoluntarilyRef.current) return;
+
+    const alreadyHandled = sessionStorage.getItem(selectionExpiredKey(gameCode));
+    stopTimer(true);
+    if (alreadyHandled) return;
+
+    try {
+      const playersStatus = await apiService.get<boolean>(`/games/${gameCode}/status`);
+      if (!playersStatus) {
+        message.error("Time's up! You didn't select a wizard and attacks in time.");
+      } else {
+        message.error("Time's up! Your opponent didn't select a wizard and attacks in time.");
+      }
+    } catch (err) {
+      console.error("Error fetching players status:", err);
+      message.error("Selection time expired.");
+    }
+    router.push("/lobby");
+  }, [apiService, gameCode, message, router, stopTimer]);
+
+  useEffect(() => {
+    const onExpired = (event: Event) => {
+      const { gameCode: expiredGameCode } = (event as CustomEvent<{ gameCode: string }>).detail;
+      if (expiredGameCode === gameCode) {
+        handleSelectionExpired();
+      }
+    };
+    window.addEventListener(SELECTION_EXPIRED_EVENT, onExpired);
+    return () => window.removeEventListener(SELECTION_EXPIRED_EVENT, onExpired);
+  }, [gameCode, handleSelectionExpired]);
 
   useEffect(() => {
     if (error) message.error(error);
@@ -60,8 +96,12 @@ export function useBattle(gameCode: string) {
               if (!cancelled && !leftVoluntarilyRef.current) {
                 setIsOpponentGone(true); 
               }
+            },
+          (status) => {
+            if (!cancelled && !leftVoluntarilyRef.current && status === "TIME_EXPIRED") {
+              handleSelectionExpired();
             }
-          
+          },
         )
         .then(() => {
           if (!cancelled) setIsConnected(true);
@@ -93,7 +133,7 @@ export function useBattle(gameCode: string) {
       setBattleState(null);
       setLatestEmote(null);
     };
-  }, [apiService, gameCode, hydrated, token]);
+  }, [apiService, gameCode, handleSelectionExpired, hydrated, token]);
 
 
   const sendAttack = useCallback(
@@ -122,7 +162,6 @@ export function useBattle(gameCode: string) {
   const handleLeave = async () => {
     leftVoluntarilyRef.current = true;
     stopTimer();
-    sessionStorage.removeItem(`targetTime_${gameCode}`);
     try {
       await apiService.post(`/games/${gameCode}/leave`, {});
       router.push("/lobby");

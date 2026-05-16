@@ -1,16 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApi } from './useApi';
-import { App } from 'antd';
-import { useRouter } from 'next/navigation';
+import useLocalStorage from './useLocalStorage';
+
+const targetTimeKey = (gameCode: string) => `targetTime_${gameCode}`;
+const stoppedKey = (gameCode: string) => `selectionTimerStopped_${gameCode}`;
+export const selectionExpiredKey = (gameCode: string) => `selectionTimerExpired_${gameCode}`;
+
+export const SELECTION_EXPIRED_EVENT = 'selection-time-expired';
+
+export function dispatchSelectionExpired(gameCode: string) {
+    window.dispatchEvent(
+        new CustomEvent(SELECTION_EXPIRED_EVENT, { detail: { gameCode } }),
+    );
+}
 
 export function useRemainingSelectionTime(gameCode: string) {
+    const { value: token, hydrated } = useLocalStorage<string>("token", "");
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null); // Referenz zum Stoppen
-    const apiService = useApi();
-    const { message } = App.useApp();
-    const router = useRouter();
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const apiService = useApi(token);
 
-    // function to clear the interval
     const clearExistingInterval = useCallback(() => {
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -18,50 +27,63 @@ export function useRemainingSelectionTime(gameCode: string) {
         }
     }, []);
 
+    const isStopped = useCallback(
+        () =>
+            !!sessionStorage.getItem(stoppedKey(gameCode)) ||
+            !!sessionStorage.getItem(selectionExpiredKey(gameCode)),
+        [gameCode],
+    );
+
     const startCountdown = useCallback((target: number) => {
-        clearExistingInterval(); // ensure no old interval is running
+        if (isStopped()) return;
+        clearExistingInterval();
 
         intervalRef.current = setInterval(() => {
-            const now = Date.now();
-            const remaining = Math.max(0, Math.floor((target - now) / 1000));
-            
+            if (isStopped()) {
+                clearExistingInterval();
+                return;
+            }
+
+            const remaining = Math.max(0, Math.floor((target - Date.now()) / 1000));
             setTimeLeft(remaining);
 
             if (remaining <= 0) {
                 clearExistingInterval();
-                sessionStorage.removeItem(`targetTime_${gameCode}`);
-                message.error("Time's up! You didn't select a wizard and attacks in time.");
-                router.push('/lobby');
+                dispatchSelectionExpired(gameCode);
             }
         }, 1000);
-    }, [gameCode, message, router, clearExistingInterval]);
+    }, [clearExistingInterval, gameCode, isStopped]);
 
     useEffect(() => {
-        if (!gameCode) return;
+        if (!gameCode || !hydrated || !token || isStopped()) return;
 
-        const storedTarget = sessionStorage.getItem(`targetTime_${gameCode}`);
-
+        const storedTarget = sessionStorage.getItem(targetTimeKey(gameCode));
         if (storedTarget) {
-            startCountdown(parseInt(storedTarget));
+            startCountdown(parseInt(storedTarget, 10));
         } else {
-            apiService.get<number>(`/${gameCode}/expiration-time`)
-                .then(remainingMs => {
+            apiService
+                .get<number>(`/${gameCode}/expiration-time`)
+                .then((remainingMs) => {
+                    if (isStopped()) return;
                     const newTarget = Date.now() + remainingMs;
-                    sessionStorage.setItem(`targetTime_${gameCode}`, newTarget.toString());
+                    sessionStorage.setItem(targetTimeKey(gameCode), newTarget.toString());
                     startCountdown(newTarget);
                 })
-                .catch(err => console.error("Error fetching expiration time:", err));
+                .catch((err) => console.error("Error fetching expiration time:", err));
         }
 
-        // Cleanup when component unmounts
-        return () => clearExistingInterval();
-    }, [gameCode, apiService, startCountdown, clearExistingInterval]);
+        return clearExistingInterval;
+    }, [gameCode, apiService, startCountdown, clearExistingInterval, hydrated, token, isStopped]);
 
-    const stopTimer = () => {
-        clearExistingInterval(); 
-        sessionStorage.removeItem(`targetTime_${gameCode}`);
+    const stopTimer = useCallback((markExpired = false) => {
+        sessionStorage.setItem(stoppedKey(gameCode), 'true');
+        if (markExpired) {
+            sessionStorage.setItem(selectionExpiredKey(gameCode), 'true');
+        }
+        clearExistingInterval();
+        sessionStorage.removeItem(targetTimeKey(gameCode));
         setTimeLeft(null);
-    };
+    }, [clearExistingInterval, gameCode]);
 
     return { timeLeft, stopTimer };
 }
