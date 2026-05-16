@@ -31,9 +31,13 @@ export class ApiService {
       let serverMessage: string | undefined;
       try {
         const errorInfo = await res.json();
-        if (errorInfo?.message) {
-          errorDetail = errorInfo.message;
-          serverMessage = errorInfo.message;
+        // Spring Boot returns RFC 7807 ProblemDetail bodies, where the
+        // human-readable text lives in `detail`. Fall back to `message` for
+        // any older/custom error responses.
+        const message = errorInfo?.detail ?? errorInfo?.message;
+        if (message) {
+          errorDetail = message;
+          serverMessage = message;
         } else {
           errorDetail = JSON.stringify(errorInfo);
         }

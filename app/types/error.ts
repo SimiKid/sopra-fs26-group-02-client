@@ -1,6 +1,7 @@
 export interface ApplicationError extends Error {
   info: string;
   status: number;
-  /** Raw `message` field from the backend error response, if present. */
+  /** Human-readable text from the backend error response (`detail`, or
+   * `message` as a fallback), if present. */
   serverMessage?: string;
 }

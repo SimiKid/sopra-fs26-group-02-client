@@ -66,8 +66,16 @@ const Register: React.FC = () => {
             <Input className="input" placeholder="Username"/>
           </Form.Item>
           
-          <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please enter your password" }]}>
-            <Input.Password className="input" placeholder="Password" maxLength={50}/>
+          <Form.Item
+            name="password"
+            label="Password"
+            validateFirst
+            rules={[
+              { required: true, message: "Please enter your password" },
+              { max: 50, message: "Password must be at most 50 characters" },
+            ]}
+          >
+            <Input.Password className="input" placeholder="Password"/>
           </Form.Item>
           
           <Form.Item>
