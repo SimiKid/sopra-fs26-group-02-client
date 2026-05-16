@@ -15,6 +15,7 @@ export class WebSocketService {
     onState: (state: BattleStateDTO) => void,
     onError?: (message: string) => void,
     onEmote?: (emoteKey: EmoteKey) => void,
+    onBattleEnded?: (reason: string) => void,
     handlePlayerLeft?: () => void,
     onPlayerStatus?: (status: string) => void,
   ): Promise<void> {
@@ -56,6 +57,12 @@ export class WebSocketService {
             const emoteKey = frame.body.replaceAll('"', "") as EmoteKey;
             onEmote?.(emoteKey);
           });
+
+          client.subscribe(`/topic/game/${gameCode}/battle-ended`, (frame) => {
+            console.log("[WebSocketService] BATTLE ENDED:", frame.body);
+            onBattleEnded?.(frame.body);
+          });
+          
           console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}`);
           console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}/emotes`);
           resolve();

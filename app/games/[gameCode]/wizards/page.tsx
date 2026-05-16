@@ -3,7 +3,7 @@
 import styles from "./page.module.css";
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Button, App } from "antd";
+import { Button, App, Modal } from "antd";
 import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { WIZARDS } from "@/constants/wizards.constants";
@@ -11,6 +11,7 @@ import SpriteAnimation from "@/components/SpriteAnimation";
 import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
 import { useBattle } from "@/hooks/useBattle";
 import { useEffect } from "react";
+import { useGameExitGuard } from "@/hooks/useGameExitGuard";
 
 type WizardSelectionState = {
   selectedWizardId: string | null;
@@ -29,7 +30,9 @@ export default function Wizard() {
   const params = useParams();
   const gameCode = params.gameCode as string;
   const { timeLeft } = useRemainingSelectionTime(gameCode);
-  const { handleLeave, isOpponentGone } = useBattle(gameCode);
+  const { handleLeave, isOpponentGone, markLeftVoluntarily } = useBattle(gameCode);
+  const { showConfirm, handleConfirmLeave, closeConfirm } = useGameExitGuard({ gameCode, onBeforeLeave: markLeftVoluntarily });
+
 
   useEffect(() => {
     if (isOpponentGone) {
@@ -75,7 +78,22 @@ export default function Wizard() {
     await handleChooseWizard(selection.selectedWizardId);
   };
 
-  return (
+return (
+  <>
+    <Modal
+      open={showConfirm}
+      title="Leave the game?"
+      okText="Leave"
+      cancelText="Stay"
+      okButtonProps={{ danger: true }}
+      onOk={handleConfirmLeave}
+      onCancel={closeConfirm}
+      maskClosable={false}
+      closable={false}
+    >
+      Are you sure you want to leave? The game will be cancelled.
+    </Modal>
+
     <div className={styles.page}>
       <div className={styles.container}>
         <h1 className={styles.title}>Choose your Wizard!</h1>
@@ -125,5 +143,6 @@ export default function Wizard() {
         </Button>
       </div>
     </div>
+    </>
   );
 }

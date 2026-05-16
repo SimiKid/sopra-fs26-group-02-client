@@ -2,7 +2,7 @@
 
 import styles from "./page.module.css";
 import { useParams, useRouter } from "next/navigation";
-import { Button, Spin, App } from "antd";
+import { Button, Spin, App, Modal} from "antd";
 import { ATTACK_IMAGES } from "@/constants/attacks.constants";
 import { useAttackSelection } from "@/hooks/useAttackSelection";
 import { useApi } from "@/hooks/useApi";
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
 import { useBattle } from "@/hooks/useBattle";
+import { useGameExitGuard } from "@/hooks/useGameExitGuard";
 
 
 export default function Attacks() {
@@ -19,9 +20,10 @@ export default function Attacks() {
   const gameCode = params.gameCode as string;
   const { message } = App.useApp();
   const {timeLeft,stopTimer} = useRemainingSelectionTime(gameCode);
-  const { handleLeave, isOpponentGone } = useBattle(gameCode);
+  const { handleLeave, isOpponentGone, markLeftVoluntarily } = useBattle(gameCode);
   const router = useRouter();
   const [location, setLocation] = useState<string>("Loading...", );
+  const { showConfirm, handleConfirmLeave, closeConfirm } = useGameExitGuard({ gameCode, onBeforeLeave: markLeftVoluntarily });
 
   useEffect(() => {
     if (!hydrated || !token) return;
@@ -78,6 +80,20 @@ export default function Attacks() {
   }
 
   return (
+    <>
+    <Modal
+      open={showConfirm}
+      title="Leave the game?"
+      okText="Leave"
+      cancelText="Stay"
+      okButtonProps={{ danger: true }}
+      onOk={handleConfirmLeave}
+      onCancel={closeConfirm}
+      maskClosable={false}
+      closable={false}
+    >
+      Are you sure you want to leave? The game will be cancelled.
+    </Modal>
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
@@ -140,5 +156,6 @@ export default function Attacks() {
         ))}
       </div>
     </div>
+    </>
   );
 }

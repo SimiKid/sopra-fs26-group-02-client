@@ -26,6 +26,7 @@ export function useBattle(gameCode: string) {
   const [isConnected, setIsConnected] = useState(false);
   const [isOpponentGone, setIsOpponentGone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [opponentLeft, setOpponentLeft] = useState(false);
   const serviceRef = useRef<WebSocketService | null>(null);
   const leftVoluntarilyRef = useRef(false);
 
@@ -92,11 +93,16 @@ export function useBattle(gameCode: string) {
               });
             }
           },
-            () => { 
-              if (!cancelled && !leftVoluntarilyRef.current) {
-                setIsOpponentGone(true); 
-              }
-            },
+          (reason) => {
+            if (!cancelled && !leftVoluntarilyRef.current && reason.replaceAll('"', '') === "PLAYER_LEFT_IN_BATTLE") {
+              setOpponentLeft(true);
+            }
+          },
+          () => {
+            if (!cancelled && !leftVoluntarilyRef.current) {
+              setIsOpponentGone(true);
+            }
+          },
           (status) => {
             if (!cancelled && !leftVoluntarilyRef.current && status === "TIME_EXPIRED") {
               handleSelectionExpired();
@@ -132,6 +138,7 @@ export function useBattle(gameCode: string) {
       setIsConnected(false);
       setBattleState(null);
       setLatestEmote(null);
+      setOpponentLeft(false);
     };
   }, [apiService, gameCode, handleSelectionExpired, hydrated, token]);
 
@@ -171,5 +178,9 @@ export function useBattle(gameCode: string) {
     }
   };
 
-  return { battleState, isConnected, sendAttack, sendEmote, latestEmote, handleLeave, isOpponentGone };
+  const markLeftVoluntarily = useCallback(() => {
+    leftVoluntarilyRef.current = true;
+  }, []);
+
+  return { battleState, isConnected, sendAttack, sendEmote, latestEmote, handleLeave, isOpponentGone, opponentLeft, markLeftVoluntarily };
 }

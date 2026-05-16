@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { App, Button, Spin } from "antd";
+import { App, Button, Spin, Modal} from "antd";
 
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useApi } from "@/hooks/useApi";
@@ -24,6 +24,7 @@ import { WIZARDS } from "@/constants/wizards.constants";
 import { ATTACK_SPRITES } from "@/constants/attackSprites.constants";
 
 import styles from "./page.module.css";
+import { useGameExitGuard } from "@/hooks/useGameExitGuard";
 
 interface Wizard {
   id: string;
@@ -64,7 +65,7 @@ export default function Battle() {
   // Services
   const { message } = App.useApp();
   const apiService = useApi(token);
-  const { battleState, isConnected, sendAttack, sendEmote, latestEmote } = useBattle(gameCode);
+  const { battleState, isConnected, sendAttack, sendEmote, latestEmote, opponentLeft, markLeftVoluntarily } = useBattle(gameCode);
 
   // Player-owned data (this player's 3 chosen attacks)
   const [myAttacks, setMyAttacks] = useState<Attack[]>([]);
@@ -90,6 +91,13 @@ export default function Battle() {
   const [rematchTimeLeft, setRematchTimeLeft] = useState(30);
   const rematchPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const rematchTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const { showConfirm, handleConfirmLeave, closeConfirm, handleQuit } = useGameExitGuard({
+    gameCode,
+    enabled: battleState !== null && battleState.gameStatus !== "FINISHED",
+    onBeforeLeave: markLeftVoluntarily,
+  });
+
 
   const handleRematch = async () => {
     if (rematchWaiting) return;
@@ -361,6 +369,13 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  if (opponentLeft) {
+    message.info("Your opponent has left the game. You win!");
+    router.push("/lobby");
+  }
+}, [opponentLeft, message, router]);
+
+useEffect(() => {
   const fetchTimer = async () => {
     setTimeLeft(null);
     setTargetTime(null);
@@ -456,9 +471,9 @@ if (isGameOver && showResults) {
               <Spin size="small" /> Waiting for opponent… {rematchTimeLeft}s
             </Button>
           ) : (
-            <Button type="primary" block onClick={handleRematch}>
-              Play Again
-            </Button>
+             <Button type="primary" block onClick={handleRematch}>
+                Play Again
+              </Button>
           )}
           <Button block onClick={() => router.push("/lobby")}>Back to lobby</Button>
         </div>
@@ -586,6 +601,20 @@ if (isGameOver && showResults) {
           />
         </div>
       </div>
+
+      <Modal
+        open={showConfirm}
+        title="Leave the battle?"
+        okText="Leave"
+        cancelText="Stay"
+        okButtonProps={{ danger: true }}
+        onOk={handleConfirmLeave}
+        onCancel={closeConfirm}
+        maskClosable={false}
+        closable={false}
+      >
+        Are you sure you want to leave? Your opponent will automatically win.
+      </Modal>
     </main>
   );
 }

@@ -78,3 +78,8 @@ body {
 .ant-message-notice-content {
   color: #000000 !important;
 }
+
+.ant-modal-title,
+.ant-modal-body {
+  color: #141414 !important;
+}
