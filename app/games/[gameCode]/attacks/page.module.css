@@ -22,10 +22,39 @@
   margin: 0 0 0.75rem;
 }
 
-.locationText {
-  color: #d4ccf0;
-  font-size: 1.2rem;
+.locationCard {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px 18px;
+  border-radius: 18px;
+  background: rgba(22, 24, 29, 0.82);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  box-shadow: 0 0 24px rgba(160, 100, 255, 0.14);
+  backdrop-filter: blur(8px);
+  width: fit-content;
+}
+
+.locationName {
+  font-family: 'Cinzel', serif;
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: #c5b2ff;
+  text-shadow: 0 0 12px rgba(200, 176, 255, 0.22);
   margin: 0;
+  line-height: 1.35;
+}
+
+.locationHint {
+  margin: 0 0 10px 0;
+  color: #cfc7eb;
+  font-size: 0.85rem;
+}
+
+.timeLeft {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  color: #a78bfa;
+  font-size: 1rem;
 }
 
 .confirmArea {

@@ -98,12 +98,18 @@ export default function Attacks() {
       <div className={styles.headerRow}>
         <div>
           <h1 className={styles.title}>Attack Selection</h1>
-          <p className={styles.locationText}>
-            Location: {location} 
-            <br />
-            Select 3 attacks for the battle.
+          <p className={styles.locationHint}>
+            Select 3 attacks based on this battle location:
           </p>
-          <p className={styles.timeLeft}>Time left: {timeLeft} seconds</p>
+          <div className={styles.locationCard}>
+          <div className={styles.locationName}>
+            {location} 
+          </div>
+        </div>
+
+          <p className={styles.timeLeft}>
+            ⏳ {timeLeft} seconds remaining
+          </p>
 
         </div>
 
