@@ -547,7 +547,13 @@ if (isGameOver && showResults) {
           </div>
         </div>
 
-        <TurnStatus isMyTurn={isMyTurn} timeLeft={timeLeft} />
+        <TurnStatus
+          isMyTurn={isMyTurn}
+          timeLeft={timeLeft}
+          location={battleState.location}
+          rain={battleState.rain}
+          temperature={battleState.temperature}
+        />
 
         <div className={styles.fighterColumn}>
           <FighterPanel
