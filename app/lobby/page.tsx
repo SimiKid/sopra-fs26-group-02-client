@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Spin, Input, Divider } from "antd";
+import { Button, Spin, Input, Divider, Form } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useLobby } from "@/hooks/useLobby";
 import { useBattleCounter } from "@/hooks/useBattleCounter";
@@ -122,22 +122,29 @@ export default function Lobby() {
 
           <Divider className={styles.divider}>or</Divider>
 
-          <Input
-            placeholder="Game code"
-            maxLength={6}
-            value={joinCode}
-            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-            className={`input ${styles.codeInput}`}
-          />
+          <Form>
+            <Form.Item>
+              <Input
+                placeholder="Game code"
+                maxLength={6}
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                className={`submit ${styles.codeInput}`}
+              />
+            </Form.Item>
 
-          <Button
-            block
-            className="button-secondary"
-            onClick={handleJoinGame}
-            loading={joinLoading}
-          >
-            Join Game
-          </Button>
+            <Form.Item>
+              <Button
+                block
+                htmlType="submit"
+                className="button-secondary"
+                onClick={handleJoinGame}
+                loading={joinLoading}
+              >
+                Join Game
+              </Button>
+            </Form.Item>
+          </Form>
 
           <Divider className={styles.divider}>or</Divider>
           <Button
