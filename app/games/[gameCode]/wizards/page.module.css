@@ -108,7 +108,8 @@
   width: 100px !important;
   font-family: 'Cinzel', serif !important;
   color: #1a1025 !important;
-  background-color: #c8b0ff !important;
+  background-color: #a78bfa !important;
+  border: none !important;
 }
 
 @media (max-width: 768px) {
