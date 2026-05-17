@@ -62,7 +62,7 @@ const Login: React.FC = () => {
 
           <Form.Item>
             <Button type = "link" htmlType = "button" onClick={() => router.push("/register")}>
-              Don't have an account? Register
+              Don&apos;t have an account? Register
             </Button>
           </Form.Item>
         </Form>
