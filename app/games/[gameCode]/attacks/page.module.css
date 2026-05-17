@@ -152,6 +152,7 @@
   margin-top: 32px;
 }
 .leaveButton {
+  font-family: 'Cinzel', serif !important;
   width: 100px !important;
   color: #1a1025 !important;
   background-color: #c8b0ff !important;
