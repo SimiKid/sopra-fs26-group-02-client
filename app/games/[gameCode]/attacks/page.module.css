@@ -120,6 +120,11 @@
 .spinnerWrapper {
   margin-top: 32px;
 }
+.leaveButton {
+  width: 100px !important;
+  color: #1a1025 !important;
+  background-color: #c8b0ff !important;
+}
 
 @media (max-width: 768px) {
   .attackList {

@@ -78,7 +78,7 @@ export const useMatchmaking = () => {
       }, MATCHMAKING_TIMEOUT_MS);
 
       ws.subscribeToMatchmaking(Number(userId), (gameCode) => {
-        console.log("Match gefunden! Code:", gameCode);
+        console.log("Match found! Code:", gameCode);
         resetMatchmakingState();
         setIsSearching(false);
         setMatchFoundMessage("Game found! Redirecting to wizard selection screen...");

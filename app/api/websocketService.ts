@@ -15,6 +15,9 @@ export class WebSocketService {
     onState: (state: BattleStateDTO) => void,
     onError?: (message: string) => void,
     onEmote?: (emoteKey: EmoteKey) => void,
+    onBattleEnded?: (reason: string) => void,
+    handlePlayerLeft?: () => void,
+    onPlayerStatus?: (status: string) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const url = `${getApiDomain()}/ws`;
@@ -38,11 +41,28 @@ export class WebSocketService {
             }
           });
 
+          client.subscribe(`/topic/game/${gameCode}/player-left`, (frame) => {
+            console.log("[WebSocketService] PLAYER LEFT:", frame.body);
+            handlePlayerLeft?.(); 
+          });
+
+          client.subscribe(`/topic/game/${gameCode}/player-status`, (frame) => {
+            console.log("[WebSocketService] PLAYER STATUS:", frame.body);
+            const status = frame.body.replaceAll('"', "");
+            onPlayerStatus?.(status);
+          });
+
           client.subscribe(`/topic/game/${gameCode}/emotes`, (frame) => {
             console.log("[WebSocketService] EMOTE RECEIVED:", frame.body);
             const emoteKey = frame.body.replaceAll('"', "") as EmoteKey;
             onEmote?.(emoteKey);
           });
+
+          client.subscribe(`/topic/game/${gameCode}/battle-ended`, (frame) => {
+            console.log("[WebSocketService] BATTLE ENDED:", frame.body);
+            onBattleEnded?.(frame.body);
+          });
+          
           console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}`);
           console.log("[WebSocketService] subscribed to", `/topic/game/${gameCode}/emotes`);
           resolve();
@@ -108,21 +128,21 @@ export class WebSocketService {
     return new Promise((resolve, reject) => {
       this.client = new Client({
         webSocketFactory: () => new SockJS(url),
-        // Der Token für das Backend
         connectHeaders: { 
           Authorization: this.token 
         },
         // Automatische Versuche bei Verbindungsabbruch
         reconnectDelay: 5000,
         onConnect: () => {
-          console.log("[WS] Erfolgreich verbunden!");
+          console.log("[WS] Successfully connected!");
+          
           resolve();
         },
         onStompError: (frame) => {
           reject(new Error(frame.headers["message"]));
         },
         onWebSocketError: () => {
-          reject(new Error("WebSocket Fehler"));
+          reject(new Error("WebSocket Error"));
         },
       });
   

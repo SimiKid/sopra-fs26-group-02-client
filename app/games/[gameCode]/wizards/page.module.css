@@ -48,6 +48,7 @@
   color: white !important;
   border: none !important;
   font-family: 'Cinzel', serif !important;
+  justify-self: end;
 }
 
 .buttonDisabled {
@@ -55,6 +56,7 @@
   color: rgba(255, 255, 255, 0.55) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   font-family: 'Cinzel', serif !important;
+  justify-self: end;
 }
 
 .buttonWizard {
@@ -84,9 +86,26 @@
 }
 
 .buttonContainer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   width: min(1200px, 90%);
   margin: 2rem auto 0;
-  text-align: right;
+  gap: 16px;
+}
+
+.timeLeft {
+  justify-self: center;
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.leaveButton {
+  justify-self: start;
+  width: 100px !important;
+  color: #1a1025 !important;
+  background-color: #c8b0ff !important;
 }
 
 @media (max-width: 768px) {
@@ -110,6 +129,7 @@
   .wizardList {
     width: 100%;
     margin-top: 1.5rem;
+    
     justify-content: center;
     flex-wrap: wrap;
     gap: 24px;

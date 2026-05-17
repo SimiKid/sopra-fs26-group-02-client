@@ -1,13 +1,16 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useParams } from "next/navigation";
-import { Button, Spin, App } from "antd";
+import { useParams, useRouter } from "next/navigation";
+import { Button, Spin, App, Modal} from "antd";
 import { ATTACK_IMAGES } from "@/constants/attacks.constants";
 import { useAttackSelection } from "@/hooks/useAttackSelection";
 import { useApi } from "@/hooks/useApi";
 import { useEffect, useState } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { useRemainingSelectionTime } from "@/hooks/useRemainingSelectionTime";
+import { useBattle } from "@/hooks/useBattle";
+import { useGameExitGuard } from "@/hooks/useGameExitGuard";
 
 
 export default function Attacks() {
@@ -16,8 +19,11 @@ export default function Attacks() {
   const params = useParams();
   const gameCode = params.gameCode as string;
   const { message } = App.useApp();
-
+  const {timeLeft,stopTimer} = useRemainingSelectionTime(gameCode);
+  const { handleLeave, isOpponentGone, markLeftVoluntarily } = useBattle(gameCode);
+  const router = useRouter();
   const [location, setLocation] = useState<string>("Loading...", );
+  const { showConfirm, handleConfirmLeave, closeConfirm } = useGameExitGuard({ gameCode, onBeforeLeave: markLeftVoluntarily });
 
   useEffect(() => {
     if (!hydrated || !token) return;
@@ -41,6 +47,13 @@ export default function Attacks() {
     };
   }, [apiService, gameCode, hydrated, token, message]);
 
+  useEffect(() => {
+    if (isOpponentGone) {
+      router.push("/lobby");
+      message.info("Your opponent has left the game.");
+    }
+  }, [isOpponentGone]);
+  
   const {
     selectedAttacks,
     attacks,
@@ -67,6 +80,20 @@ export default function Attacks() {
   }
 
   return (
+    <>
+    <Modal
+      open={showConfirm}
+      title="Leave the game?"
+      okText="Leave"
+      cancelText="Stay"
+      okButtonProps={{ danger: true }}
+      onOk={handleConfirmLeave}
+      onCancel={closeConfirm}
+      maskClosable={false}
+      closable={false}
+    >
+      Are you sure you want to leave? The game will be cancelled.
+    </Modal>
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
@@ -76,10 +103,13 @@ export default function Attacks() {
             <br />
             Select 3 attacks for the battle.
           </p>
+          <p className={styles.timeLeft}>Time left: {timeLeft} seconds</p>
+
         </div>
 
         <div className={styles.confirmArea}>
           <div className={styles.confirmRow}>
+            <Button className={styles.leaveButton} onClick={handleLeave}>Leave</Button>
             <Button
               className={
                 selectedAttacks.length === 3
@@ -87,7 +117,7 @@ export default function Attacks() {
                   : styles.buttonDisabled
               }
               disabled={selectedAttacks.length !== 3}
-              onClick={handleChooseAttacks}
+              onClick={() => {handleChooseAttacks(); stopTimer();}}
             >
               Confirm
             </Button>
@@ -126,5 +156,6 @@ export default function Attacks() {
         ))}
       </div>
     </div>
+    </>
   );
 }
