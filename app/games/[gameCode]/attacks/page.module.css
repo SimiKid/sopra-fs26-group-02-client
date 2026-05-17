@@ -101,6 +101,8 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .buttonAttack {
