@@ -170,7 +170,7 @@ export function useBattle(gameCode: string) {
     leftVoluntarilyRef.current = true;
     stopTimer();
     try {
-      await apiService.post(`/games/${gameCode}/leave`, {});
+      await apiService.delete(`/games/${gameCode}/leave`);
       router.push("/lobby");
     } catch (err) {
       console.error("Error leaving game:", err);

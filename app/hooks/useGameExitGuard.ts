@@ -26,7 +26,7 @@ export function useGameExitGuard({ gameCode, enabled = true, onBeforeLeave }: Us
   const leaveGame = useCallback(async () => {
     onBeforeLeave?.();
     try {
-      await apiService.post(`/games/${gameCode}/leave`, {});
+      await apiService.delete(`/games/${gameCode}/leave`);
     } catch (error) {
       const err = error as ApplicationError;
       message.error(err.message ?? "Failed to leave game.");

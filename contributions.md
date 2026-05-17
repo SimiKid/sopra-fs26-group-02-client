@@ -170,8 +170,8 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [15.05.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/9c673cc2e535839a5fd895a9fb7a442d16c6ee97) | Endpoint for when a player leaves the game in the configuration phase | For the possibility for a player to leave in the selection phase |
-|                    | [15.05.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/20587be2eb2f1e9e3affed5bae2108dbcbc556ec) | Displayed leave button, api call and handle websocket message  | Show the ability for leaving the game and underlying logic in frontend |
+| **liv519**         | 15.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/9c673cc2e535839a5fd895a9fb7a442d16c6ee97) | Endpoint for when a player leaves the game in the configuration phase | For the possibility for a player to leave in the selection phase |
+|                    | 15.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/20587be2eb2f1e9e3affed5bae2108dbcbc556ec) | Displayed leave button, api call and handle websocket message  | Show the ability for leaving the game and underlying logic in frontend |
 
 ---
 
@@ -187,5 +187,5 @@ reason).
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **liv519**         | [16.05.2026]   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/b4a2d6f7b4e0226c98a4d5dc76002ef68116bee8) | Extended timer logic (from previous commits) with websocket message for a proper handling | Both players get a clear message why the selection phase wasn't successfull |
-|                    | [16.06.2026]   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/83a21f293a98bbcbbe1ae1fb08987fa15fb64745) | Extended timer logic (from previous commits) with a endpoint which gives the frontend the status of a player (ready for game) and sends a websocket message to other player  | To make sure the players get the correct error messages |
+| **liv519**         | 16.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/b4a2d6f7b4e0226c98a4d5dc76002ef68116bee8) | Extended timer logic (from previous commits) with websocket message for a proper handling | Both players get a clear message why the selection phase wasn't successfull |
+|                    | 16.06.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/83a21f293a98bbcbbe1ae1fb08987fa15fb64745) | Extended timer logic (from previous commits) with a endpoint which gives the frontend the status of a player (ready for game) and sends a websocket message to other player  | To make sure the players get the correct error messages |
