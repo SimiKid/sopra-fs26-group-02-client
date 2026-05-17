@@ -97,6 +97,8 @@
 .timeLeft {
   justify-self: center;
   text-align: center;
+  font-family: 'Cinzel', serif;
+  color: #a78bfa;
   font-size: 1.2rem;
   margin: 0;
 }
