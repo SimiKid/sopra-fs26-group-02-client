@@ -9,6 +9,27 @@
   pointer-events: none;
 }
 
+.weatherCard {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(18, 18, 32, 0.78);
+  border: 1px solid rgba(200, 176, 255, 0.18);
+  box-shadow: 0 0 18px rgba(160, 100, 255, 0.14);
+  color: #c8b0ff;
+  font-size: bold;
+  font-weight: 600;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Cinzel', serif !important;
+}
+
+.weatherInfo {
+  color: #ffffff;
+}
+
 .turnBadge {
   display: inline-flex;
   align-items: center;
@@ -31,9 +52,10 @@
 }
 
 .turnTheirs {
-  background: rgba(160, 170, 200, 0.12);
-  border-color: rgba(160, 170, 200, 0.35);
-  color: #c6cbdc;
+  background: rgba(255, 105, 120, 0.16);
+  border-color: rgba(255, 105, 120, 0.5);
+  color: #ff7b88;
+  box-shadow: 0 0 16px rgba(255, 105, 120, 0.3);
 }
 
 .statusLine {

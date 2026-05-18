@@ -128,7 +128,7 @@ return (
       <div className={styles.buttonContainer}>
       <Button className={styles.leaveButton} onClick={handleLeave}>Leave</Button>
 
-        <p className={styles.timeLeft}>Time left: {timeLeft} seconds</p>
+        <p className={styles.timeLeft}>⏳ {timeLeft} seconds remaining</p>
 
         <Button
           className={

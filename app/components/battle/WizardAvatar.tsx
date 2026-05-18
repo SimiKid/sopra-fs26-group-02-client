@@ -58,7 +58,7 @@ export default function WizardAvatar({
           onComplete={onAnimationComplete}
         />
       </div>
-      <span className={styles.label}>{wizard.title}</span>
+      <span className={styles.label}> &nbsp; </span>
     </div>
   );
 }

@@ -1,14 +1,17 @@
 "use client";
 
-import { Button, Spin, Input, Divider } from "antd";
+import { Button, Spin, Input, Divider, Form } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { useLobby } from "@/hooks/useLobby";
 import { useBattleCounter } from "@/hooks/useBattleCounter";
 import Leaderboard from "@/components/profile/Leaderboard/Leaderboard";
 import styles from "./page.module.css";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
+
 
 export default function Lobby() {
+  const { ready } = useRequireAuth();
   const battleCount = useBattleCounter();
 
   const {
@@ -33,6 +36,16 @@ export default function Lobby() {
     const secs = seconds % 60;
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
+
+  if (!ready) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.loading}>
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
 
   if (gameFullMessage || matchFoundMessage) {
     return (
@@ -109,22 +122,29 @@ export default function Lobby() {
 
           <Divider className={styles.divider}>or</Divider>
 
-          <Input
-            placeholder="Game code"
-            maxLength={6}
-            value={joinCode}
-            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-            className={`input ${styles.codeInput}`}
-          />
+          <Form>
+            <Form.Item>
+              <Input
+                placeholder="Game code"
+                maxLength={6}
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                className={`submit ${styles.codeInput}`}
+              />
+            </Form.Item>
 
-          <Button
-            block
-            className="button-secondary"
-            onClick={handleJoinGame}
-            loading={joinLoading}
-          >
-            Join Game
-          </Button>
+            <Form.Item>
+              <Button
+                block
+                htmlType="submit"
+                className="button-secondary"
+                onClick={handleJoinGame}
+                loading={joinLoading}
+              >
+                Join Game
+              </Button>
+            </Form.Item>
+          </Form>
 
           <Divider className={styles.divider}>or</Divider>
           <Button

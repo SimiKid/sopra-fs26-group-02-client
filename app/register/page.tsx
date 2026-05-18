@@ -85,14 +85,14 @@ const Register: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button block className="button-secondary" htmlType = "button" onClick={() => router.push("/login")}>
-              go to Login
+            <Button block className="button-back" htmlType = "button" onClick={() => router.push("/")}>
+              Back
             </Button>
           </Form.Item>
 
           <Form.Item>
-            <Button block className="button-back" htmlType = "button" onClick={() => router.push("/")}>
-              Back
+            <Button type="link" htmlType = "button" onClick={() => router.push("/login")}>
+              Already have an account? Go to Login
             </Button>
           </Form.Item>
         </Form>

@@ -116,6 +116,12 @@
   color: #7a6f99 !important;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
+
 @media (max-width: 768px) {
   .battleCounterSide,
   .leaderboardSide {

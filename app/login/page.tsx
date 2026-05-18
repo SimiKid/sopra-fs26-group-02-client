@@ -55,14 +55,14 @@ const Login: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button block className="button-secondary" htmlType = "button" onClick={() => router.push("/register")}>
-              Create account
+            <Button block className="button-back" htmlType = "button" onClick={() => router.push("/")}>
+              Back
             </Button>
           </Form.Item>
 
           <Form.Item>
-            <Button block className="button-back" htmlType = "button" onClick={() => router.push("/")}>
-              Back
+            <Button type = "link" htmlType = "button" onClick={() => router.push("/register")}>
+              Don&apos;t have an account? Register
             </Button>
           </Form.Item>
         </Form>

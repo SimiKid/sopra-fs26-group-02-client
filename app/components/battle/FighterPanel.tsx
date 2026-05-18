@@ -1,5 +1,6 @@
 "use client";
 
+import { WIZARDS } from "@/constants/wizards.constants";
 import styles from "./FighterPanel.module.css";
 
 interface FighterPanelProps {
@@ -19,12 +20,13 @@ export default function FighterPanel({
 }: FighterPanelProps) {
   const safeMaxHp = Math.max(maxHp, 1);
   const hpPercent = Math.max(0, Math.min(100, (currentHp / safeMaxHp) * 100));
+  const wizardTitle = WIZARDS.find(w => w.id === wizardClass)?.title || "Unknown Wizard";
 
   return (
     <section className={styles.card}>
       <div className={styles.topRow}>
         <span className={styles.name}>{username}</span>
-        <span className={styles.className}>{wizardClass}</span>
+        <span className={styles.className}>{wizardTitle}</span>
       </div>
 
       <div className={styles.barBg}>

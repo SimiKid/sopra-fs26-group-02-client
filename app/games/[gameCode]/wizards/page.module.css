@@ -97,6 +97,8 @@
 .timeLeft {
   justify-self: center;
   text-align: center;
+  font-family: 'Cinzel', serif;
+  color: #a78bfa;
   font-size: 1.2rem;
   margin: 0;
 }
@@ -104,8 +106,10 @@
 .leaveButton {
   justify-self: start;
   width: 100px !important;
+  font-family: 'Cinzel', serif !important;
   color: #1a1025 !important;
-  background-color: #c8b0ff !important;
+  background-color: #a78bfa !important;
+  border: none !important;
 }
 
 @media (max-width: 768px) {
