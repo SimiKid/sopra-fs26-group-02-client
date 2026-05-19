@@ -21,6 +21,7 @@ export interface GameHistoryEntry {
   result: GameResult;
   myWizardClass: WizardClass | null;
   opponentWizardClass: WizardClass | null;
+  opponentName: string | null;
   temperature: Temperature | null;
   rain: Rain | null;
 }

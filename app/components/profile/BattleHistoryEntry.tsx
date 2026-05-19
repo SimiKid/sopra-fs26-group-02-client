@@ -51,7 +51,7 @@ export default function BattleHistoryEntry({ entry }: BattleHistoryEntryProps) {
         </span>
         <span className={styles.vs}>VS</span>
         <span className={styles.side}>
-          <span className={styles.sideLabel}>Opponent</span>
+          <span className={styles.sideLabel}>{entry.opponentName ?? "Opponent"}</span>
           <span className={styles.sideValue}>
             {formatWizardClass(entry.opponentWizardClass)}
           </span>
