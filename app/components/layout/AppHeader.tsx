@@ -19,7 +19,7 @@ function shouldHide(pathname: string): boolean {
 const NAV_LINKS = [
   { href: "/lobby", label: "Lobby" },
   { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/profile", label: "Profile" },
+  { href: "/history", label: "History" },
 ];
 
 export default function AppHeader() {
