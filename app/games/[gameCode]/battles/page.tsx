@@ -381,6 +381,7 @@ useEffect(() => {
     setTargetTime(null);
     try {
       const response = await apiService.get<string>(`/timer/${gameCode}`);
+      const utcResponse = response.endsWith('Z') ? response : `${response}Z`;
       setTargetTime(response); 
       
     } catch (error) {
