@@ -1,0 +1,179 @@
+.card {
+  min-width: 480px;
+  max-width: 600px;
+  padding: 32px 36px;
+  border-radius: 16px;
+  background: rgba(12, 14, 28, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  color: #d7dbeb;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Big outcome title ── */
+.outcomeTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 2.6rem;
+  font-weight: 900;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.victory {
+  color: #7ef3b0;
+  text-shadow: 0 0 24px rgba(56, 214, 129, 0.5);
+}
+
+.defeat {
+  color: #ff6b8b;
+  text-shadow: 0 0 24px rgba(255, 46, 136, 0.5);
+}
+
+.draw {
+  color: #c6cbdc;
+  text-shadow: 0 0 16px rgba(160, 170, 200, 0.35);
+}
+
+/* ── Matchup row ── */
+.matchup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.sideLabel {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a6f99;
+}
+
+.sideUsername {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f2f4ff;
+}
+
+.sideClass {
+  font-size: 0.82rem;
+  color: #aab0c4;
+}
+
+.sideDamage {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ff8ea5;
+  letter-spacing: 0.04em;
+}
+
+.vs {
+  font-family: 'Cinzel', serif;
+  color: #c8b0ff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+/* ── Stats strip ── */
+.statsStrip {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.statChip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.chipValue {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f2f4ff;
+  text-transform: capitalize;
+}
+
+.chipLabel {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Attacks strip ── */
+.attacksSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.attacksSectionLabel {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a6f99;
+}
+
+.attackChips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.attackChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f2f4ff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.attackChip img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* ── Buttons ── */
+.buttonStack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttonStack :global(.ant-btn-primary:disabled),
+.buttonStack :global(.ant-btn-primary[disabled]) {
+  color: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
