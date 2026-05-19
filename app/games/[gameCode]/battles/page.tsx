@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { App, Button, Spin, Modal} from "antd";
+import { App, Spin, Modal} from "antd";
 
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useApi } from "@/hooks/useApi";
@@ -14,6 +14,7 @@ import TurnStatus from "@/components/battle/TurnStatus";
 import WizardAvatar from "@/components/battle/WizardAvatar";
 import AttackSprite from "@/components/battle/AttackSprite";
 import EmoteButton from "@/components/battle/EmoteButton";
+import BattleResultCard from "@/components/battle/BattleResultCard";
 
 import { Attack } from "@/types/attack";
 import { BattleStateDTO } from "@/types/battle";
@@ -430,55 +431,18 @@ useEffect(() => {
   }
 
 if (isGameOver && showResults) {
-  const isDraw = battleState.winnerId === null;
-  const youWon = !isDraw && battleState.winnerId === myUserId;
-
   return (
     <div className={styles.center}>
-      <div className={styles.endCard}>
-        <h1 className={youWon ? styles.victory : styles.defeat}>
-          {isDraw ? "Draw!" : youWon ? "Victory!" : "Defeat"}
-        </h1>
-        <p className={styles.battleComplete}>Battle complete</p>
-
-        {resultStats ? (
-          <>
-            <div className={styles.statsGrid}>
-              <div className={styles.statCard}>
-                <span className={styles.statValue}>{resultStats.totalDamageDealt}</span>
-                <span className={styles.statLabel}>Total damage dealt</span>
-              </div>
-              <div className={styles.statCard}>
-                <span className={styles.statValue}>{resultStats.turnsPlayed}</span>
-                <span className={styles.statLabel}>Turns played</span>
-              </div>
-              <div className={styles.statCard}>
-                <span className={styles.statValue}>{resultStats.weather.rainCategory.toLowerCase()}</span>
-                <span className={styles.statLabel}>Rain</span>
-              </div>
-              <div className={styles.statCard}>
-                <span className={styles.statValue}>{resultStats.weather.temperatureCategory.toLowerCase()}</span>
-                <span className={styles.statLabel}>Temperature</span>
-              </div>
-            </div>
-          </>
-        ) : (
-          <Spin className={styles.spinMargin} />
-        )}
-
-        <div className={styles.buttonStack}>
-          {rematchWaiting ? (
-            <Button type="primary" block disabled>
-              <Spin size="small" /> Waiting for opponent… {rematchTimeLeft}s
-            </Button>
-          ) : (
-             <Button type="primary" block onClick={handleRematch}>
-                Play Again
-              </Button>
-          )}
-          <Button block onClick={() => router.push("/lobby")}>Back to lobby</Button>
-        </div>
-      </div>
+      <BattleResultCard
+        battleState={battleState}
+        myUserId={myUserId}
+        resultStats={resultStats}
+        myAttacks={myAttacks}
+        rematchWaiting={rematchWaiting}
+        rematchTimeLeft={rematchTimeLeft}
+        onRematch={handleRematch}
+        onLeaveLobby={() => router.push("/lobby")}
+      />
     </div>
   );
 }
