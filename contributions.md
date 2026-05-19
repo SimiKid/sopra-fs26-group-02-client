@@ -184,8 +184,8 @@ reason).
 |                    | 16.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/776d3fd498e1cec4ce87d128f077a2a44faa0d31) [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/e1e6b4f723e3dfbedf7155245c267e2678f8fb72) | Add 50-character max rule to password field and route backend validation errors | Hard caps password input and shows specific backend errors inline on the right field instead of a generic fallback |
 | **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **noelgehrig**     | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **noelgehrig**     |    |  | Joker |  |
+|                    |    |  | Joker |  |
 | **OHaas61**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
 | **liv519**         | 16.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/b4a2d6f7b4e0226c98a4d5dc76002ef68116bee8) | Extended timer logic (from previous commits) with websocket message for a proper handling | Both players get a clear message why the selection phase wasn't successfull |
