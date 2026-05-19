@@ -382,7 +382,7 @@ useEffect(() => {
     try {
       const response = await apiService.get<string>(`/timer/${gameCode}`);
       const utcResponse = response.endsWith('Z') ? response : `${response}Z`;
-      setTargetTime(response); 
+      setTargetTime(utcResponse); 
       
     } catch (error) {
       console.error("Error loading timer", error);
