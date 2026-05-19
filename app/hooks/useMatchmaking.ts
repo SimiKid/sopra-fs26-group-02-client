@@ -10,6 +10,7 @@ import { useApi } from '@/hooks/useApi';
 import { useRef } from 'react';
 import { useLobby } from './useLobby';
 import { useMemo } from 'react';
+import { useEffect } from 'react';
 
 export const useMatchmaking = () => {
   const { value: token } = useLocalStorage<string>("token", "");
@@ -22,9 +23,22 @@ export const useMatchmaking = () => {
   const [matchmakingTimeLeft, setMatchmakingTimeLeft] = useState(60);
   const timerRef = useRef<NodeJS.Timeout | null>(null); 
   
+  const clearTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearTimer();
+      ws.disconnect();
+    };
+  }, [ws]);
 
   const startCountdown = () => {
-
+    clearTimer();
     setMatchmakingTimeLeft(60);
     let remaining = 60;
 
@@ -43,17 +57,10 @@ export const useMatchmaking = () => {
         ws.disconnect();
       }
     }, 1000);
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
   };
 
   const startMatchmaking = async () => {
-    if (timerRef.current) clearInterval(timerRef.current);
+    clearTimer();
     try {
       await ws.connectBasic();
 
@@ -63,12 +70,10 @@ export const useMatchmaking = () => {
         setIsSearching(false);
         
         setMatchFoundMessage("Game found! Redirecting to wizard selection screen...");
+        clearTimer();
+        ws.disconnect();
         // Navigate to game selection screen
         router.push(`/games/${gameCode}/wizards`);
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
       });
 
       // Send request to backend to join matchmaking
@@ -81,19 +86,17 @@ export const useMatchmaking = () => {
     } catch (error) {
       const err = error as ApplicationError;
       message.error(err.message ?? "Failed to start matchmaking");  
-
+      clearTimer();
+      setIsSearching(false);
     } 
   };
 
   const stopMatchmaking = async () => {
+    clearTimer();
     ws.disconnect();
     setIsSearching(false);
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
     setMatchFoundMessage(null);
-    setMatchmakingTimeLeft(60000);
+    setMatchmakingTimeLeft(60);
     try {
 
       await apiService.delete("/matchmaking/leave");
