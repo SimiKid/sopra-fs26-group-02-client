@@ -19,7 +19,7 @@ export const useMatchmaking = () => {
   const ws = useMemo(() => new WebSocketService(token), [token]);  const { message } = App.useApp();
   const apiService = useApi(token);
   const [matchFoundMessage, setMatchFoundMessage] = useState<string | null>(null);
-  const [matchmakingTimeLeft, setMatchmakingTimeLeft] = useState(60000); // 60 seconds
+  const [matchmakingTimeLeft, setMatchmakingTimeLeft] = useState(60);
   const timerRef = useRef<NodeJS.Timeout | null>(null); 
   
 
