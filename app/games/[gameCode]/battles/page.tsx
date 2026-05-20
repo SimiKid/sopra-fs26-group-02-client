@@ -26,6 +26,7 @@ import { ATTACK_SPRITES } from "@/constants/attackSprites.constants";
 
 import styles from "./page.module.css";
 import { useGameExitGuard } from "@/hooks/useGameExitGuard";
+import { getApiDomain } from "@/utils/domain";
 
 interface Wizard {
   id: string;
@@ -99,6 +100,15 @@ export default function Battle() {
     onBeforeLeave: markLeftVoluntarily,
   });
 
+
+  const cancelRematch = useCallback(() => {
+    if (!token) return;
+    fetch(`${getApiDomain()}/games/${gameCode}/rematch`, {
+      method: "DELETE",
+      headers: { Authorization: token },
+      keepalive: true,
+    }).catch(() => {});
+  }, [token, gameCode]);
 
   const handleRematch = async () => {
     if (rematchWaiting) return;
@@ -370,6 +380,12 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  if (!isGameOver || !showResults) return;
+  window.addEventListener("beforeunload", cancelRematch);
+  return () => window.removeEventListener("beforeunload", cancelRematch);
+}, [isGameOver, showResults, cancelRematch]);
+
+useEffect(() => {
   if (opponentLeft) {
     message.info("Your opponent has left the game. You win!");
     router.push("/lobby");
@@ -441,7 +457,7 @@ if (isGameOver && showResults) {
         rematchWaiting={rematchWaiting}
         rematchTimeLeft={rematchTimeLeft}
         onRematch={handleRematch}
-        onLeaveLobby={() => router.push("/lobby")}
+        onLeaveLobby={() => { cancelRematch(); router.push("/lobby"); }}
       />
     </div>
   );
