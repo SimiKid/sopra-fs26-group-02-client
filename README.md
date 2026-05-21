@@ -75,9 +75,10 @@ The backend server should also be running locally on: `http://localhost:8080`
 
 First you will need to clone the repository:
 
-`git clone https://github.com/SimiKid/sopra-fs26-group-02-client`
-
-`cd sopra-fs26-group-02-client`
+```bash
+git clone https://github.com/SimiKid/sopra-fs26-group-02-client
+cd sopra-fs26-group-02-client
+```
 
 Install the dependencies (Next.js, React, Ant Design, STOMP.js, and SockJS):
 

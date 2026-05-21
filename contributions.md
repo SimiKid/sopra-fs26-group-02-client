@@ -175,14 +175,15 @@ reason).
 
 ---
 
-## Contributions Week 8 - 18.05.2026 to 22.05.2026
+## Contributions Week 9 - 18.05.2026 to 22.05.2026
 
 | **Student**        | **Date** | **Link to Commit** | **Description**                 | **Relevance**                       |
 | ------------------ | -------- | ------------------ | ------------------------------- | ----------------------------------- |
 | **SimiKid**        | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
 |                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
-| **swimch**         | [date]   | [Link to Commit 1] | [Brief description of the task] | [Why this contribution is relevant] |
-|                    | [date]   | [Link to Commit 2] | [Brief description of the task] | [Why this contribution is relevant] |
+| **swimch**         | 19.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-client/commits/dev) | Added opponent username to history in the front & backend | Gives the player more information regarding their past battles |
+|                    | 21.05.2026   | [Link to Commit 2](https://github.com/SimiKid/sopra-fs26-group-02-client/commit/63538df8db196d42972f75603507e678f3c72a6e) | Created client README structure & added illustrations | Requirement for milestone 4 |
+|                    | 21.05.2026   | [Link to Commit 3](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/029943422620e32cf0a52c14d08164769ca45950) | Updated server README | Requirement for milestone 4 |
 | **noelgehrig**     |    |  | Joker |  |
 |                    |    |  | Joker |  |
 | **OHaas61**        | 19.05.2026   | [Link to Commit 1](https://github.com/SimiKid/sopra-fs26-group-02-server/commit/7f329435d74b282dcd53595fa00fe87ca0f408d2) | Extend BattleResult entity, DTO and service to return per-player damage, wizard classes and location | Provides the data needed for the redesigned end screen to show how much damage each player dealt and full match context  |
