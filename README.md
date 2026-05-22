@@ -52,7 +52,7 @@ The lobby acts as the central hub of the game. From here, players can create a  
 ### Game Setup - [`Wizard Selection`](./app/games/[gameCode]/wizards/page.tsx), [`Attack Selection`](./app/games/[gameCode]/attacks/page.tsx) 
 Before the battle starts, players first choose a wizard class with different strengths and weaknesses. Afterwards, a random real-world arena location is shown and players must predict the live weather conditions there in order to choose the three most effective attacks for the upcoming battle.
 
-### Battle System - [`Battle`](./app/games/battle/page.tsx), [`useBattle`](./app/hooks/useBattle.ts)
+### Battle System - [`Battle`](./app/games/[gameCode]/battles/page.tsx), [`useBattle`](./app/hooks/useBattle.ts)
 The battle system contains the main real-time gameplay of Weather Wizards. It manages turn-based combat, spell usage, weather effects, health updates, emotes, timers, and the final result screen. The component communicates with the backend through [`WebSockets`](./app/api/websocketService.ts) so both players receive synchronized live updates during combat.
 
 ### Player Statistics and Navigation - [`Leaderboard`](./app/leaderboard/page.tsx), [`History`](./app/history/page.tsx), [`Header`](./app/components/layout/AppHeader.tsx)
@@ -142,13 +142,13 @@ After authentication, players enter the main lobby, which acts as the central hu
 Once matched, players enter the selection phase. First, they choose one of the available wizard classes with different strengths and weaknesses. Afterwards, players are shown the real-world arena location for the upcoming battle and must strategically select three attacks based on the weather conditions they expect at that location.
 
 <h4 align="center">The following wizards and attacks can be selected:</h4>
-<div style="text-align: center;">
+<center>
     <img src="./public/images/readme/wizardselection.png" alt="Wizard Selection" width="600"/>
-</div>
+</center>
 
-<div style="text-align: center;">
-    <img src="./public/images/readme/attackselection.png" alt="Attack Selection" width="600"/>
-</div>
+<center>
+    <img src="./public/images/readme/attackselection.png" alt="Wizard Selection" width="600"/>
+</center>
 
 
 After both players confirm their selections, the battle begins. Players take turns attacking each other in real time while adapting to the current weather conditions shown visually through the arena background and battle information. By hovering over attacks, players can see whether a spell is strong or weak under the current conditions. An emote chat also allows communication during battle.
