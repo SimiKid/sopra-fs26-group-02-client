@@ -141,14 +141,14 @@ After authentication, players enter the main lobby, which acts as the central hu
 
 Once matched, players enter the selection phase. First, they choose one of the available wizard classes with different strengths and weaknesses. Afterwards, players are shown the real-world arena location for the upcoming battle and must strategically select three attacks based on the weather conditions they expect at that location.
 
-<h4 align="center">The following wizards and attacks can be selected:</h4>
-<center>
+<h4>The following wizards and attacks can be selected:</h4>
+<div>
     <img src="./public/images/readme/wizardselection.png" alt="Wizard Selection" width="600"/>
-</center>
+</div>
 
-<center>
+<div>
     <img src="./public/images/readme/attackselection.png" alt="Wizard Selection" width="600"/>
-</center>
+</div>
 
 
 After both players confirm their selections, the battle begins. Players take turns attacking each other in real time while adapting to the current weather conditions shown visually through the arena background and battle information. By hovering over attacks, players can see whether a spell is strong or weak under the current conditions. An emote chat also allows communication during battle.
